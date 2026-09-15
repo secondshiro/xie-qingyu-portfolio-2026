@@ -1,0 +1,54 @@
+---
+interface Props {
+  src: string;
+  title: string;
+  poster: string;
+  posterAlt: string;
+  linkLabel: string;
+}
+
+const { src, title, poster, posterAlt, linkLabel } = Astro.props;
+---
+
+<div class="prototype-frame">
+  <div class="prototype-frame__chrome" aria-hidden="true">
+    <span></span><span></span><span></span>
+    <b>{title}</b>
+  </div>
+  <div class="prototype-frame__viewport" data-prototype-viewport>
+    <iframe src={src} title={title} loading="lazy" data-prototype-frame></iframe>
+    <div class="prototype-frame__fallback">
+      <img src={poster} alt={posterAlt} width="1440" height="900" loading="lazy" decoding="async" />
+      <p>该原型为桌面业务工作区。窄屏保留静态证据，可在新窗口打开完整版本。</p>
+    </div>
+  </div>
+  <a class="prototype-frame__link" href={src} target="_blank" rel="noopener noreferrer">{linkLabel} ↗</a>
+</div>
+
+<script>
+  const setupPrototypeZoom = () => {
+    document.querySelectorAll<HTMLElement>('[data-prototype-viewport]').forEach((viewport) => {
+      const frame = viewport.querySelector<HTMLIFrameElement>('[data-prototype-frame]');
+      if (!frame || frame.dataset.zoomReady === 'true') return;
+
+      const designWidth = 1440;
+      const designHeight = 810;
+      const resize = () => {
+        const scale = Math.min(1, viewport.clientWidth / designWidth);
+        viewport.style.height = `${designHeight * scale}px`;
+        frame.style.width = `${designWidth}px`;
+        frame.style.height = `${designHeight}px`;
+        if (frame.contentDocument?.documentElement) {
+          frame.contentDocument.documentElement.style.zoom = String(scale);
+        }
+      };
+
+      frame.dataset.zoomReady = 'true';
+      frame.addEventListener('load', resize);
+      new ResizeObserver(resize).observe(viewport);
+      resize();
+    });
+  };
+
+  setupPrototypeZoom();
+</script>

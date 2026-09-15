@@ -1,0 +1,246 @@
+---
+import CaseHero from '../../components/CaseHero.astro';
+import CaseSection from '../../components/CaseSection.astro';
+import CaseToc from '../../components/CaseToc.astro';
+import MediaStage from '../../components/MediaStage.astro';
+import PrototypeFrame from '../../components/PrototypeFrame.astro';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import '../../styles/case-study.css';
+
+const media = '/projects/real-estate-gis/media';
+const prototypes = '/projects/real-estate-gis/prototypes';
+const facts = [
+  { label: '角色', value: '业务梳理、产品架构、UX 与交互原型' },
+  { label: '输入', value: '需求规格、业务流程、旧系统截图与初版原型' },
+  { label: '贡献', value: '把找楼、看整幢和核对变更连成一条对象路径' },
+  { label: '输出', value: '总图、整幢和实测替换预测三个可操作原型' },
+  { label: '边界', value: '个人回溯重构 · 已完成交互原型' },
+];
+---
+
+<SiteLayout
+  title="房产 GIS 体验重构｜谢擎宇"
+  description="把找楼、查看整幢和核对测绘变更连起来的房产 GIS 体验重构案例。"
+  current="work"
+>
+  <main class="case-page" id="main" tabindex="-1">
+    <CaseHero
+      title="房产 GIS 体验重构"
+      summary="房产工作人员核对测绘变更时，需要找到对应楼栋，查看其中的房屋，再确认新旧户室如何对应。旧系统把这些操作分在不同模块里，切换后还要重新确认楼栋。我重新设计了这条路径，让工作人员能围绕同一栋楼继续处理。"
+      facts={facts}
+    />
+
+    <CaseToc />
+
+    <CaseSection
+      id="result"
+      label="00 / 先看结果"
+      title="17 幢在三个工作面里保持不变"
+      intro="演示从宇济一号 17 幢开始。选中后，名称、编号和属性会带到整幢矩阵与测绘变更任务。"
+      tone="stone"
+    >
+      <PrototypeFrame
+        src={`${prototypes}/map/index.html?restore=1&building=宇济一号&code=17幢`}
+        title="GIS 总图交互原型中的宇济一号 17 幢对象面板"
+        poster={`${media}/final/03-map-layer-object.png`}
+        posterAlt="最新房产 GIS 总图原型中展开地图图层、选中宇济一号 17 幢并显示对象面板"
+        linkLabel="打开完整总图原型"
+      />
+      <div class="opportunity-path" aria-label="17 幢演示路径">
+        <span>在地图找到 17 幢</span><i aria-hidden="true">→</i>
+        <span>打开整幢房屋矩阵</span><i aria-hidden="true">→</i>
+        <span>进入测绘变更核对</span>
+      </div>
+      <div class="case-copy">
+        <p>这里的“幢”是业务中对一栋楼的称呼。工作人员从总图进入下一项工作后，可以直接查看户室或处理测绘关系，省去再次搜索和确认楼栋。</p>
+      </div>
+    </CaseSection>
+
+    <CaseSection
+      id="origin"
+      label="01 / 项目源头"
+      title="一次技术升级给了我重新梳理路径的机会"
+      intro="这次梳理来自一次国产环境升级。旧系统的技术需要更换，我也借这个机会回看原来的操作方式，思考哪些业务习惯要保留，哪些步骤可以重新安排。"
+    >
+      <div class="case-copy">
+        <p>我把规格说明、业务流程、旧系统截图和初版原型放在一起核对。有些材料写了功能，却没有讲清操作场景，需要沿着具体任务重新梳理。</p>
+        <p>梳理时，我区分了原有业务规则和这次提出的设计。能确认的流程先做成原型，面积差异如何判断、复杂户室关系如何衔接，则保留为后续需要与业务人员核对的问题。</p>
+      </div>
+      <div class="evidence-key" aria-label="证据分级">
+        <div><b>Confirmed · 已确认</b><p>文档明确写出的规则。</p></div>
+        <div><b>Observed · 已观察</b><p>截图直接看见的实现。</p></div>
+        <div><b>Inferred · 依据推导</b><p>基于证据、仍待验证。</p></div>
+        <div><b>Redesigned · 本次重构</b><p>本次提出的体验方案。</p></div>
+      </div>
+    </CaseSection>
+
+    <CaseSection
+      id="problem"
+      label="02 / 问题重定义"
+      title="找到楼栋以后，下一步还要重新确认对象"
+      intro="工作人员在地图上找到一栋楼，接下来要查看里面的户室，再核对测绘变更。这几步处理的是同一栋楼，旧模块之间却没有把当前楼栋和相关线索一起带过去。"
+      tone="panel"
+    >
+      <div class="evidence-grid">
+        <MediaStage
+          src={`${media}/public/legacy-map-observed.webp`}
+          alt="旧 C/S 系统总图截图"
+          caption="旧总图集中了图层、地图工具和业务入口，为对象化重组提供证据。"
+          kind="observed"
+          width={1600}
+          height={1000}
+        />
+        <MediaStage
+          src={`${media}/public/legacy-building-observed.webp`}
+          alt="旧 C/S 系统分层分户图截图"
+          caption="旧楼盘表保留了丰富状态语法，也显示出整幢阅读的空间压力。"
+          kind="observed"
+          width={1600}
+          height={1000}
+        />
+      </div>
+      <div class="case-copy">
+        <p>我把这条路径里的楼栋信息保留下来，同时重新安排每一步需要展开的内容。地图适合找位置，整幢需要看清户室分布，变更任务则需要对照新旧关系。它们可以围绕同一栋楼衔接，但不必把所有信息挤在同一个页面。</p>
+      </div>
+    </CaseSection>
+
+    <CaseSection
+      id="workspaces"
+      label="03 / 核心方案"
+      title="地图、矩阵和关系卡各管一段工作"
+      intro="下面以 17 幢为例，展示这条路径怎样展开。选中楼栋后，名称和编号跟着任务保留；进入整幢或变更核对时，主要区域换成当前需要查看的内容。"
+      tone="stone"
+    >
+      <div class="workspace-stack">
+        <article class="workspace">
+          <header class="workspace__header">
+            <span>01 / 空间 · 选幢</span>
+            <div><h3>在总图找到 17 幢，业务入口随后出现</h3><p>未选楼时，地图只负责查找和定位。选中 17 幢后，属性、历史和后续任务进入右侧对象面板。</p></div>
+          </header>
+          <div class="experience-diagram" aria-label="从空间定位到对象面板的体验路径">
+            <div class="diagram-node diagram-node--map"><span class="diagram-kicker">空间</span><b>地图定位</b><div class="map-sketch" aria-hidden="true"><i></i><i></i><i></i><i></i><b>17</b><span></span><span></span></div></div>
+            <span class="diagram-arrow" aria-hidden="true">→</span>
+            <div class="diagram-node diagram-node--building"><span class="diagram-kicker">对象</span><b>选中 17 幢</b><div class="building-shape">17</div></div>
+            <span class="diagram-arrow" aria-hidden="true">→</span>
+            <div class="diagram-node diagram-node--panel"><span class="diagram-kicker">继续工作</span><b>对象面板</b><div class="panel-sketch" aria-hidden="true"><strong>宇济一号 · 17幢</strong><i></i><i></i><i></i><i></i></div></div>
+          </div>
+          <div class="workspace-notes"><div><b>保留什么</b><p>右侧面板持续显示当前楼栋的名称、编号和属性。</p></div><div><b>为什么这样做</b><p>未选楼时专注地图，选中后再展开属性和操作。</p></div><div><b>接着做什么</b><p>从 17 幢直接进入整幢或测绘变更任务。</p></div></div>
+          <a class="workspace__prototype-link" href={`${prototypes}/map/index.html?restore=1&building=宇济一号&code=17幢`} target="_blank" rel="noopener noreferrer">从当前幢打开总图原型 ↗</a>
+        </article>
+
+        <article class="workspace">
+          <header class="workspace__header">
+            <span>02 / 对象 · 看整幢</span>
+            <div><h3>进入整幢后，用矩阵查看楼层、单元和户室</h3><p>找到楼以后，工作人员需要看清各层、各单元有哪些户室。我把实际层和名义层放进矩阵的对应位置，让整幢信息便于逐行查看。平面图仍可用于空间定位，需要时再展开，给矩阵留下阅读空间。</p></div>
+          </header>
+          <div class="evidence-grid">
+            <MediaStage src={`${media}/public/legacy-building-overview-observed.webp`} alt="旧系统中工具、属性、平面和楼盘矩阵同时出现" caption="旧系统的信息层级相互竞争。" kind="observed" width={1600} height={1000} />
+            <MediaStage src={`${media}/final/12-building-current-overview.png`} alt="重构后以整幢户室状态矩阵为主要工作面" caption="矩阵成为主工作面，共享稳定阅读结构。" kind="redesigned" width={1440} height={900} />
+          </div>
+          <PrototypeFrame src={`${prototypes}/building/index.html?building=宇济一号&code=17幢&owner=1&room=1501`} title="分层分户图交互原型" poster={`${media}/final/12-building-current-overview.png`} posterAlt="整幢户室状态矩阵的静态证据" linkLabel="打开完整整幢原型" />
+        </article>
+
+        <article class="workspace">
+          <header class="workspace__header">
+            <span>03 / 任务 · 核对变更</span>
+            <div><h3>遇到测绘变更，逐条核对现有户和实测户</h3><p>进入测绘变更后，需要判断现有户室与实测结果怎样对应。我用关系卡把两边户室和面积差异放在一起，便于逐条对照；遇到一拆多、多合一的关系，也先展示对应依据，再由工作人员确认。</p></div>
+          </header>
+          <div class="experience-diagram experience-diagram--task" aria-label="从关系线索到任务判断的体验路径">
+            <div class="diagram-node diagram-node--relation"><span class="diagram-kicker">关系线索</span><b>现有户 × 实测户</b><div class="room-pair" aria-hidden="true"><span>1501室<br /><small>94.20㎡</small></span><em>?</em><span>1501室<br /><small>95.90㎡</small></span></div></div>
+            <span class="diagram-arrow" aria-hidden="true">→</span>
+            <div class="diagram-node diagram-node--cards"><span class="diagram-kicker">判断依据</span><b>关系卡</b><div class="relation-card" aria-hidden="true"><span>面积差异</span><strong>+1.70㎡</strong><small>需人工核对</small></div></div>
+            <span class="diagram-arrow" aria-hidden="true">→</span>
+            <div class="diagram-node diagram-node--decision"><span class="diagram-kicker">人工确认</span><b>任务状态</b><div class="decision-state" aria-hidden="true"><span></span>待核对</div><small>确认后进入入库流程</small></div>
+          </div>
+          <PrototypeFrame src={`${prototypes}/task/index.html?building=宇济一号&code=17幢&from=gis&step=3&view=cards&filter=review`} title="实测替换预测交互原型" poster={`${media}/final/13-task-relations-focus.png`} posterAlt="待核对户室关系卡的静态证据" linkLabel="打开完整任务原型" />
+        </article>
+      </div>
+    </CaseSection>
+
+    <CaseSection
+      id="strategy"
+      label="04 / 行业判断"
+      title="三类公开产品帮我校准工作面分工"
+      intro="在安排这三个工作面时，我参考了空间产品和工作流产品，重点看它们怎样让用户找到对象，以及怎样把复杂判断拆开。"
+    >
+      <div class="reference-grid">
+        <article class="reference-card">
+          <span>直接行业平台</span>
+          <h3>行业平台提醒我保留具体业务路径</h3>
+          <p>平台覆盖的业务很多，工作人员仍要从眼前楼栋进入具体任务。本案因此把对象入口留在总图。</p>
+          <a href="https://www.supermap.com/zh-cn/a/solutions/119_4553.html" target="_blank" rel="noopener noreferrer">SuperMap 公开资料 ↗</a>
+        </article>
+        <article class="reference-card">
+          <span>空间交互标杆</span>
+          <h3>空间交互支持先定位楼栋</h3>
+          <p>空间产品展示了地图承载定位与对象交互的方式。本案让地图只负责找楼、选楼和打开对象信息。</p>
+          <a href="https://help.aliyun.com/zh/datav/datav-atlas/product-overview/what-is-datav-atlas/" target="_blank" rel="noopener noreferrer">DataV Atlas 公开资料 ↗</a>
+        </article>
+        <article class="reference-card">
+          <span>复杂工作流标杆</span>
+          <h3>工作流产品提供拆分判断的参照</h3>
+          <p>分支与状态的组织方式帮助我拆开测绘变更。本案用关系卡呈现依据，再把确认动作留给工作人员。</p>
+          <a href="https://www.feishu.cn/product/base" target="_blank" rel="noopener noreferrer">飞书多维表格公开资料 ↗</a>
+        </article>
+      </div>
+      <div class="opportunity-path" aria-label="设计机会路径">
+        <span>以空间为入口</span><i aria-hidden="true">→</i>
+        <span>以房屋幢为上下文</span><i aria-hidden="true">→</i>
+        <span>以业务判断为动作</span>
+      </div>
+    </CaseSection>
+
+    <CaseSection
+      id="tradeoffs"
+      label="05 / 设计取舍"
+      title="旧系统里的有效信息被放回合适的位置"
+      intro="状态色、平面图和高密度表格都有业务价值。调整的重点是它们在什么任务里出现，以及会不会遮住当前判断。"
+    >
+      <div class="decision-grid">
+        <article class="decision-card"><span>01</span><h3>状态色继续表达房屋性质</h3><p>我固定图例顺序，让多状态色带等分，并用独立描边表达当前选中，避免操作状态覆盖业务含义。</p></article>
+        <article class="decision-card"><span>02</span><h3>平面图退一步，整幢关系才看得清</h3><p>矩阵成为主工作面；平面图进入对象检查器，只在需要时辅助定位。</p></article>
+        <article class="decision-card"><span>03</span><h3>先用卡片看懂关系，再用表格核对数据</h3><p>关系卡解释对应与异常，表格扫描高密度字段，两者承担不同阅读任务。</p></article>
+      </div>
+      <div class="evidence-grid">
+        <MediaStage src={`${media}/final/15-decision-matrix.png`} alt="状态色带、选中描边与双楼层列的矩阵设计" caption="业务状态色与操作选中态被分开表达。" kind="redesigned" width={1190} height={380} />
+        <MediaStage src={`${media}/final/16-decision-relation-card.png`} alt="现有户、面积差异与实测户关系卡" caption="差异提供判断依据，但不替代人工确认。" kind="redesigned" width={1190} height={190} />
+      </div>
+    </CaseSection>
+
+    <CaseSection
+      id="impact"
+      label="06 / 价值与边界"
+      title="从当前楼栋继续完成下一步"
+      intro="在原型里，从 17 幢进入整幢或核对任务后，可以继续使用原来的楼栋信息。下面这些操作变化已经可以演示；实际办理时间的变化仍需真实使用验证。"
+      tone="panel"
+    >
+      <div class="value-grid">
+        <article class="value-card"><span>操作层</span><h3>切换模块后继续处理当前楼栋</h3><p>17 幢的名称、编号和属性会随入口带到整幢和核对任务，工作人员不用再次搜索并确认楼栋。</p></article>
+        <article class="value-card"><span>信息层</span><h3>业务状态继续保留原有含义</h3><p>状态色、楼层关系和高密度字段没有被视觉重构删掉，操作选中态也与业务状态分开。</p></article>
+        <article class="value-card"><span>证据层</span><h3>把需要确认的规则写清楚</h3><p>每个待确认问题都对应具体操作，例如多大的面积差异需要人工核对，方便业务人员结合原型讨论。</p></article>
+      </div>
+    </CaseSection>
+
+    <CaseSection
+      id="ai-collaboration"
+      label="07 / AI 协作"
+      title="下一步从原型和待确认清单继续"
+      intro="三个原型让后续讨论有了具体页面。下一步可以沿着原型核对业务规则，再决定哪些关系能自动建议，哪些必须逐条确认。"
+    >
+      <div class="boundary-grid">
+        <article class="boundary-card"><h3>可以继续使用的交付物</h3><p>总图、整幢和实测替换预测三个原型都保留独立入口。</p><ul><li>总图说明怎样建立当前楼栋。</li><li>整幢原型保留矩阵、状态色和楼层关系。</li><li>任务原型保留关系卡、人工核对和状态分诊。</li></ul></article>
+        <article class="boundary-card"><h3>仍要确认的业务问题</h3><p>证据不足的规则被保留为后续问题。</p><ul><li><strong>面积判断。</strong>什么差异范围进入人工核对。</li><li><strong>建议关联。</strong>同幢、同层与房号线索怎样组合。</li><li><strong>复杂关系。</strong>一拆多、多合一怎样衔接楼盘变更。</li></ul></article>
+      </div>
+      <div class="case-copy"><p>AI 协助读取材料、比较方案和实现原型。我负责核实事实，判断业务偏差，并决定哪些内容写进方案，哪些继续留作问题。</p></div>
+    </CaseSection>
+
+    <section class="site-container case-closing" aria-labelledby="closing-title">
+      <h2 id="closing-title">让同一栋楼沿着任务继续</h2>
+      <p>可以从总图打开 17 幢，继续查看整幢房屋，或进入测绘关系核对，体验这次重新安排的工作路径。</p>
+      <div class="case-closing__links">
+        <a href="/#selected-work">返回作品索引</a>
+        <a href="mailto:second988@qq.com">邮件联系</a>
+      </div>
+    </section>
+  </main>
+</SiteLayout>

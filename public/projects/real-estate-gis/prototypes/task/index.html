@@ -1,0 +1,1687 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>实测替换预测</title>
+  <style>html,body{width:100%;min-width:100%;height:100%;overflow:hidden}body{margin:0}.app,.workspace-shell{width:100%;min-width:100%}</style>
+  <link rel="stylesheet" href="colors_and_type.css">
+  <link rel="stylesheet" href="system.css">
+  <link rel="stylesheet" href="tdesign-tokens.css">
+  <link rel="stylesheet" href="workspace-tdesign.css">
+  <!-- S4-06 V8 · 实测替换预测（功能6 / 屏06）
+       已确认业务：从 HME 中间库选择实测幢，检查关联幢与重复替换，设置变更层及幢户关联后提交楼盘入库审核。
+       设计推演：面积差异、建议关联以及结构关系的提示，用于压力测试复杂关系模型，具体规则仍需业务确认。
+       V8 重构（结合 Gemini 视觉蓝图 + 流转矩阵/原路返回设计）：
+       ① 废弃双表 → 卡片行组（Row-Group）轴心布局（幢/层/户/用途抽卡头，预测→差异→实测横向对比，拆分在卡内纵向堆叠防错位）
+       ② 左侧楼层树（带异常红点）+ 右侧卡片流
+       ③ 漏斗看板（总预测→完全匹配→面积超阈→结构变更，可点击过滤）
+       ④ 面积差异与未关联户室逐条核对，不提供无证据的批量操作
+       ⑤ 结构变化只提示需结合楼盘变更业务核对，处理方式标记为待业务确认
+       ⑥ 吸底摘要持续反馈已关联、待核对、未关联与提交门禁 -->
+  <style>
+    .top-nav{height:64px;box-shadow:none;border-bottom:1px solid var(--border-1);padding:0 18px;gap:18px}
+    .hamburger-btn{display:none}
+    .nav-logo{min-width:232px;padding:0;gap:10px;font-weight:700}.nav-logo .mark{width:30px;height:30px;border-radius:9px}.nav-logo-sub{font-weight:500;color:var(--text-3);margin-left:3px}
+    .nav-right{padding:0;gap:8px}.nav-right .search-box{position:absolute;left:282px;width:min(460px,40vw);height:36px;border-radius:9px;padding:0 12px}.nav-right .search-input{width:100%}
+    .task-nav-link{height:34px;padding:0 10px;border:0;background:transparent;border-radius:7px;color:var(--text-2);cursor:pointer}.task-nav-link:hover{background:#f2f3f5}.nav-right .avatar{width:32px;height:32px}
+    /* —— 步骤条 —— */
+    .stepper { display: flex; align-items: center; gap: 0; margin: 2px 0 12px; padding: 0 24px; }
+    .stepper__item { display: flex; align-items: center; gap: 10px; color: var(--text-3); font-size: 14px; }
+    .stepper__item.is-active { color: var(--text-1); font-weight: 600; }
+    .stepper__item.is-done { color: var(--color-success); }
+    .stepper__dot { width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; background: var(--bg-subtle); color: var(--text-3); border: 1px solid var(--border-2); flex-shrink: 0; }
+    .stepper__item.is-active .stepper__dot { background: var(--primary-6); color: #fff; border-color: var(--primary-6); }
+    .stepper__item.is-done .stepper__dot { background: var(--color-success); color: #fff; border-color: var(--color-success); }
+    .stepper__line { width: 56px; height: 1px; background: var(--border-2); margin: 0 12px; }
+    /* —— 二级对象栏：返回关系 / 当前幢 / 当前任务 / 任务操作 —— */
+    .task-object-header { height: 52px; flex: 0 0 52px; min-width: 0; display: flex; align-items: center; gap: 14px; padding: 0 18px; background: var(--bg-white); border-bottom: 1px solid var(--border-1); }
+    .task-object-back { height: 32px; flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px; padding: 0 8px; border: 0; border-radius: 6px; background: transparent; color: var(--text-2); cursor: pointer; font: inherit; white-space: nowrap; }
+    .task-object-back svg { width: 16px; height: 16px; flex: 0 0 16px; }
+    .task-object-back:hover { background: var(--bg-hover); color: var(--primary-6); }
+    .task-object-divider { width: 1px; height: 20px; flex: 0 0 1px; background: var(--border-1); }
+    .task-object-identity { flex: 1 1 auto; min-width: 0; display: flex; align-items: baseline; gap: 10px; }
+    .task-object-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-1); font-size: var(--type-title); font-weight: 700; line-height: 22px; }
+    .task-object-view { flex: 0 0 auto; color: var(--text-3); font-size: var(--type-meta); line-height: 20px; white-space: nowrap; }
+    .task-object-actions { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .task-object-actions .btn { height: 32px; }
+    /* 任务操作栏使用 32px；抽屉与弹层统一为紧凑操作规格。 */
+    .workspace-shell[data-wk-legacy="true"] .drawer__actions .btn,
+    .workspace-shell[data-wk-legacy="true"] .modal__foot .btn { height: 28px; font-size: 12px; }
+    .task-demo-meta { display: inline-block; margin: -8px 0 16px; color: var(--text-3); font-size: var(--type-meta); line-height: 20px; }
+    @media (max-width: 1040px) {
+      .task-object-header { gap: 10px; padding: 0 14px; }
+      .task-object-identity { gap: 8px; }
+      .task-object-actions { gap: 8px; }
+      .task-object-actions .btn { padding-left: 12px; padding-right: 12px; }
+    }
+    .stepper__item.is-done + .stepper__line { background: var(--color-success); }
+
+    .step-panel { display: none; }
+    .step-panel.is-active { display: block; }
+
+    /* —— 步骤1 / 步骤2 通用 —— */
+    .field-row { display: flex; flex-wrap: wrap; gap: 18px; margin-bottom: 18px; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field > label { font-size: 14px; color: var(--text-2); font-weight: 600; }
+    .field input { min-width: 180px; width: 100%; height: 34px; padding: 0 12px; border: none; border-radius: 4px; background: var(--bg-white); box-shadow: 0 0 0 1px var(--border-2), 0 1px 1px rgba(0,0,0,0.04); font-family: inherit;  color: var(--text-1); outline: none; }
+    .field input[readonly] { background: var(--bg-subtle); color: var(--text-2); cursor: default; box-shadow: inset 0 0 0 1px var(--border-2); }
+    /* .ui-select 组件已抽离至 system.css（设计系统共享层，2026-08-12） */
+    .drawer__close svg { width: 16px; height: 16px; display: block; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+    .upload-zone { border: 1px dashed var(--border-2); border-radius: 8px; padding: 28px; text-align: center; color: var(--text-3); background: var(--bg-subtle); font-size: 14px; }
+    .upload-zone b { color: var(--text-1); }
+
+    /* —— 校验列表（步骤2） —— */
+    .check-list { display: flex; flex-direction: column; gap: 10px; max-width: 720px; }
+    .check-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid var(--border-1); border-radius: 8px; background: var(--bg-surface); font-size: 14px; }
+    .check-item__icon { width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0; }
+    .check-item--pass .check-item__icon { background: var(--color-success); }
+    .check-item--warn .check-item__icon { background: var(--color-warning); }
+    .check-item--fail .check-item__icon { background: var(--color-danger); }
+    .check-item__txt { flex: 1; color: var(--text-1); }
+    .check-item__sub { font-size: 12px; color: var(--text-3); }
+
+    /* —— 阻断条（结构性变更锁定） —— */
+    .block-bar { display: none; align-items: center; gap: 14px; margin-bottom: 14px; padding: 12px 16px; border: 1px solid var(--color-warning); background: var(--color-warning-bg); border-radius: 10px; }
+    .block-bar.is-on { display: flex; }
+    .block-bar__icon { width: 22px; height: 22px; flex-shrink: 0; color: var(--color-warning); }
+    .block-bar__body { flex: 1; display: flex; align-items: center; gap: 12px; min-width: 0; font-size: 14px; line-height: 22px; color: var(--text-1); }
+    .block-bar__evidence { flex: 0 0 auto;  line-height: 20px; }
+    .block-bar__message { min-width: 0; }
+    .block-bar__body b { color: var(--color-warning); }
+    .block-bar__btn { flex-shrink: 0; }
+
+    /* —— 统计看板（可点击过滤 · TDesign Statistic「组合使用」） —— */
+    /* —— 顶部工具栏：统计快筛分段控件 + 视图切换（并排同高） —— */
+    .funnel { display: flex; align-items: stretch; gap: 12px; margin-bottom: 0; flex-wrap: nowrap; }
+    .combo-seg { flex: 1 1 auto; min-width: 0; }
+    .segmented { display: flex; align-items: stretch; gap: 4px; width: 100%; height: 100%; background: var(--bg-subtle); border: 1px solid var(--border-2); border-radius: 8px; padding: 3px; }
+    .seg { --tone: var(--text-2); flex: 1 1 0; min-width: 0; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid transparent; background: transparent; border-radius: 7px; padding: 6px 12px; cursor: pointer; font-family: inherit; color: var(--text-2); transition: background .12s ease, color .12s ease; }
+    .seg__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--tone); flex: 0 0 8px; }
+    .seg__k { font-size: 12px; line-height: 1; white-space: nowrap; }
+    .seg__v { font-family: 'TCloudNumber', "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 28px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: .5px; }
+    .seg.is-on { background: var(--bg-surface); color: var(--text-1); font-weight: 600; border-color: var(--border-2); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+    .seg.is-on .seg__dot { background: var(--tone); }
+    .seg.is-on .seg__k, .seg.is-on .seg__v { color: var(--text-1); }
+    .seg.is-tone-ok { --tone: var(--color-success); }
+    .seg.is-tone-danger { --tone: var(--color-danger); }
+    .seg.is-tone-muted { --tone: var(--text-3); }
+    .seg.is-tone-neutral { --tone: var(--primary-6); }
+
+    /* —— 工作区：左树右卡 —— */
+    .workspace { display: grid; grid-template-columns: 180px 1fr; gap: 16px; align-items: start; }
+    /* —— 楼层定位：垂直区间滑块（TDesign 垂直带刻度滑块） —— */
+    .floor-slider { position: sticky; top: 12px; background: var(--bg-surface); border: 1px solid var(--border-2); border-radius: 10px; padding: 12px 16px 16px; display: flex; flex-direction: column; max-height: calc(100vh - 200px); }
+    .floor-slider__title { font-size: var(--type-body); color: var(--text-2); font-weight: 600; margin-bottom: 14px; flex-shrink: 0; }
+    .floor-slider__body { position: relative; display: flex; gap: 14px; flex: 1 1 auto; min-height: 320px; height: auto; }
+    .floor-slider__scale { position: relative; width: 30px; flex-shrink: 0; }
+    .floor-slider__scale span { position: absolute; right: 0; transform: translateY(-50%);  color: var(--text-3); font-variant-numeric: tabular-nums; }
+    .floor-slider__track { position: relative; width: 14px; flex-shrink: 0; background: var(--bg-subtle); border-radius: 8px; touch-action: none; }
+    .floor-slider__fill { position: absolute; left: 0; right: 0; background: var(--primary-1); border-radius: 8px; }
+    .floor-slider__marks { position: absolute; left: 0; right: 0; top: 0; bottom: 0; pointer-events: none; }
+    .floor-slider__mark { position: absolute; left: 50%; transform: translate(-50%, -50%); width: 7px; height: 7px; border-radius: 50%; }
+    .floor-slider__mark.is-none { background: var(--border-3); }
+    .floor-slider__mark.is-warn { background: var(--color-warning); }
+    .floor-slider__mark.is-danger { background: var(--color-danger); }
+    .floor-slider__thumb { position: absolute; left: 50%; transform: translate(-50%, -50%); width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 2px var(--primary-6), 0 1px 3px rgba(0,0,0,.2); cursor: grab; z-index: 2; touch-action: none; }
+    .floor-slider__thumb:active { cursor: grabbing; }
+    .floor-slider__bubble { position: absolute; left: 22px; top: 50%; transform: translateY(-50%); white-space: nowrap; background: var(--primary-6); color: #fff;  font-weight: 600; padding: 1px 6px; border-radius: 8px; font-variant-numeric: tabular-nums; }
+    .floor-slider__readout { margin-top: 16px; font-size: 12px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+    .floor-slider__only { display: flex; align-items: center; gap: 8px; margin-top: 14px; font-size: 12px; color: var(--text-2); cursor: pointer; }
+    .floor-range-input { display: flex; align-items: flex-end; gap: 6px; margin-top: 16px; }
+    .floor-range-input__col { display: flex; flex-direction: column; gap: 3px; }
+    .floor-range-input__cap { font-size: 12px; color: var(--text-3); line-height: 1; }
+    .floor-range-input__col input { width: 48px; padding: 4px 6px; font-size: 14px; color: var(--text-1); text-align: center; border: 1px solid var(--border-3); border-radius: 6px; background: var(--bg-surface); font-variant-numeric: tabular-nums; }
+    .floor-range-input__col input:focus { outline: none; border-color: var(--primary-6); box-shadow: 0 0 0 3px rgb(0 82 217 / .12); }
+    .floor-range-input__to { color: var(--text-3); font-size: 14px; padding-bottom: 5px; }
+    .floor-range-input__unit { color: var(--text-3); font-size: 12px; padding-bottom: 5px; }
+
+    .result-pane { min-width: 0; }
+    /* 结果栏标题（户室关联 / 组结果 / 楼层范围）已并入顶部工具栏，样式移除 */
+    .cards { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+    /* —— 卡片行组（Row-Group）轴心布局 —— */
+    .rg {
+      position: relative;
+      background: #FFFFFF;                              /* 白底：在浅灰页面上自然产生物理分割感 */
+      border: none;                                    /* 去除 1px 细实线边框，仅靠白底+轻阴影分离 */
+      border-radius: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.06);            /* 轻微阴影 */
+      overflow: hidden;
+      transition: box-shadow 120ms ease, border-color 120ms ease;
+      cursor: pointer;
+      font-variant-numeric: tabular-nums;
+    }
+    .rg:hover { box-shadow: 0 2px 12px rgba(0,0,0,.10); }
+    .rg.is-flash { animation: rgFlash 1.4s ease-out; }
+    @keyframes rgFlash { 0%,55% { box-shadow: 0 0 0 2px var(--primary-6), 0 2px 12px rgba(0,0,0,.12); } 100% { box-shadow: 0 1px 3px rgba(0,0,0,.06); } }
+    .rg.is-handed { opacity: .6; }
+
+    /* 房头（Layer 2：极浅底包裹 房号+标签+状态，所有卡片统一） */
+    .rg__head { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: #F8F9FA; border-bottom: 1px solid var(--border-1); cursor: pointer; }
+    .rg.is-struct .rg__lock { color: var(--text-2); }   /* 锁定图标提亮，作为标准「已锁定」Badge */
+    .rg__check { width: 16px; height: 16px; flex-shrink: 0; accent-color: var(--primary-6); cursor: pointer; }
+    .rg__lock { width: 16px; height: 16px; flex-shrink: 0; color: var(--text-3); }
+    .rg__status { flex-shrink: 0; }                     /* 状态 tag 移至房号前 */
+    .rg__code { font-size: 14px; font-weight: 700; color: var(--text-1); font-variant-numeric: tabular-nums; }
+    .rg__yt,.rg__floor { font-size: 12px; color: var(--text-3); background: var(--bg-subtle); padding: 1px 8px; border-radius: 10px; }
+    .rg__floor { margin-left: auto; color: var(--text-2); }
+
+    /* 主体：默认仅主区（高度自适应），hover 时次要信息从下方滑出，卡片整体变高 */
+    .rg__body { display: flex; flex-direction: column; align-items: stretch; }
+    .rg__main { flex: 0 0 auto; min-width: 0; padding: 12px 14px; }
+    .rg__detail {
+      flex: 0 0 auto; max-height: 0; overflow: hidden; opacity: 0;
+      background: #F7F8FA; border-top: 1px solid transparent;
+      transition: max-height 200ms ease, opacity 200ms ease, padding 200ms ease, border-color 200ms ease;
+      padding: 0 12px;
+    }
+    .rg:hover .rg__detail { max-height: 240px; opacity: 1; padding: 10px 12px; border-top-color: var(--border-1); }
+    /* 次要信息：hover 才出现，横向依次排开，每项「标题上 / 内容下」两行结构 */
+    .rg__detail__row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px 14px;  }
+    .rg__detail__row .f { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .rg__detail__row .f i { color: var(--text-disabled); font-style: normal; line-height: 1.3; }
+    .rg__detail__row .f .v { color: var(--text-2); font-weight: 500; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+    /* 建筑面积对比行：占满整行，一维单行 */
+    .rg__axis { display: grid; grid-template-columns: minmax(180px,1fr) auto minmax(180px,1fr); align-items: center; gap: 16px; width: 100%; }
+    .rg__metric { display: grid; grid-template-columns: minmax(0,1fr) auto; grid-template-areas: "lbl lbl" "object value"; align-items: baseline; gap: 2px 12px; font-size: 14px; color: var(--text-2); min-width: 0; }
+    .rg__metric:last-child { text-align: right; }
+    .rg__metric .lbl { grid-area: lbl; font-size: 12px; color: var(--text-3); }
+    .rg__metric .object { grid-area: object;  font-weight: 600; color: var(--text-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .rg__metric .value { grid-area: value; display: inline-flex; align-items: baseline; justify-content: flex-end; white-space: nowrap; }
+    .rg__metric .num {  font-weight: 600; color: var(--text-1); font-variant-numeric: tabular-nums; }
+    .rg__metric .unit { font-size: 12px; color: var(--text-3); margin-left: 2px; }
+    .rg__delta {
+      flex: 0 0 auto; display: flex; align-items: center; gap: 6px;
+       font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap;
+      padding: 3px 12px; border-radius: 12px; background: #F0F1F3; color: var(--text-2);
+    }
+    .rg__delta.is-ok { color: var(--text-2); background: #F0F1F3; }
+    .rg__delta.is-over { color: #FFFFFF; background: var(--color-danger); }
+    .rg__delta.is-warn { color: #FFFFFF; background: var(--color-warning); }
+    .rg__delta.is-struct-pill { color: var(--text-2); background: #F0F1F3; }
+    .rg__delta .pct {  font-weight: 400; opacity: .85; }
+    @media (max-width: 1040px) {
+      .rg__axis { grid-template-columns: minmax(150px,1fr) auto minmax(150px,1fr); gap: 10px; }
+      .rg__metric .object { font-size: 14px; }
+      .rg__metric .num { font-size: 16px; }
+    }
+
+    /* 子户明细（嵌套浅色面板，位于主区） */
+    .rg__subs { padding-top: 10px; }
+    .rg__subs-panel { background: #F4F5F7; border: 1px solid #EAECF0; border-radius: 4px; padding: 6px 10px; }
+    .rg__sub { display: flex; align-items: center; gap: 8px; padding: 5px 4px;  color: var(--text-2); }
+    .rg__sub + .rg__sub { border-top: 1px solid #E6E8EC; }
+    .rg__sub .arrow { color: var(--text-disabled); }
+    .rg__sub .num { font-weight: 600; color: var(--text-1); font-variant-numeric: tabular-nums; }
+    .rg__hint { padding: 10px 14px 0; font-size: 12px; color: var(--text-3); }
+
+    .rg.is-unmatched { background: #FFFFFF; }
+    .rg__hint--unmatched { color: var(--text-2); padding-top: 2px; }
+    .link-empty { padding: 14px 12px;  color: var(--text-2); background: var(--bg-surface); border: 1px dashed var(--border-2); border-radius: 6px; }
+
+    /* —— 看板工具条 / 结果视图切换 —— */
+    .board-tools { display: flex; align-items: center; margin-bottom: 16px; }
+    .board-tools .funnel { width: 100%; }
+    .ds-toggle { display: inline-flex; align-items: stretch; gap: 2px; padding: 3px; background: var(--bg-subtle); border: 1px solid var(--border-2); border-radius: 8px; flex: 0 0 auto; }
+    .ds-toggle__btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid transparent; background: transparent; color: var(--text-2);  padding: 6px 12px; border-radius: 7px; cursor: pointer; font: inherit; transition: background 120ms ease, color 120ms ease, border-color 120ms ease; }
+    .ds-toggle__btn:hover { color: var(--text-1); }
+    .ds-toggle__btn.is-on { background: var(--bg-surface); color: var(--text-1); font-weight: 600; border-color: var(--border-2); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+    .ds-toggle__icon { width: 14px; height: 14px; flex: 0 0 14px; color: var(--text-3); }
+    .ds-toggle__btn.is-on .ds-toggle__icon { color: var(--primary-6); }
+
+    /* —— 紧凑表格模式（高密度，保留差异高亮） —— */
+    .rg-table { width: 100%; border-collapse: collapse; background: var(--bg-surface); border: 1px solid var(--border-2); border-radius: 10px; overflow: hidden;  font-variant-numeric: tabular-nums; }
+    .rg-table th { text-align: left; font-size: 12px; color: var(--text-3); font-weight: 600; padding: 8px 12px; background: var(--bg-subtle); border-bottom: 1px solid var(--border-2); white-space: nowrap; }
+    .rg-table td { padding: 7px 12px; border-bottom: 1px solid var(--border-1); color: var(--text-2); white-space: nowrap; }
+    .rg-table tbody tr:last-child td { border-bottom: none; }
+    .rg-table tbody tr { cursor: pointer; }
+    .rg-table tbody tr:hover { background: var(--primary-1); }
+    .rg-table tbody tr.is-flash { animation: rgRowFlash 1.4s ease-out; }
+    @keyframes rgRowFlash { 0%,55% { box-shadow: inset 0 0 0 2px var(--primary-6); } 100% { box-shadow: none; } }
+    .rg-table .num { font-weight: 600; color: var(--text-1); font-variant-numeric: tabular-nums; }
+    .rg-table .delta { font-weight: 600; }
+    .rg-table .delta.is-over { color: var(--color-danger); }
+    .rg-table .delta.is-pending { color: var(--color-warning); }
+    .rg-table .delta.is-struct { color: var(--text-2); }
+
+    /* —— 状态标签（复用系统类，4 态克制） —— */
+    .status-tag--struct { color: var(--text-2); background: var(--bg-subtle); }
+    .status-tag--struct .dot { background: var(--text-3); }
+    .status-tag--unmatched { color: var(--text-2); background: var(--bg-subtle); border: 1px dashed var(--border-2); }
+    .status-tag--unmatched .dot { background: var(--text-3); }
+
+    /* 候选关联弹层中的轻量文字操作。 */
+    .link-btn { border: none; background: none; color: var(--primary-6);  cursor: pointer; padding: 4px 8px; border-radius: 6px; font-weight: 600; }
+    .link-btn:hover { background: var(--primary-1); }
+
+    /* 手动调整（专业版） */
+    .adjust-box { margin-top: 10px; padding: 12px; background: var(--bg-subtle); border: 1px solid var(--border-2); border-radius: 8px; }
+    .adjust-box__title {  font-weight: 600; color: var(--text-1); margin-bottom: 10px; }
+    .adjust-table { display: flex; flex-direction: column; gap: 6px; }
+    .adjust-row { display: grid; grid-template-columns: 64px 1fr 28px; align-items: center; gap: 8px; }
+    .adjust-row--head { font-size: 12px; color: var(--text-3); }
+    .adjust-idx {  color: var(--text-2); }
+    .adjust-row .adj-input { width: 100%; height: 30px; border: 1px solid var(--border-2); border-radius: 4px; padding: 0 8px;  background: var(--bg-surface); color: var(--text-1); }
+    .adj-del { width: 28px; height: 28px; border: none; background: none; color: var(--text-3); cursor: pointer; border-radius: 6px; display: inline-grid; place-items: center; padding: 0; font-size: 14px; }
+    .adj-del:hover { background: var(--color-danger-bg); color: var(--color-danger); }
+    .adj-del:focus-visible { outline: 2px solid var(--primary-6); outline-offset: 2px; }
+    .adj-del svg { width: 16px; height: 16px; display: block; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+    .adjust-sum {  color: var(--text-2); margin: 10px 0; }
+    .adjust-sum b { color: var(--text-1); font-variant-numeric: tabular-nums; }
+    .adjust-sum .adj-flag--warn { color: var(--color-danger); margin-left: 6px; }
+    .adjust-sum .adj-flag--ok { color: var(--color-success); margin-left: 6px; }
+    .adjust-list { display: flex; flex-direction: column; gap: 6px; }
+    .adjust-pick { display: flex; align-items: center; gap: 8px;  color: var(--text-1); padding: 6px 8px; border: 1px solid var(--border-2); border-radius: 6px; background: var(--bg-surface); cursor: pointer; }
+    .adjust-pick input { width: 16px; height: 16px; accent-color: var(--primary-6); }
+    .adjust-actions { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+
+    /* —— 三列差异对比抽屉 —— */
+    .cmp-codes { display: flex; gap: 16px; flex-wrap: wrap; font-size: 14px; color: var(--text-2); margin-bottom: 12px; }
+    .cmp-codes b { color: var(--text-1); font-variant-numeric: tabular-nums; }
+    .cmp-codes .none { color: var(--text-disabled); }
+    .cmp { display: flex; flex-direction: column; gap: 0; margin-bottom: 16px; border: none; border-radius: 8px; overflow: hidden; background: transparent; }
+    .cmp__row { display: flex; align-items: center; border-bottom: 1px solid var(--border-1); }
+    .cmp__row:last-child { border-bottom: none; }
+    .cmp__row.is-diff { background: #FFF6E6; }
+    .cmp__k { width: 96px; flex-shrink: 0; padding: 11px 14px; color: var(--text-2); font-size: 14px; font-weight: 600; background: var(--bg-subtle); }
+    .cmp__col { flex: 1; padding: 11px 14px; font-size: 14px; color: var(--text-1); font-variant-numeric: tabular-nums; }
+    .cmp__col.diff { color: var(--color-danger); font-weight: 700; }
+    .cmp__col.none { color: var(--text-disabled); }
+    .cmp__sep { width: 1px; background: var(--border-1); }
+    /* 抽屉属性分节标题（主要属性 / 系统标识次要字段） */
+    .cmp-section__title { font-size: var(--type-meta); color: var(--text-3); font-weight: 600; margin: 14px 0 8px; }
+    /* 抽屉第二层（内容区）不再额外描边：内部两个对照表已各自带边框，避免双重框线 */
+    .drawer__body { border: none; }
+
+    .link-candidate { display: flex; flex-direction: column; gap: 8px; }
+    .link-candidate__row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border: 1px solid var(--border-1); border-radius: 6px; background: var(--bg-surface); cursor: pointer; transition: border-color 150ms ease, background 150ms ease; }
+    .link-candidate__row:hover { border-color: var(--primary-6); background: var(--primary-1); }
+    .link-candidate__row:focus-visible { outline: 2px solid var(--primary-6); outline-offset: 2px; }
+    .link-candidate__row .code { font-weight: 600; color: var(--text-1); font-variant-numeric: tabular-nums; }
+    .link-candidate__row .conf { font-size: 12px; color: var(--text-3); white-space: nowrap; }
+    .link-candidate__row .conf b { color: var(--color-success); }
+    .link-candidate__row.is-pick { border-color: var(--primary-6); background: var(--primary-1); box-shadow: 0 0 0 1px var(--primary-6); }
+
+    .gate-hint { font-size: 12px; color: var(--text-3); margin-left: 4px; }
+    .gate-hint.is-warn { color: var(--color-warning); font-weight: 600; }
+    .submit-wrap { position: relative; display: inline-flex; }
+    .submit-wrap button:disabled { pointer-events: none; }
+    /* 轻提示：由 JS 定位，始终保持在视口内（不再因按钮靠边而溢出屏幕） */
+    .smart-tip {
+      position: fixed;
+      display: none;
+      max-width: 320px;
+      background: rgba(0,0,0,.82);
+      color: #fff;
+      font-size: 12px;
+      line-height: 1.5;
+      padding: 7px 11px;
+      border-radius: 6px;
+      box-shadow: 0 6px 18px rgba(0,0,0,.18);
+      z-index: 3000;
+      pointer-events: none;
+    }
+    /* —— 层级规范（本屏局部覆盖 system.css）：吸底栏 100 → 抽屉 1000 → 弹窗 2000 → 轻提示 3000 —— */
+    .drawer-mask { z-index: 1000; }
+    .modal-mask { z-index: 2000; }
+
+    .audit-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 18px; margin: 12px 0; }
+    .audit-meta__item { display: flex; flex-direction: column; gap: 2px; }
+    .audit-meta__k { font-size: 12px; color: var(--text-3); }
+    .audit-meta__v { font-size: 14px; color: var(--text-1); font-weight: 600; font-variant-numeric: tabular-nums; }
+    .irreversible { background: var(--color-danger-bg); border: 1px solid var(--color-danger); color: var(--color-danger); border-radius: 8px; padding: 12px 14px; font-size: 14px; line-height: 1.6; margin: 12px 0; }
+
+    .scroll-body .alert__body { font-size: 14px; line-height: 1.6; }
+    .drawer__actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+    .form-line { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text-1); margin-bottom: 14px; }
+
+    /* —— 吸底操作条 —— */
+    .compare-footer { position: sticky; bottom: 8px; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; padding: 12px 16px; background: var(--bg-surface); border: 1px solid var(--border-2); border-radius: 10px; box-shadow: 0 -2px 10px rgba(0,0,0,.06); z-index: 100; }
+    .compare-footer__left { display: flex; align-items: center; gap: 14px; }
+    .compare-footer__info { font-size: var(--type-body); color: var(--text-2); }
+    .compare-footer__info b { color: var(--text-1); font-variant-numeric: tabular-nums; }
+    .compare-footer__info .danger { color: var(--color-danger); }
+    .compare-footer__actions { display: flex; gap: 10px; }
+    .gate-hint.is-warn { display: none; }
+    .check-inline { display: inline-flex; align-items: center; gap: 6px; font-size: var(--type-body); color: var(--text-2); cursor: pointer; }
+    /* 字阶收口：相同任务分组共享字号，重要性由字重、颜色和空间层级共同表达 */
+    .nav-logo-sub,.check-item__sub,
+    .floor-slider__scale span,.floor-slider__bubble,.floor-slider__readout,.floor-slider__only,
+    .rg__yt,.rg__floor,.rg__detail__row,.rg__metric .lbl,.rg__metric .unit,
+    .rg__delta .pct,.rg__hint,.rg-table th,
+    .adjust-row--head,.link-candidate__row .conf,.gate-hint,.audit-meta__k {
+      font-size: var(--type-meta);
+    }
+    .task-nav-link,.stepper__item,.stepper__dot,.field>label,.field input,.upload-zone,.check-item,
+    .block-bar__body,.block-bar__evidence,.floor-slider__title,.rg__code,.rg__metric,.rg__delta,
+    .rg__sub,.link-empty,.ds-toggle__btn,.rg-table,
+    .link-btn,.adjust-box__title,.adjust-idx,.adjust-row .adj-input,
+    .adj-del,.adjust-sum,.adjust-pick,.cmp-codes,.cmp__k,.cmp__col,.audit-meta__v,.irreversible,
+    .scroll-body .alert__body,.form-line,.compare-footer__info,.check-inline {
+      font-size: var(--type-body);
+    }
+    .rg__metric .object { font-size: var(--type-title); }
+    .rg__metric .num { font-size: var(--type-page); }
+    .check-inline input { width: 16px; height: 16px; accent-color: var(--primary-6); }
+
+    /* ════════════════ 干脆利落 · 交互动效层（animate） ════════════════ */
+    :root{
+      --mo-ent: 260ms;                                  /* 常规入场 / 状态切换 */
+      --mo-fb: 120ms;                                   /* 即时按压反馈 */
+      --mo-ease: cubic-bezier(0.16, 1, 0.3, 1);         /* 自信减速，无回弹 */
+    }
+    /* 抽屉 / 弹窗 / 轻提示：统一干脆缓动 */
+    .drawer, .modal, .drawer-mask, .modal-mask, .toast { transition-timing-function: var(--mo-ease); }
+    /* 打开体感：内容轻微上浮淡入 */
+    .drawer-mask.is-open .drawer__body { animation: moFade 200ms var(--mo-ease) both; }
+    .modal-mask.is-open .modal__head,
+    .modal-mask.is-open .modal__body,
+    .modal-mask.is-open .modal__foot { animation: moFadeUp 200ms var(--mo-ease) both; }
+
+    /* 按钮：干脆的按压反馈（无弹性） */
+    .btn { transition: box-shadow var(--mo-fb) ease, color var(--mo-fb) ease, background var(--mo-fb) ease, transform var(--mo-fb) var(--mo-ease); }
+    .btn:active { transform: scale(.97); }
+    .seg { position: relative; }
+    .seg, .ds-toggle__btn, .link-candidate__row, .check-item {
+      transition: box-shadow var(--mo-fb) ease, border-color var(--mo-fb) ease, background var(--mo-fb) ease, color var(--mo-fb) ease, transform var(--mo-fb) var(--mo-ease);
+    }
+    .seg:active, .rg:active, .ds-toggle__btn:active, .link-candidate__row:active, .check-item:active { transform: scale(.985); }
+    /* 分段节点点击：一圈干脆的脉冲 */
+    .seg.is-tap::after { content:''; position:absolute; inset:-1px; border-radius:7px; animation: moTap 260ms var(--mo-ease) forwards; pointer-events:none; }
+    @keyframes moTap { 0%{box-shadow:0 0 0 0 rgba(0,82,217,.45);} 100%{box-shadow:0 0 0 7px rgba(0,82,217,0);} }
+
+    /* 步骤面板：进入时干脆滑入 */
+    .step-panel.is-active { animation: moStepIn var(--mo-ent) var(--mo-ease) both; }
+    @keyframes moStepIn { from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
+    /* 步进点：激活瞬间轻微放大定格 */
+    .stepper__item.is-active .stepper__dot { animation: moDot 220ms var(--mo-ease) both; }
+    @keyframes moDot { from{transform:scale(.7);} to{transform:scale(1);} }
+
+    /* 结果卡片 / 表格行：过滤或切换视图时整齐错落入场 */
+    .rg.is-enter { animation: moCardIn var(--mo-ent) var(--mo-ease) both; animation-delay: var(--d, 0ms); }
+    .rg-table tbody tr.is-enter { animation: moFadeIn var(--mo-ent) var(--mo-ease) both; animation-delay: var(--d, 0ms); }
+    @keyframes moCardIn { from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;} }
+    @keyframes moFadeIn { from{opacity:0;} to{opacity:1;} }
+    /* 悬停抬升：仅表达层级，不加装饰 */
+    .rg { transition: box-shadow 120ms ease, border-color 120ms ease, transform 140ms var(--mo-ease); }
+    .rg:hover { transform: translateY(-1px); }
+    /* 折叠明细展开改用干脆缓动 */
+    .rg__detail { transition: max-height 220ms var(--mo-ease), opacity 220ms var(--mo-ease), padding 220ms var(--mo-ease), border-color 220ms var(--mo-ease); }
+
+    /* 校验清单：逐条入场 */
+    .check-item.is-enter { animation: moCardIn 240ms var(--mo-ease) both; animation-delay: var(--d, 0ms); }
+
+    /* 结构变化提示条：滑下展开 */
+    .block-bar.is-on { animation: moBarIn 260ms var(--mo-ease) both; }
+    @keyframes moBarIn { from{opacity:0; transform:translateY(-8px);} to{opacity:1; transform:none;} }
+
+    /* 楼层滑块：轨道点击定位时干脆滑动（拖拽时移除，保持跟手） */
+    .floor-slider__track.is-gliding .floor-slider__thumb,
+    .floor-slider__track.is-gliding .floor-slider__fill { transition: top 140ms var(--mo-ease), height 140ms var(--mo-ease); }
+
+    @keyframes moFade { from{opacity:0;} to{opacity:1;} }
+    @keyframes moFadeUp { from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;} }
+
+    /* 减少动态偏好：全部关闭，保障可用性 */
+    @media (prefers-reduced-motion: reduce){
+      .step-panel.is-active,
+      .stepper__item.is-active .stepper__dot,
+      .rg.is-enter, .rg-table tbody tr.is-enter, .check-item.is-enter,
+      .block-bar.is-on,
+      .drawer-mask.is-open .drawer__body,
+      .modal-mask.is-open .modal__head, .modal-mask.is-open .modal__body, .modal-mask.is-open .modal__foot,
+      .seg.is-tap::after { animation: none !important; }
+      .btn:active, .seg:active, .rg:active, .ds-toggle__btn:active, .link-candidate__row:active, .check-item:active { transform: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout workspace-shell" data-wk-legacy="true">
+    <header class="top-nav wk-header">
+      <div class="nav-logo"><span class="mark">住</span><span>数字住房一体化平台 <span class="nav-logo-sub">空间工作台</span></span></div>
+      <div class="nav-right">
+        <div class="search-box"><svg class="search-icon" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.5"/><path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><input class="search-input" type="text" placeholder="搜索楼盘 / 地址 / 幢 / 户室，回车定位"></div>
+        <button class="task-nav-link">消息</button><button class="task-nav-link">帮助</button>
+        <div class="avatar">管</div>
+      </div>
+    </header>
+    <div class="layout-body">
+      <main class="content">
+      <div class="page-header-comp">
+        <div class="task-object-header wk-object-header" id="pageHeaderTop">
+          <button class="task-object-back" type="button" id="backBtn"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>返回地图</span></button>
+          <span class="task-object-divider" aria-hidden="true"></span>
+          <div class="task-object-identity"><b class="task-object-title" id="taskObjectTitle">宇济一号 · 17幢</b><span class="task-object-view">实测替换预测</span></div>
+          <div class="task-object-actions">
+            <span class="submit-wrap" id="submitWrap">
+              <button class="btn btn--primary" id="submitBtn" disabled>提交替换入库</button>
+            </span>
+            <button class="btn btn--sm" id="draftBtn">存草稿</button>
+            <span class="gate-hint" id="gateHint"></span>
+          </div>
+        </div>
+        <div class="stepper" id="stepper">
+          <div class="stepper__item is-active" data-step="1"><span class="stepper__dot">1</span>查找测绘数据</div>
+          <span class="stepper__line"></span>
+          <div class="stepper__item" data-step="2"><span class="stepper__dot">2</span>校验</div>
+          <span class="stepper__line"></span>
+          <div class="stepper__item" data-step="3"><span class="stepper__dot">3</span>设入库模式</div>
+        </div>
+      </div>
+
+        <div class="scroll-body" style="padding:16px 24px 96px;">
+          <!-- 步骤1 -->
+          <div class="step-panel is-active" id="step1">
+            <div class="card" style="padding:20px;">
+              <div class="card__title" style="margin-bottom:16px;">查找替换数据</div>
+              <span class="task-demo-meta">40 层演示数据</span>
+              <div class="field-row">
+                <div class="field" style="flex:2 1 260px;">
+                  <label>实测测绘幢（从 HME 中间库选择）</label>
+                  <div class="ui-select" data-select data-search>
+                    <input id="targetBuildingInput" type="text" class="ui-select__trigger" data-trigger value="BD-2024-001 金桂苑 1-6 幢" placeholder="搜索幢 ID 或名称…">
+                    <span class="ui-select__caret"></span>
+                    <div class="ui-select__panel" data-panel>
+                      <div class="ui-select__option is-selected" data-option data-id="BD-2024-001" data-name="金桂苑 1-6 幢"><span class="opt-id">BD-2024-001</span><span class="opt-name">金桂苑 1-6 幢</span></div>
+                      <div class="ui-select__option" data-option data-id="BD-2024-002" data-name="金桂苑 7-9 幢"><span class="opt-id">BD-2024-002</span><span class="opt-name">金桂苑 7-9 幢</span></div>
+                      <div class="ui-select__option" data-option data-id="BD-2023-118" data-name="阳光里 1-3 幢"><span class="opt-id">BD-2023-118</span><span class="opt-name">阳光里 1-3 幢</span></div>
+                      <div class="ui-select__empty" data-empty style="display:none;">无匹配结果</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="field" style="flex:1 1 140px;">
+                  <label>替换范围</label>
+                  <div class="ui-select" data-select>
+                    <button type="button" class="ui-select__trigger" data-trigger>
+                      <span class="ui-select__value" data-value>整幢（全部楼层）</span>
+                      <span class="ui-select__caret"></span>
+                    </button>
+                    <div class="ui-select__panel" data-panel>
+                      <div class="ui-select__option is-selected" data-option>整幢（全部楼层）</div>
+                      <div class="ui-select__option" data-option>仅住宅楼层</div>
+                      <div class="ui-select__option" data-option>仅商业楼层</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="upload-zone">已选择中间库测绘数据：<b id="surveyBuildingName">金桂苑 1-6 幢（实测）</b><br><span style="font-size:12px">系统将在下一步校验关联幢和重复替换状态</span></div>
+              <div style="margin-top:18px;display:flex;gap:10px;">
+                <button class="btn btn--primary btn--sm" id="toStep2">下一步：校验</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 步骤2 -->
+          <div class="step-panel" id="step2">
+            <div class="card" style="padding:20px;">
+              <div class="card__title" style="margin-bottom:16px;">校验结果</div>
+              <div class="check-list" id="checkList"></div>
+              <div style="margin-top:18px;display:flex;gap:10px;">
+                <button class="btn btn--sm" id="backTo1">上一步</button>
+                <button class="btn btn--primary btn--sm" id="toStep3">下一步：设入库模式</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 步骤3 -->
+          <div class="step-panel" id="step3">
+            <!-- 结构变化提示：处理方式待业务确认 -->
+            <div class="block-bar" id="blockBar">
+              <svg class="block-bar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l8 4v5c0 4.5-3 7.5-8 9-5-1.5-8-4.5-8-9V7l8-4z" stroke-linejoin="round"/><path d="M12 9v4M12 16v.5" stroke-linecap="round"/></svg>
+              <div class="block-bar__body"><span class="status-tag status-tag--warning block-bar__evidence"><span class="dot"></span>待业务确认</span><span class="block-bar__message">检测到 <b id="blockCount">0</b> 项结构变化（拆分、合并、新增或删除），请结合楼盘变更业务核对处理。</span></div>
+            </div>
+
+            <!-- 漏斗看板 + 密度开关 -->
+            <div class="board-tools">
+              <div class="funnel" id="funnel">
+                <div class="segmented combo-seg">
+                  <button type="button" class="seg is-tone-neutral is-on" data-filter="all"><span class="seg__dot"></span><span class="seg__k">全部户室</span><span class="seg__v" id="fTotal">0</span></button>
+                  <button type="button" class="seg is-tone-ok" data-filter="linked"><span class="seg__dot"></span><span class="seg__k">已关联</span><span class="seg__v" id="fLinked">0</span></button>
+                  <button type="button" class="seg is-tone-danger" data-filter="review"><span class="seg__dot"></span><span class="seg__k">待核对</span><span class="seg__v" id="fReview">0</span></button>
+                  <button type="button" class="seg is-tone-muted" data-filter="unlinked"><span class="seg__dot"></span><span class="seg__k">未关联</span><span class="seg__v" id="fUnlinked">0</span></button>
+                </div>
+                <div class="ds-toggle" id="densityToggle" aria-label="户室关联视图">
+                  <button type="button" class="ds-toggle__btn is-on" data-density="standard" aria-pressed="true"><svg class="ds-toggle__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>卡片</span></button>
+                  <button type="button" class="ds-toggle__btn" data-density="compact" aria-pressed="false"><svg class="ds-toggle__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="4.5" cy="6" r="1.3" fill="currentColor" stroke="none"/><circle cx="4.5" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="4.5" cy="18" r="1.3" fill="currentColor" stroke="none"/><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/></svg><span>表格</span></button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 工作区：左树右卡 -->
+            <div class="workspace">
+              <div class="floor-slider" id="floorSlider">
+                <div class="floor-slider__title">楼层范围</div>
+                <div class="floor-slider__body">
+                  <div class="floor-slider__scale" id="floorScale"></div>
+                  <div class="floor-slider__track" id="floorTrack">
+                    <div class="floor-slider__fill" id="floorFill"></div>
+                    <div class="floor-slider__marks" id="floorMarks"></div>
+                    <div class="floor-slider__thumb" id="floorThumbMin" data-thumb="min"><span class="floor-slider__bubble" id="floorBubbleMin">1</span></div>
+                    <div class="floor-slider__thumb" id="floorThumbMax" data-thumb="max"><span class="floor-slider__bubble" id="floorBubbleMax">7</span></div>
+                  </div>
+                </div>
+                <div class="floor-range-input">
+                  <div class="floor-range-input__col">
+                    <span class="floor-range-input__cap">最小层</span>
+                    <input type="number" id="floorInputMin" inputmode="numeric" min="1" step="1" />
+                  </div>
+                  <span class="floor-range-input__to">–</span>
+                  <div class="floor-range-input__col">
+                    <span class="floor-range-input__cap">最大层</span>
+                    <input type="number" id="floorInputMax" inputmode="numeric" min="1" step="1" />
+                  </div>
+                  <span class="floor-range-input__unit">层</span>
+                </div>
+                <label class="floor-slider__only"><input type="checkbox" id="floorOnlyAnomaly"> 仅看待核对层</label>
+              </div>
+              <section class="result-pane">
+                <div class="cards" id="cards"></div>
+              </section>
+            </div>
+
+            <!-- 吸底操作条 -->
+            <div class="compare-footer">
+              <div class="compare-footer__left">
+                <span class="compare-footer__info">已关联 <b id="footLinked">0</b> 户 · 待核对 <b id="footReview" class="danger">0</b> 户 · 未关联 <b id="footUnlinked">0</b> 户</span>
+              </div>
+              <div class="compare-footer__actions">
+                <button class="btn btn--sm" id="draftBtn2">存草稿</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- 三列差异对比抽屉 -->
+  <div class="drawer-mask wk-drawer" id="drawerMask" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" aria-hidden="true" inert>
+    <aside class="drawer drawer--lg" id="drawer">
+      <div class="drawer__head">
+        <span class="drawer__title" id="drawerTitle">户室核对</span>
+        <button class="drawer__close" id="drawerClose" type="button" aria-label="关闭详情" title="关闭详情"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 4 8 8m0-8-8 8"></path></svg></button>
+      </div>
+      <div class="drawer__body">
+        <div class="drawer__hint" id="drawerHint"></div>
+        <div class="cmp-codes" id="drawerCodes"></div>
+        <div class="cmp" id="drawerCmp"></div>
+      </div>
+      <div class="drawer__foot">
+        <div class="drawer__actions" id="drawerActions"></div>
+      </div>
+    </aside>
+  </div>
+
+
+  <!-- 关联候选弹层（修复错配） -->
+  <div class="modal-mask wk-dialog" id="linkModal" role="dialog" aria-modal="true" aria-labelledby="modalHead" aria-hidden="true" inert>
+    <div class="modal">
+      <div class="modal__head" id="modalHead">选择测绘户室</div>
+      <div class="modal__body">
+        <p class="tiny" id="modalTip" style="margin:0 0 12px;color:var(--text-2);">为现有户室 <b>—</b> 选择建议候选（按同幢、同层、房号相近等线索展示）：</p>
+        <div class="link-candidate" id="modalCandidates"></div>
+      </div>
+      <div class="modal__foot">
+        <button class="btn btn--sm" type="button" id="modalCancel">取消</button>
+        <button class="btn btn--primary btn--sm" type="button" id="modalConfirm">确认关联</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 审计确认弹窗 -->
+  <div class="modal-mask wk-dialog" id="auditModal" role="dialog" aria-modal="true" aria-labelledby="auditModalTitle" aria-hidden="true" inert>
+    <div class="modal" style="max-width:460px;">
+      <div class="modal__head" id="auditModalTitle">提交实测替换 · 确认</div>
+      <div class="modal__body">
+        <div class="irreversible">确认后将使用所选实测数据替换当前预测楼盘数据，并提交入库。入库完成后进入楼盘入库审核流程。</div>
+        <div class="audit-meta">
+          <div class="audit-meta__item"><span class="audit-meta__k">目标幢</span><span class="audit-meta__v" id="auditBuilding">金桂苑 1-6 幢</span></div>
+          <div class="audit-meta__item"><span class="audit-meta__k">已关联户室</span><span class="audit-meta__v" id="auditLinked">0</span></div>
+          <div class="audit-meta__item"><span class="audit-meta__k">待核对</span><span class="audit-meta__v" id="auditReview">0</span></div>
+          <div class="audit-meta__item"><span class="audit-meta__k">未关联</span><span class="audit-meta__v" id="auditUnlinked">0</span></div>
+          <div class="audit-meta__item"><span class="audit-meta__k">总建筑面积差</span><span class="audit-meta__v" id="auditArea">0 m²</span></div>
+          <div class="audit-meta__item"><span class="audit-meta__k">操作人</span><span class="audit-meta__v">演示经办人</span></div>
+          <div class="audit-meta__item"><span class="audit-meta__k">操作时间</span><span class="audit-meta__v" id="auditTime">—</span></div>
+        </div>
+        <p class="tiny" style="color:var(--text-3);">提交后进入楼盘入库审核，实际入库结果与审核状态以业务系统为准。</p>
+      </div>
+      <div class="modal__foot">
+        <button class="btn btn--sm" type="button" id="auditCancel">取消</button>
+        <button class="btn btn--primary btn--sm" type="button" id="auditConfirm">确认提交</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"><span class="toast__icon">状态</span><span id="toastMsg">已关联</span></div>
+  <script>
+  /* ============ 数据模型（V7 已验证：支持 1:N / N:1） ============ */
+  const taskParams = new URLSearchParams(window.location.search);
+  const taskBuilding = taskParams.get('building') || '宇济一号';
+  const taskCode = taskParams.get('code') || '17幢';
+  const taskCodeNumber = taskCode.replace(/\D/g,'') || '17';
+  const taskObjectLabel = taskBuilding + ' · ' + taskCode;
+  const fmt = m => m.toFixed(2) + ' m²';
+  const floorOf = fh => (fh == null ? null : parseInt(String(fh).slice(0, 2), 10));
+
+  // 单一数据集：金桂苑 1 幢（40 层），覆盖全状态样例（每类多条）
+  function buildRich40(){
+    const predict = [], measure = [], links = [];
+    const r2 = n => Math.round(n * 100) / 100;
+    const bld = taskCodeNumber;
+    const codeOf = (f, u) => '1-1-' + String(f).padStart(2,'0') + String(u).padStart(2,'0');
+    const fullName = (f, u) => taskBuilding + bld + '幢' + String(f).padStart(2,'0') + String(u).padStart(2,'0') + '室';
+    const roomId = (f, u) => String(f).padStart(2,'0') + String(u).padStart(2,'0');
+    const nominalFloor = f => f === 18 ? '17A 层' : f + ' 层';
+    const P = (f, u, ext) => { const code = codeOf(f, u) + (ext||''); const mj = r2(86 + (f%4)*2.6 + u*0.4); const rm = roomId(f,u); return { id:'p'+f+'_'+u+(ext||''), code, name: fullName(f,u), dy:f, my:nominalFloor(f), fh:String(f).padStart(2,'0'), yt:'住宅', biz:'预售', mj, tn:r2(mj*0.8), ft:r2(mj*0.2), sdeGraphId:'G-'+rm, sdeHouseId:'H-'+rm, sdeVHouseId:'V-'+rm, entityId:'EP-'+rm }; };
+    const M = (f, u, ext, scale) => { const code = codeOf(f, u) + (ext||''); const mj = r2((86 + (f%4)*2.6 + u*0.4) * (scale==null?1:scale)); const rm = roomId(f,u); return { id:'m'+f+'_'+u+(ext||''), code, name: fullName(f,u), dy:f, my:nominalFloor(f), fh:String(f).padStart(2,'0'), yt:'住宅', mj, tn:r2(mj*0.8), ft:r2(mj*0.2), bmfHouseId:'B-'+rm, mergeRightId:'WQ-'+rm, entityId:'EM-'+rm }; };
+
+    // 特殊楼层规划（覆盖多状态样例，分散在不同楼层）
+    const SPECIAL = {
+      '8_2':'over-', '15_1':'pending', '15_3':'over+',
+      '20_1':'split', '25_2':'merge', '30_1':'add', '30_3':'del',
+      '33_1':'orphanP', '33_2':'orphanM', '35_1':'ambig'
+    };
+    for (let f = 1; f <= 40; f++){
+      for (let u = 1; u <= 3; u++){
+        const key = f + '_' + u, sp = SPECIAL[key];
+        if (sp === 'orphanP'){ predict.push(P(f,u)); continue; }                                   // 现有孤户（无测绘候选）→ 未匹配
+        if (sp === 'orphanM'){ measure.push(M(f,u)); continue; }                                   // 测绘孤户（无现有候选）→ 未匹配（反向）
+        if (sp === 'ambig'){ predict.push(P(f,u)); measure.push(M(f,u)); measure.push(M(f,u,'b',1)); continue; } // 现有孤户 + 同房号 2 测绘候选（歧义）
+        if (sp === 'add'){ measure.push(M(f,u)); links.push({ id:'L'+f+'_'+u, pred:null, meas:'m'+f+'_'+u, kind:'add', confirmed:false }); continue; }
+        if (sp === 'del'){ predict.push(P(f,u)); links.push({ id:'L'+f+'_'+u, pred:'p'+f+'_'+u, meas:null, kind:'del', confirmed:false }); continue; }
+        if (sp === 'split'){
+          const p = P(f,u); predict.push(p);
+          const ma = M(f,u,'a',0.55), mb = M(f,u,'b',0.55); measure.push(ma, mb);
+          links.push({ id:'L'+f+'_'+u+'a', pred:p.id, meas:ma.id, kind:'split', confirmed:false });
+          links.push({ id:'L'+f+'_'+u+'b', pred:p.id, meas:mb.id, kind:'split', confirmed:false });
+          continue;
+        }
+        if (sp === 'merge'){
+          const pa = P(f,u,'a'), pb = P(f,u,'b'); predict.push(pa, pb);
+          const m = M(f,u); measure.push(m);
+          links.push({ id:'L'+f+'_'+u+'a', pred:pa.id, meas:m.id, kind:'merge', confirmed:false });
+          links.push({ id:'L'+f+'_'+u+'b', pred:pb.id, meas:m.id, kind:'merge', confirmed:false });
+          continue;
+        }
+        // 常规 1:1：作为建议关联展示，仍保留人工核对入口
+        const p = P(f,u);
+        let scale = (u % 2 ? 1.012 : 0.988);
+        if (sp === 'over-') scale = 0.88;          // 面积差异演示数据
+        else if (sp === 'over+') scale = 1.09;
+        else if (sp === 'pending') scale = 1.018;
+        const m = M(f, u, null, scale);
+        predict.push(p); measure.push(m);
+        const confirmed = !(sp === 'over-' || sp === 'over+' || sp === 'pending');
+        links.push({ id:'L'+f+'_'+u, pred:p.id, meas:m.id, kind:'match', confirmed });
+      }
+    }
+    return { predict, measure, links };
+  }
+
+  /* ============ 数据集装载（仅 40 层单数据集） ============ */
+  let PREDICTS = [], MEASURES = [], LINKS = [];
+  function loadDataset(){
+    const d = buildRich40();
+    PREDICTS = d.predict; MEASURES = d.measure; LINKS = d.links;
+    statusFilter = 'all';
+    floorLo = null; floorHi = null; floorOnlyAnomaly = false;
+    const only = $('floorOnlyAnomaly'); if (only) only.checked = false;
+    renderAll();
+  }
+
+  const $ = id => document.getElementById(id);
+  const P = id => PREDICTS.find(p => p.id === id);
+  const M = id => MEASURES.find(m => m.id === id);
+  const CARD_SIDE = Object.freeze({ PRED: 'pred', MEAS: 'meas' });
+  function normalizeCardSide(side){
+    if (side === CARD_SIDE.PRED || side === 'predict') return CARD_SIDE.PRED;
+    if (side === CARD_SIDE.MEAS || side === 'measure') return CARD_SIDE.MEAS;
+    return null;
+  }
+  function resolveCardAnchor(id, side){
+    const normalizedSide = normalizeCardSide(side);
+    if (!normalizedSide) return null;
+    const anchor = normalizedSide === CARD_SIDE.PRED ? P(id) : M(id);
+    return anchor ? { side: normalizedSide, anchor } : null;
+  }
+  function rememberDialogOrigin(dialogId, trigger){
+    const dialog = $(dialogId);
+    if (dialog) dialog.__returnFocus = trigger || document.activeElement;
+  }
+  function showToast(m){ const t = $('toast'); $('toastMsg').textContent = m; t.classList.add('is-open'); clearTimeout(window.__tT); window.__tT = setTimeout(() => t.classList.remove('is-open'), 1800); }
+
+  // —— 面积差异计算 ——
+  function linkDiff(l){
+    if (!l.pred || !l.meas) return null;
+    const d = M(l.meas).mj - P(l.pred).mj;
+    const rate = d / P(l.pred).mj;
+    return { d, rate, over: false };
+  }
+
+  // —— 行状态推导（按 pred/meas 聚合其 links） ——
+  function predsSharingMeasure(mid){ return LINKS.filter(l => l.meas === mid && l.pred).map(l => l.pred); }
+  function measuresSharingPredict(pid){ return LINKS.filter(l => l.pred === pid && l.meas).map(l => l.meas); }
+  function predictState(pid){
+    if (pid == null) return { st:'unmatched' };
+    const ls = LINKS.filter(l => l.pred === pid);
+    if (ls.length === 0) return { st:'unmatched' };
+    const allConfirmed = ls.every(l => l.confirmed);
+    const kinds = new Set(ls.map(l => l.kind));
+    if (kinds.has('split') || ls.filter(l => l.meas).length > 1) return { st: allConfirmed ? 'split-done' : 'split', links: ls, confirmed: allConfirmed };
+    const shared = ls.some(l => l.meas && predsSharingMeasure(l.meas).length > 1);
+    if (kinds.has('merge') || shared) return { st: allConfirmed ? 'merge-done' : 'merge', links: ls, confirmed: allConfirmed };
+    const l = ls[0];
+    if (l.kind === 'del') return { st: allConfirmed ? 'done-del' : 'del', links: ls, confirmed: allConfirmed };
+    if (l.kind === 'match'){
+      const df = linkDiff(l);
+      if (df && df.over) return { st: allConfirmed ? 'over-done' : 'over', links: ls, confirmed: allConfirmed, diff: df };
+      return { st: allConfirmed ? 'linked' : 'pending', links: ls, confirmed: allConfirmed, diff: df };
+    }
+    return { st: allConfirmed ? 'linked' : 'pending', links: ls, confirmed: allConfirmed };
+  }
+  function measureState(mid){
+    if (mid == null) return { st:'unmatched' };
+    const ls = LINKS.filter(l => l.meas === mid);
+    if (ls.length === 0) return { st:'unmatched' };
+    const allConfirmed = ls.every(l => l.confirmed);
+    const kinds = new Set(ls.map(l => l.kind));
+    if (kinds.has('merge') || ls.filter(l => l.pred).length > 1) return { st: allConfirmed ? 'merge-done' : 'merge', links: ls, confirmed: allConfirmed };
+    const shared = ls.some(l => l.pred && measuresSharingPredict(l.pred).length > 1);
+    if (kinds.has('split') || shared) return { st: allConfirmed ? 'split-done' : 'split', links: ls, confirmed: allConfirmed };
+    const l = ls[0];
+    if (l.kind === 'add') return { st: allConfirmed ? 'done-add' : 'add', links: ls, confirmed: allConfirmed };
+    if (l.kind === 'match'){
+      const df = linkDiff(l);
+      if (df && df.over) return { st: allConfirmed ? 'over-done' : 'over', links: ls, confirmed: allConfirmed, diff: df };
+      return { st: allConfirmed ? 'linked' : 'pending', links: ls, confirmed: allConfirmed, diff: df };
+    }
+    return { st: allConfirmed ? 'linked' : 'pending', links: ls, confirmed: allConfirmed };
+  }
+  function isAnomaly(st){ return ['pending','over','split','merge','del','add','unmatched'].includes(st); }
+  function isStructural(l){ return ['split','merge','add','del'].includes(l.kind); }
+
+  function statusCell(st){
+    const map = {
+      'linked':'<span class="status-tag status-tag--success"><span class="dot"></span>已关联</span>',
+      'pending':'<span class="status-tag status-tag--warning"><span class="dot"></span>待核对</span>',
+      'over':'<span class="status-tag status-tag--danger"><span class="dot"></span>面积差异</span>',
+      'over-done':'<span class="status-tag status-tag--success"><span class="dot"></span>已核</span>',
+      'split':'<span class="status-tag status-tag--struct"><span class="dot"></span>疑似一拆多</span>',
+      'split-done':'<span class="status-tag status-tag--struct"><span class="dot"></span>疑似一拆多</span>',
+      'merge':'<span class="status-tag status-tag--struct"><span class="dot"></span>疑似多合一</span>',
+      'merge-done':'<span class="status-tag status-tag--struct"><span class="dot"></span>疑似多合一</span>',
+      'del':'<span class="status-tag status-tag--struct"><span class="dot"></span>待删除</span>',
+      'done-del':'<span class="status-tag status-tag--struct"><span class="dot"></span>已移交</span>',
+      'add':'<span class="status-tag status-tag--struct"><span class="dot"></span>待新增</span>',
+      'done-add':'<span class="status-tag status-tag--struct"><span class="dot"></span>已移交</span>',
+      'unmatched':'<span class="status-tag status-tag--unmatched"><span class="dot"></span>未匹配</span>'
+    };
+    return map[st] || '';
+  }
+  function diffCellContent(st, diff){
+    if (st === 'split') return '<span style="color:var(--color-warning);font-weight:600;">拆分为 2 户</span>';
+    if (st === 'merge') return '<span style="color:var(--color-warning);font-weight:600;">2 户合并</span>';
+    if (st === 'del' || st === 'done-del') return '<span style="color:var(--text-2);">无测绘对应</span>';
+    if (st === 'add' || st === 'done-add') return '<span style="color:var(--text-2);">无现有对应</span>';
+    if (!diff) return { d:'—', over:false };
+    const sign = diff.d > 0 ? '+' : '';
+    return { d: sign + diff.d.toFixed(2), pct: (diff.rate*100).toFixed(1)+'%', over: diff.over };
+  }
+
+  /* ============ 卡片行组（轴心布局） ============ */
+  // 以 link 为单位聚合出唯一卡片
+  function buildCards(){
+    const map = new Map();
+    const linkedPred = new Set(), linkedMeas = new Set();
+    LINKS.forEach(l => {
+      if (l.pred) linkedPred.add(l.pred);
+      if (l.meas) linkedMeas.add(l.meas);
+      let key, anchorType, anchorId;
+      if (l.kind === 'merge' || l.kind === 'add'){ key = 'meas:' + l.meas; anchorType = 'meas'; anchorId = l.meas; }
+      else { key = 'pred:' + l.pred; anchorType = 'pred'; anchorId = l.pred; }
+      if (!map.has(key)) map.set(key, { anchorType, anchorId, links: [] });
+      map.get(key).links.push(l);
+    });
+    // 孤户：预测/实测任一侧没有建议候选 → 必须可见、可手动处置
+    PREDICTS.forEach(p => { if (!linkedPred.has(p.id)) map.set('orphan:pred:' + p.id, { anchorType:'pred', anchorId:p.id, links:[], orphan:true }); });
+    MEASURES.forEach(m => { if (!linkedMeas.has(m.id)) map.set('orphan:meas:' + m.id, { anchorType:'meas', anchorId:m.id, links:[], orphan:true }); });
+    return [...map.values()];
+  }
+
+  let statusFilter = 'all';      // all / linked / review / unlinked
+  let floorLo = null, floorHi = null;   // 选中楼层区间（null = 首渲染设为全量）
+  let floorOnlyAnomaly = false;         // 仅看异常层
+  let fMinAll = null, fMaxAll = null;   // 全幢楼层上下界（renderFloorSlider 写入，供输入框钳制）
+  let density = 'standard';            // standard（默认关系卡片）/ compact（高密度辅助表格）
+  let flashEl = null;                  // 最近一次 Tab 定位的异常卡（供 Space 开抽屉）
+
+  function reviewState(card, state){
+    if (card.orphan) return 'unlinked';
+    if (card.links.some(link => isStructural(link))) return 'review';
+    if (state.st === 'over' || state.st === 'pending') return 'review';
+    return 'linked';
+  }
+  function cardPassesFilter(card){
+    const anchor = card.anchorType === 'pred' ? P(card.anchorId) : M(card.anchorId);
+    const dy = anchor ? anchor.dy : null;
+    if (dy == null) return true;
+    if (floorOnlyAnomaly){
+      const state = card.anchorType === 'pred' ? predictState(card.anchorId) : measureState(card.anchorId);
+      if (reviewState(card, state) !== 'review') return false;
+    }
+    else if (dy < floorLo || dy > floorHi) return false;
+    if (statusFilter === 'all') return true;
+    const state = card.anchorType === 'pred' ? predictState(card.anchorId) : measureState(card.anchorId);
+    return reviewState(card, state) === statusFilter;
+    return true;
+  }
+
+  function renderCards(animate){
+    const cards = buildCards().filter(cardPassesFilter);
+    const wrap = $('cards');
+    const _rc = $('resultCount'); if (_rc) _rc.textContent = cards.length + ' 组结果';
+    if (cards.length === 0){ wrap.innerHTML = '<div class="wk-empty" role="status" aria-live="polite"><strong>当前筛选没有结果</strong><span>可调整状态或楼层范围后继续查看。</span></div>'; return; }
+    wrap.innerHTML = (density === 'compact') ? renderCompactTable(cards) : cards.map(renderCard).join('');
+    bindCardInteractions(wrap, cards);
+    if (animate){
+      const els = wrap.querySelectorAll('[data-card]');
+      els.forEach((el, i) => { el.classList.add('is-enter'); el.style.setProperty('--d', Math.min(i, 14) * 16 + 'ms'); });
+    }
+  }
+
+  // 绑定卡片/表格行的单户查看与关联
+  function openCardAction(id, side, orphan, trigger){
+    const resolved = resolveCardAnchor(id, side);
+    if (!resolved){
+      showToast('未找到该户室，请刷新后重试');
+      return;
+    }
+    if (orphan) openLinkModal(resolved.anchor, resolved.side, trigger);
+    else openDrawerFor(id, resolved.side, trigger);
+  }
+
+  function bindCardInteractions(wrap, cards){
+    wrap.querySelectorAll('[data-card]').forEach(el => {
+      const id = el.dataset.cardId, side = el.dataset.cardSide, orphan = el.dataset.cardOrphan === '1';
+      el.addEventListener('click', e => {
+        openCardAction(id, side, orphan, e.target.closest('.link-btn') || el);
+      });
+    });
+  }
+
+  // 紧凑表格模式：高密度、保留差异高亮，点击行开抽屉
+  function renderCompactTable(cards){
+    const head = '<tr><th>状态</th><th>现有房号</th><th>实际层</th><th>名义层</th><th>现有建面</th><th>测绘房号</th><th>测绘建面</th><th>差异</th><th>操作</th></tr>';
+    const rows = cards.map(c => {
+      const isPred = c.anchorType === 'pred';
+      const anchor = isPred ? P(c.anchorId) : M(c.anchorId);
+      const st = isPred ? predictState(c.anchorId) : measureState(c.anchorId);
+      const structural = c.links.some(isStructural);
+      const anomaly = c.orphan || isAnomaly(st.st);
+      const uiState = reviewState(c, st);
+      let predCode = '—', predMj = '—', measCode = '—', measMj = '—', diff = '—';
+      if (c.orphan){
+        if (isPred){ predCode = anchor.name; predMj = fmt(anchor.mj); } else { measCode = anchor.name; measMj = fmt(anchor.mj); }
+        diff = '无对应户室';
+      } else {
+        const preds = c.links.map(l => l.pred).filter(Boolean).map(P);
+        const meas = c.links.map(l => l.meas).filter(Boolean).map(M);
+        const p = preds[0], m = meas[0];
+        predCode = p ? p.name : '—'; predMj = p ? fmt(p.mj) : '—';
+        measCode = m ? m.name : '—'; measMj = m ? fmt(m.mj) : '—';
+        if (c.links[0].kind === 'split') diff = '拆分 1→' + meas.length;
+        else if (c.links[0].kind === 'merge') diff = '合并 ' + preds.length + '→1';
+        else if (c.links[0].kind === 'add') diff = '新增测绘户';
+        else if (c.links[0].kind === 'del') diff = '无测绘对应';
+        else { const df = linkDiff(c.links[0]); if (df){ diff = (df.d > 0 ? '+' : '') + df.d.toFixed(2); } }
+      }
+      const diffCls = (st.st === 'over') ? 'is-over' : (st.st === 'pending') ? 'is-pending' : (structural ? 'is-struct' : '');
+      const actualFloor = anchor ? anchor.dy : '—';
+      const nominalFloor = anchor ? anchor.my : '—';
+      const uiLabel = uiState === 'linked' ? '已关联' : (uiState === 'review' ? '待核对' : '未关联');
+      const action = uiState === 'linked' ? '查看' : (uiState === 'review' ? '核对' : '建立关联');
+      return '<tr data-card tabindex="-1" data-card-id="' + c.anchorId + '" data-card-side="' + c.anchorType + '" data-card-anomaly="' + (anomaly?1:0) + '" data-card-orphan="' + (c.orphan?1:0) + '">'
+        + '<td><span class="status-tag ' + (uiState==='linked'?'status-tag--success':uiState==='review'?'status-tag--warning':'status-tag--unmatched') + '"><span class="dot"></span>' + uiLabel + '</span></td>'
+        + '<td class="num">' + predCode + '</td>'
+        + '<td class="num">' + actualFloor + '</td>'
+        + '<td class="num">' + nominalFloor + '</td>'
+        + '<td class="num">' + predMj + '</td>'
+        + '<td class="num">' + measCode + '</td>'
+        + '<td class="num">' + measMj + '</td>'
+        + '<td class="num delta ' + diffCls + '">' + diff + '</td>'
+        + '<td><button type="button" class="link-btn">' + action + '</button></td>'
+        + '</tr>';
+    }).join('');
+    return '<table class="rg-table"><thead>' + head + '</thead><tbody>' + rows + '</tbody></table>';
+  }
+
+  /* ============ 右侧老 CS 系统字段（弱化层级，紧凑 2 行，平时只看左边快速判断） ============ */
+  function csDetailHTML(isPred, anchor, partner){
+    if (!anchor) return '';
+    const f = [
+      ['房屋业务状态', isPred ? anchor.biz : (partner ? partner.biz : '—')],
+      ['SDE图形ID',  isPred ? anchor.sdeGraphId : '—'],
+      ['SDE房屋ID',  isPred ? anchor.sdeHouseId : '—'],
+      ['SDEV房屋ID', isPred ? anchor.sdeVHouseId : '—'],
+      ['BMF房屋ID',  !isPred ? anchor.bmfHouseId : (partner ? partner.bmfHouseId : '—')],
+      ['房屋并权ID', !isPred ? anchor.mergeRightId : (partner ? partner.mergeRightId : '—')],
+      ['实体ID',     anchor.entityId]
+    ];
+    return '<div class="rg__detail__row">' + f.map(it => '<span class="f"><i>' + it[0] + '</i><span class="v" title="' + it[1] + '">' + it[1] + '</span></span>').join('') + '</div>';
+  }
+
+  function renderCard(card){
+    const isPred = card.anchorType === 'pred';
+    const anchor = isPred ? P(card.anchorId) : M(card.anchorId);
+    const preds = card.links.map(l => l.pred).filter(Boolean).map(P);
+    const meas = card.links.map(l => l.meas).filter(Boolean).map(M);
+    const st = isPred ? predictState(card.anchorId) : measureState(card.anchorId);
+    const structural = card.links.some(isStructural);
+    const shortRoom = o => {
+      if (!o) return '—';
+      const match = String(o.name || '').match(/(\d{4}室)$/);
+      return match ? match[1] : (o.code || o.name || '—');
+    };
+    const code = shortRoom(anchor || meas[0]);
+    const yt = anchor ? anchor.yt : (meas[0] ? meas[0].yt : '—');
+    const floorContext = anchor ? ('实际 ' + anchor.dy + ' 层 · 名义 ' + anchor.my) : '楼层待确认';
+    const anomaly = card.orphan || isAnomaly(st.st);
+
+    const dataAttrs = ' data-card tabindex="-1" data-card-id="' + card.anchorId + '" data-card-side="' + card.anchorType
+      + '" data-card-anomaly="' + (anomaly?1:0) + '" data-card-orphan="' + (card.orphan?1:0) + '"';
+
+    const headLeft = structural
+      ? '<svg class="rg__lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3" stroke-linecap="round"/></svg>' : '';
+
+    const head = '<div class="rg__head" data-id="' + card.anchorId + '" data-side="' + (isPred?CARD_SIDE.PRED:CARD_SIDE.MEAS) + '">'
+      + headLeft
+      + '<span class="rg__status">' + statusCell(st.st) + '</span>'
+      + '<span class="rg__code">' + code + '</span>'
+      + '<span class="rg__yt">' + yt + '</span>'
+      + '<span class="rg__floor">' + floorContext + '</span>'
+      + '</div>';
+
+    // 主区：建筑面积对比占满整行，一维单行
+    function metric(label, objectName, val, unit){
+      const hasUnit = String(val).indexOf('m²') >= 0;
+      return '<span class="rg__metric"><span class="lbl">' + label + '</span><span class="object">' + objectName + '</span><span class="value"><span class="num">' + val + '</span>' + ((!hasUnit && unit)?'<span class="unit">' + unit + '</span>':'') + '</span></span>';
+    }
+    function deltaPill(cls, mainText, subText){
+      return '<span class="rg__delta ' + cls + '">' + mainText + (subText?'<span class="pct">' + subText + '</span>':'') + '</span>';
+    }
+    let main = '';
+    if (card.orphan){
+      const sideLabel = isPred ? '现有' : '测绘';
+      const missing = isPred ? '无对应测绘户室' : '无对应现有户室';
+      const hintWord = isPred ? '测绘' : '现有';
+      main = '<div class="rg__axis">' + metric(sideLabel + '户室', shortRoom(anchor), anchor?fmt(anchor.mj):'—', 'm²')
+        + deltaPill('', '未匹配', '待人工定夺')
+        + metric('对侧户室', missing, '—', '') + '</div>'
+        + '<div class="rg__hint rg__hint--unmatched">未找到建议的' + hintWord + '户室，请手动关联或确认处置。</div>';
+    } else if (card.links[0].kind === 'split'){
+      const p = preds[0];
+      const subs = meas.map(m => '<div class="rg__sub"><span class="arrow">↳</span><span>测绘子户 <b>' + m.name + '</b> · ' + m.yt + ' · <span class="num">' + fmt(m.mj) + '</span></span></div>').join('');
+      main = '<div class="rg__axis">' + metric('现有原户', shortRoom(p), fmt(p.mj), 'm²')
+        + deltaPill('is-struct-pill', '疑似一拆多', meas.length + ' 户')
+        + metric('测绘子户', meas.map(shortRoom).join(' / '), meas.map(m=>fmt(m.mj)).join(' + '), 'm²') + '</div>'
+        + '<div class="rg__subs"><div class="rg__subs-panel">' + subs + '</div></div>';
+    } else if (card.links[0].kind === 'merge'){
+      const m = meas[0];
+      const subs = preds.map(p => '<div class="rg__sub"><span class="arrow">↳</span><span>现有户 <b>' + p.name + '</b> · ' + p.yt + ' · <span class="num">' + fmt(p.mj) + '</span></span></div>').join('');
+      main = '<div class="rg__axis">' + metric('现有户室', preds.map(shortRoom).join(' / '), preds.map(p=>fmt(p.mj)).join(' + '), 'm²')
+        + deltaPill('is-struct-pill', '疑似多合一', '→ 1 户')
+        + metric('测绘合并户', shortRoom(m), fmt(m.mj), 'm²') + '</div>'
+        + '<div class="rg__subs"><div class="rg__subs-panel">' + subs + '</div></div>';
+    } else if (card.links[0].kind === 'add'){
+      const m = meas[0];
+      main = '<div class="rg__axis">' + metric('现有户室', '无对应', '—', '')
+        + deltaPill('is-struct-pill', '新增', '结构性变更')
+        + metric('测绘户室', shortRoom(m), fmt(m.mj), 'm²') + '</div>';
+    } else if (card.links[0].kind === 'del'){
+      const p = preds[0];
+      main = '<div class="rg__axis">' + metric('现有户室', shortRoom(p), fmt(p.mj), 'm²')
+        + deltaPill('is-struct-pill', '删除', '结构性变更')
+        + metric('测绘户室', '无对应', '—', '') + '</div>';
+    } else {
+      const l = card.links[0], p = preds[0], m = meas[0], df = linkDiff(l), dc = diffCellContent(st.st, df);
+      let deltaHtml;
+      if (typeof dc === 'object') deltaHtml = deltaPill((dc.over?'is-over':(st.st==='pending'?'is-warn':'is-ok')), dc.d + ' m²', dc.d==='—'?'无差异':`演示差异 ${dc.pct}`);
+      else deltaHtml = deltaPill('is-struct-pill', dc, '结构性变更');
+      main = '<div class="rg__axis">' + metric('现有户室', shortRoom(p), p?fmt(p.mj):'—', 'm²')
+        + deltaHtml
+        + metric('测绘户室', shortRoom(m), m?fmt(m.mj):'—', 'm²') + '</div>';
+    }
+
+    const detail = csDetailHTML(isPred, anchor, isPred ? (meas[0] || null) : (preds[0] || null));
+    const hint = structural ? '<div class="rg__hint">涉及结构变化，请结合楼盘变更业务核对处理。</div>' : '';
+
+    let cls = 'rg';
+    if (st.st === 'over') cls += ' is-over';
+    if (structural) cls += ' is-struct';
+
+    return '<div class="' + cls + '"' + dataAttrs + '>'
+      + head
+      + '<div class="rg__body"><div class="rg__main">' + main + '</div><div class="rg__detail">' + detail + '</div></div>'
+      + hint
+      + '</div>';
+  }
+
+  /* ============ 漏斗看板 + 楼层树 ============ */
+  function renderFunnel(){
+    const cards = buildCards();
+    const counts = { linked:0, review:0, unlinked:0 };
+    cards.forEach(card => {
+      const state = card.anchorType === 'pred' ? predictState(card.anchorId) : measureState(card.anchorId);
+      counts[reviewState(card, state)]++;
+    });
+    const total = cards.length;
+    const pct = n => total ? (n/total*100).toFixed(1).replace(/\.0$/, '') + '%' : '—';
+    $('fTotal').textContent = total;
+    $('fLinked').textContent = counts.linked;
+    $('fReview').textContent = counts.review;
+    $('fUnlinked').textContent = counts.unlinked;
+    document.querySelectorAll('.seg').forEach(n => n.classList.toggle('is-on', n.dataset.filter === statusFilter));
+  }
+
+  function floorLevelOf(f){
+    const preds = PREDICTS.filter(p => p.dy === f);
+    let level = 'none', cnt = 0;
+    preds.forEach(p => {
+      const s = predictState(p.id);
+      if (s.st === 'unmatched') { level='warn'; cnt++; return; }
+      if (['over','pending'].includes(s.st)) { level='danger'; cnt++; }
+      else if (isStructural(LINKS.find(l=>l.pred===p.id))) { if(level!=='danger'){level='warn';} cnt++; }
+      else if (['split','merge','add','del'].includes(s.st)) { if(level==='none'){level='warn';} }
+    });
+    return { level, cnt };
+  }
+  function renderFloorSlider(){
+    const floors = [...new Set(PREDICTS.map(p => p.dy))].sort((a,b)=>a-b);
+    fMinAll = floors[0]; fMaxAll = floors[floors.length-1];
+    if (floorLo === null){ floorLo = fMinAll; floorHi = fMaxAll; }
+    const span = (fMaxAll - fMinAll) || 1;
+    const posOf = f => (f - fMinAll) / span * 100;
+
+    // 刻度：最小/最大 + 每 5 层
+    const labelSet = new Set([fMinAll, fMaxAll]);
+    for (let f = Math.ceil(fMinAll/5)*5; f < fMaxAll; f += 5) labelSet.add(f);
+    $('floorScale').innerHTML = [...labelSet].sort((a,b)=>a-b).map(f => '<span style="top:' + posOf(f) + '%">' + f + '</span>').join('');
+
+    // 异常圆点：每层一个，按严重度着色（固定高度轨道，40 层也不溢出）
+    $('floorMarks').innerHTML = floors.map(f => {
+      const lv = floorLevelOf(f).level;
+      return '<span class="floor-slider__mark is-' + lv + '" style="top:' + posOf(f) + '%" title="' + f + ' 层 · ' + floorLevelOf(f).cnt + ' 项异常"></span>';
+    }).join('');
+
+    // 滑块 / 填充 / 气泡 / 读数
+    const lo = posOf(floorLo), hi = posOf(floorHi);
+    $('floorThumbMin').style.top = lo + '%';
+    $('floorThumbMax').style.top = hi + '%';
+    $('floorFill').style.top = lo + '%';
+    $('floorFill').style.height = (hi - lo) + '%';
+    $('floorBubbleMin').textContent = floorLo;
+    $('floorBubbleMax').textContent = floorHi;
+    const _minI = $('floorInputMin'), _maxI = $('floorInputMax');
+    if (_minI){ _minI.value = floorLo; _minI.min = fMinAll; _minI.max = fMaxAll; }
+    if (_maxI){ _maxI.value = floorHi; _maxI.min = fMinAll; _maxI.max = fMaxAll; }
+    const _rr = $('rangeReadout'); if (_rr) _rr.textContent = floorLo + '–' + floorHi + ' 层';   /* 标题栏同步当前楼层范围 */
+  }
+  function bindFloorSlider(){
+    const track = $('floorTrack');
+    const minT = $('floorThumbMin'), maxT = $('floorThumbMax');
+    function floorsFromY(clientY){
+      const rect = track.getBoundingClientRect();
+      let pct = (clientY - rect.top) / rect.height;
+      pct = Math.max(0, Math.min(1, pct));
+      let f = Math.round(fMinAll + pct * (fMaxAll - fMinAll));
+      return Math.max(fMinAll, Math.min(fMaxAll, f));
+    }
+    function drag(which, e){
+      e.preventDefault();
+      const move = ev => {
+        const f = floorsFromY(ev.clientY);
+        if (which === 'min') floorLo = Math.min(f, floorHi); else floorHi = Math.max(f, floorLo);
+        renderFloorSlider(); renderCards();
+      };
+      const up = () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); };
+      window.addEventListener('pointermove', move);
+      window.addEventListener('pointerup', up);
+    }
+    minT.addEventListener('pointerdown', e => drag('min', e));
+    maxT.addEventListener('pointerdown', e => drag('max', e));
+    track.addEventListener('pointerdown', e => {
+      if (e.target.closest('.floor-slider__thumb')) return;
+      track.classList.add('is-gliding');
+      setTimeout(() => track.classList.remove('is-gliding'), 220);
+      const f = floorsFromY(e.clientY);
+      if (Math.abs(f - floorLo) <= Math.abs(f - floorHi)) floorLo = Math.min(f, floorHi); else floorHi = Math.max(f, floorLo);
+      renderFloorSlider(); renderCards();
+    });
+    const only = $('floorOnlyAnomaly');
+    if (only) only.addEventListener('change', e => { floorOnlyAnomaly = e.target.checked; renderCards(); });
+  }
+  function bindFloorInputs(){
+    const minI = $('floorInputMin'), maxI = $('floorInputMax');
+    if (!minI || !maxI) return;
+    function apply(which){
+      let lo = parseInt(minI.value, 10);
+      let hi = parseInt(maxI.value, 10);
+      if (isNaN(lo)) lo = fMinAll;
+      if (isNaN(hi)) hi = fMaxAll;
+      lo = Math.max(fMinAll, Math.min(lo, fMaxAll));
+      hi = Math.max(fMinAll, Math.min(hi, fMaxAll));
+      if (lo > hi){ if (which === 'min') hi = lo; else lo = hi; }
+      floorLo = lo; floorHi = hi;
+      renderFloorSlider(); renderCards();
+    }
+    function liveClamp(input){
+      let v = parseInt(input.value, 10);
+      if (isNaN(v)) return;
+      input.value = Math.max(fMinAll, Math.min(v, fMaxAll));
+    }
+    minI.addEventListener('change', () => apply('min'));
+    maxI.addEventListener('change', () => apply('max'));
+    minI.addEventListener('input', () => liveClamp(minI));
+    maxI.addEventListener('input', () => liveClamp(maxI));
+  }
+
+  /* ============ 关联摘要 / 提交门禁 ============ */
+  function syncFooter(){
+    const counts = { linked:0, review:0, unlinked:0 };
+    buildCards().forEach(card => {
+      const state = card.anchorType === 'pred' ? predictState(card.anchorId) : measureState(card.anchorId);
+      counts[reviewState(card, state)]++;
+    });
+    $('footLinked').textContent = counts.linked;
+    $('footReview').textContent = counts.review;
+    $('footUnlinked').textContent = counts.unlinked;
+  }
+
+  /* ============ 门禁（提交锁定） ============ */
+  function updateGate(){
+    const struct = LINKS.filter(isStructural).length;
+    const areaUnconfirmed = LINKS.filter(l => {
+      if (isStructural(l)) return false;
+      const s = l.pred ? predictState(l.pred) : measureState(l.meas);
+      return isAnomaly(s.st);
+    }).length;
+    const unmatched = PREDICTS.filter(p => !LINKS.some(l => l.pred === p.id)).length
+                    + MEASURES.filter(m => !LINKS.some(l => l.meas === m.id)).length;
+    const btn = $('submitBtn');
+    const bar = $('blockBar');
+    const wrap = $('submitWrap');
+    bar.classList.toggle('is-on', struct > 0);
+    if (struct > 0) $('blockCount').textContent = struct;
+    if (unmatched > 0){
+      btn.disabled = true;
+      wrap.setAttribute('data-tip', `存在 ${unmatched} 项未关联户室，须先建立关联。`);
+      $('gateHint').textContent = unmatched + ' 项未关联';
+      $('gateHint').className = 'gate-hint is-warn';
+    } else if (areaUnconfirmed > 0){
+      btn.disabled = true;
+      wrap.removeAttribute('data-tip');
+      $('gateHint').textContent = areaUnconfirmed + ' 项面积异常待核对';
+      $('gateHint').className = 'gate-hint is-warn';
+    } else {
+      btn.disabled = false;
+      wrap.removeAttribute('data-tip');
+      $('gateHint').textContent = '校验通过，可提交';
+      $('gateHint').className = 'gate-hint';
+    }
+  }
+
+  function renderAll(){
+    renderFloorSlider();   // 先刷新楼层区间（初始化 floorLo/floorHi）再过滤卡片
+    renderCards(true); renderFunnel(); syncFooter(); updateGate();
+  }
+
+  /* ============ 三列差异对比抽屉（match / over / pending / del） ============ */
+  // 三列对照行渲染：现有（左）/ 测绘（右）；两侧均非空且取值不同则高亮差异行
+  function cmpRows(fields){
+    return fields.map(f => {
+      const diff = (f[1] !== f[2]) && f[1] != null && f[2] != null;
+      const v1 = (f[1] == null) ? 'none' : '';
+      const v2 = (f[2] == null) ? 'none' : (diff ? 'diff' : '');
+      return '<div class="cmp__row' + (diff ? ' is-diff' : '') + '"><div class="cmp__k">' + f[0] + '</div><div class="cmp__col ' + v1 + '">' + (f[1] == null ? '—' : f[1]) + '</div><div class="cmp__sep"></div><div class="cmp__col ' + v2 + '">' + (f[2] == null ? '—' : f[2]) + '</div></div>';
+    }).join('');
+  }
+  let selectedRow = null;
+  function openDrawerFor(id, side, trigger){
+    const normalizedSide = normalizeCardSide(side);
+    if (!normalizedSide) return;
+    const isPredSide = normalizedSide === CARD_SIDE.PRED;
+    const s = isPredSide ? predictState(id) : measureState(id);
+    const structural = ['split','merge','add','del'].includes(s.st);
+    const ls = s.links || [];
+    const pr = isPredSide ? P(id) : (ls[0] && ls[0].pred ? P(ls[0].pred) : null);
+    const mr = !isPredSide ? M(id) : (ls[0] && ls[0].meas ? M(ls[0].meas) : null);
+    let hint = '';
+    if (s.st === 'linked') hint = '现有与测绘已形成建议关联；请结合幢、楼层、房号和面积差异复核。';
+    else if (s.st === 'pending') hint = '系统按同幢、同层和房号相近提供建议关联；关键信息存在差异，请核对后再关联。';
+    else if (s.st === 'over') hint = '测绘与现有建筑面积存在差异，建议进入人工核对。';
+    else if (s.st === 'over-done') hint = '该面积差异已被记录为人工核对项，具体规则仍待业务验证。';
+    else if (structural) hint = '该户室涉及结构变化，请结合楼盘变更业务核对处理。具体处理方式待业务确认。';
+    else hint = '请核对两侧数据。';
+    $('drawerHint').textContent = hint;
+    $('drawerCodes').innerHTML = '<span>现有 <b>' + (pr ? pr.name : '<span class="none">无对应</span>') + '</b></span><span>测绘 <b>' + (mr ? mr.name : '<span class="none">无对应</span>') + '</b></span>';
+    const primaryFields = [
+      ['幢', pr && pr.dy, mr && mr.dy],
+      ['层', pr && floorOf(pr.fh), mr && floorOf(mr.fh)],
+      ['户', pr && pr.fh, mr && mr.fh],
+      ['用途', pr && pr.yt, mr && mr.yt],
+      ['建筑面积', pr && fmt(pr.mj), mr && fmt(mr.mj)],
+      ['套内', pr && fmt(pr.tn), mr && fmt(mr.tn)],
+      ['分摊', pr && fmt(pr.ft), mr && fmt(mr.ft)]
+    ];
+    // 次要字段（系统标识）：取自卡片 hover 详情 csDetailHTML 的同源字段，
+    // 现有侧取 SDE/业务状态，测绘侧取 BMF/并权，实体ID 两侧均有。
+    const secondaryFields = [
+      ['房屋业务状态', pr && pr.biz, mr && mr.biz],
+      ['SDE图形ID', pr && pr.sdeGraphId, mr && mr.sdeGraphId],
+      ['SDE房屋ID', pr && pr.sdeHouseId, mr && mr.sdeHouseId],
+      ['SDEV房屋ID', pr && pr.sdeVHouseId, mr && mr.sdeVHouseId],
+      ['BMF房屋ID', pr && pr.bmfHouseId, mr && mr.bmfHouseId],
+      ['房屋并权ID', pr && pr.mergeRightId, mr && mr.mergeRightId],
+      ['实体ID', pr && pr.entityId, mr && mr.entityId]
+    ];
+    $('drawerCmp').innerHTML =
+      '<div class="cmp">' + cmpRows(primaryFields) + '</div>' +
+      '<div class="cmp-section__title">系统标识（次要字段）</div>' +
+      '<div class="cmp">' + cmpRows(secondaryFields) + '</div>';
+    const acts = $('drawerActions'); acts.innerHTML = '';
+    const confirmAll = (msg) => { ls.forEach(l => l.confirmed = true); renderAll(); closeDrawer(); showToast(msg); };
+    // 取消匹配：解除该户室所有关联链接的确认态，回退为待核对，可重新关联
+    const cancelMatch = (msg) => { ls.forEach(l => l.confirmed = false); renderAll(); closeDrawer(); showToast(msg); };
+    if (structural){
+      acts.appendChild(mkBtn('关闭', 'secondary', closeDrawer));
+    } else if (s.st === 'linked'){
+      acts.appendChild(mkBtn('取消匹配', 'primary', () => cancelMatch('已取消匹配')));
+      acts.appendChild(mkBtn('关闭', 'secondary', closeDrawer));
+    } else if (s.st === 'pending'){
+      acts.appendChild(mkBtn('确认关联', 'primary', () => confirmAll('已关联')));
+      acts.appendChild(mkBtn('选择其他测绘户室', 'secondary', () => openLinkModal(pr, CARD_SIDE.PRED, document.activeElement)));
+    } else if (s.st === 'over'){
+      acts.appendChild(mkBtn('确认关联', 'primary', () => confirmAll('已确认关联')));
+      acts.appendChild(mkBtn('选择其他测绘户室', 'secondary', () => openLinkModal(pr, CARD_SIDE.PRED, document.activeElement)));
+    } else if (s.st === 'over-done'){
+      acts.appendChild(mkBtn('关闭', 'secondary', closeDrawer));
+    } else {
+      acts.appendChild(mkBtn('关闭', 'secondary', closeDrawer));
+    }
+    rememberDialogOrigin('drawerMask', trigger);
+    $('drawerMask').classList.add('is-open');
+  }
+  function mkBtn(label, variant, fn, disabled){
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'btn btn--sm' + (variant === 'primary' ? ' btn--primary' : '');
+    b.textContent = label;
+    if (disabled) b.disabled = true;
+    b.addEventListener('click', fn);
+    return b;
+  }
+  function closeDrawer(){ $('drawerMask').classList.remove('is-open'); if (selectedRow){ selectedRow.classList.remove('is-selected'); selectedRow = null; } }
+
+  /* ============ 关联候选（修复错配） ============ */
+  let modalAnchor = null, modalSide = null, modalPicked = null;
+  function openLinkModal(anchor, side, trigger){
+    const normalizedSide = normalizeCardSide(side);
+    if (!anchor || !normalizedSide){
+      showToast('未找到该户室，请刷新后重试');
+      return;
+    }
+    modalAnchor = anchor; modalSide = normalizedSide; modalPicked = null;
+    const head = $('modalHead'), tip = $('modalTip'), confirm = $('modalConfirm');
+    const bld = anchor.code.split('-')[0];
+    if (modalSide === CARD_SIDE.PRED){
+      head.textContent = '选择测绘户室';
+      tip.innerHTML = '为现有户室 <b>' + anchor.name + '</b> 查看建议关联候选（同幢 / 同层 / 房号相近）：';
+      const ranked = MEASURES.filter(m => m.code.split('-')[0] === bld && !LINKS.some(l => l.meas === m.id && l.pred))
+        .map(m => ({ m })).sort((a, b) => Math.abs(a.m.dy-anchor.dy) - Math.abs(b.m.dy-anchor.dy) || a.m.fh.localeCompare(b.m.fh)).slice(0, 6);
+      $('modalCandidates').innerHTML = ranked.length
+        ? ranked.map(r => '<div class="link-candidate__row" role="button" tabindex="0" data-pick="' + r.m.id + '"><span class="code">' + r.m.name + ' · ' + r.m.yt + ' ' + fmt(r.m.mj) + '</span><span class="conf">建议依据：同幢 · 同层或房号相近</span></div>').join('')
+        : '<div class="link-empty">同幢内未找到可匹配测绘户室，需返回检查测绘数据或关联幢。</div>';
+      confirm.textContent = '确认关联';
+      confirm.disabled = true;
+    } else {
+      head.textContent = '选择现有户室';
+      tip.innerHTML = '为测绘户室 <b>' + anchor.name + '</b> 查看建议关联候选（同幢 / 同层 / 房号相近）：';
+      const ranked = PREDICTS.filter(p => p.code.split('-')[0] === bld && !LINKS.some(l => l.pred === p.id && l.meas))
+        .map(p => ({ p })).sort((a, b) => Math.abs(a.p.dy-anchor.dy) - Math.abs(b.p.dy-anchor.dy) || a.p.fh.localeCompare(b.p.fh)).slice(0, 6);
+      $('modalCandidates').innerHTML = ranked.length
+        ? ranked.map(r => '<div class="link-candidate__row" role="button" tabindex="0" data-pick="' + r.p.id + '"><span class="code">' + r.p.name + ' · ' + r.p.yt + ' ' + fmt(r.p.mj) + '</span><span class="conf">建议依据：同幢 · 同层或房号相近</span></div>').join('')
+        : '<div class="link-empty">同幢内未找到可匹配现有户室，需返回检查现有楼盘数据或关联幢。</div>';
+      confirm.textContent = '确认关联';
+      confirm.disabled = true;
+    }
+    rememberDialogOrigin('linkModal', trigger);
+    $('linkModal').classList.add('is-open');
+  }
+  function closeLinkModal(){ $('linkModal').classList.remove('is-open'); modalAnchor = null; modalSide = null; modalPicked = null; }
+  function pickLink(cid){
+    if (!modalAnchor) return;
+    if (modalSide === CARD_SIDE.PRED){
+      const mu = M(cid);
+      if (!mu) return;
+      LINKS.push({ id:'n'+Math.random(), pred:modalAnchor.id, meas:mu.id, kind:'match', confirmed:true });
+      renderAll(); closeLinkModal(); showToast('已关联到 ' + mu.name); closeDrawer();
+    } else {
+      const pu = P(cid);
+      if (!pu) return;
+      LINKS.push({ id:'n'+Math.random(), pred:pu.id, meas:modalAnchor.id, kind:'match', confirmed:true });
+      renderAll(); closeLinkModal(); showToast('已关联到 ' + pu.name); closeDrawer();
+    }
+  }
+  function confirmLinkModal(){
+    if (modalPicked) pickLink(modalPicked);
+  }
+
+
+  /* ============ 审计确认弹窗 ============ */
+  function openAudit(){
+    const counts = { linked:0, review:0, unlinked:0 };
+    buildCards().forEach(card => {
+      const state = card.anchorType === 'pred' ? predictState(card.anchorId) : measureState(card.anchorId);
+      counts[reviewState(card, state)]++;
+    });
+    let areaDiff = 0;
+    LINKS.forEach(l => { if (l.pred && l.meas){ areaDiff += M(l.meas).mj - P(l.pred).mj; } });
+    $('auditLinked').textContent = counts.linked;
+    $('auditReview').textContent = counts.review;
+    $('auditUnlinked').textContent = counts.unlinked;
+    $('auditArea').textContent = (areaDiff>=0?'+':'') + areaDiff.toFixed(2) + ' m²';
+    $('auditTime').textContent = new Date().toLocaleString('zh-CN', { hour12:false });
+    rememberDialogOrigin('auditModal', document.activeElement);
+    $('auditModal').classList.add('is-open');
+  }
+  function closeAudit(){ $('auditModal').classList.remove('is-open'); }
+
+  /* ============ 步骤导航 ============ */
+  function goStep(n){
+    [1,2,3].forEach(i => {
+      $('step'+i).classList.toggle('is-active', i === n);
+      const it = document.querySelector('.stepper__item[data-step="'+i+'"]');
+      it.classList.toggle('is-active', i === n);
+      it.classList.toggle('is-done', i < n);
+    });
+  }
+  const CHECKS = [
+    { t:'关联幢检查', s:'pass', sub:taskObjectLabel + ' 已设置关联幢' },
+    { t:'重复替换检查', s:'pass', sub:'所选实测测绘幢尚未执行过替换入库' },
+    { t:'分层分户图数据', s:'pass', sub:'已从测绘图形读取户室分层分户数据' }
+  ];
+  function renderChecks(){
+    $('checkList').innerHTML = CHECKS.map((c,i) => '<div class="check-item check-item--'+c.s+' is-enter" style="--d:'+(i*70)+'ms"><span class="check-item__icon">' + (c.s==='pass'?'通过':c.s==='warn'?'提示':'失败') + '</span><div><div class="check-item__txt">'+c.t+'</div><div class="check-item__sub">'+c.sub+'</div></div></div>').join('');
+  }
+
+  /* ============ 事件绑定 ============ */
+  $('drawerClose').addEventListener('click', closeDrawer);
+  $('drawerMask').addEventListener('click', e => { if (e.target.id === 'drawerMask') closeDrawer(); });
+  $('modalCancel').addEventListener('click', closeLinkModal);
+  $('modalConfirm').addEventListener('click', confirmLinkModal);
+  $('modalCandidates').addEventListener('click', e => {
+    const row = e.target.closest('[data-pick]');
+    if (!row) return;
+    $('modalCandidates').querySelectorAll('[data-pick]').forEach(r => r.classList.remove('is-pick'));
+    row.classList.add('is-pick');
+    modalPicked = row.dataset.pick;
+    $('modalConfirm').disabled = false;
+  });
+  $('modalCandidates').addEventListener('keydown', e => {
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.closest('[data-pick]')) {
+      e.preventDefault();
+      e.target.closest('[data-pick]').click();
+    }
+  });
+  $('linkModal').addEventListener('click', e => { if (e.target.id === 'linkModal') closeLinkModal(); });
+
+  $('auditCancel').addEventListener('click', closeAudit);
+  $('auditConfirm').addEventListener('click', () => { closeAudit(); showToast('已提交楼盘入库审核'); $('submitBtn').disabled = true; $('submitWrap').removeAttribute('data-tip'); $('gateHint').textContent = '已提交'; $('gateHint').className='gate-hint'; });
+  $('auditModal').addEventListener('click', e => { if (e.target.id === 'auditModal') closeAudit(); });
+
+  function topOpenDialog(){
+    return ['auditModal','linkModal','drawerMask'].find(id => $(id).classList.contains('is-open')) || null;
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    const top = topOpenDialog();
+    if (!top) return;
+    e.preventDefault();
+    if (top === 'auditModal') closeAudit();
+    else if (top === 'linkModal') closeLinkModal();
+    else closeDrawer();
+  });
+
+  // 结果视图切换（关系卡片 / 高密度表格）
+  document.querySelectorAll('#densityToggle .ds-toggle__btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      density = btn.dataset.density;
+      document.querySelectorAll('#densityToggle .ds-toggle__btn').forEach(b => {
+        const active = b === btn;
+        b.classList.toggle('is-on', active);
+        b.setAttribute('aria-pressed', String(active));
+      });
+      renderCards(true);
+    });
+  });
+
+  // 键盘：Tab 跳下一个异常卡并居中滚动；Space 打开最近一次 Tab 定位的异常卡对比
+  function anomalyEls(){ return Array.from(document.querySelectorAll('#cards [data-card][data-card-anomaly="1"]')); }
+  function flashAnomaly(el){
+    if (flashEl) flashEl.classList.remove('is-flash');
+    flashEl = el;
+    void el.offsetWidth;                       // 重启动画
+    el.classList.add('is-flash');
+    el.scrollIntoView({ block: 'center' });   // 滚动到垂直居中
+  }
+  document.addEventListener('keydown', e => {
+    if (!$('step3').classList.contains('is-active')) return;
+    if (['drawerMask','linkModal','auditModal'].some(id => $(id).classList.contains('is-open'))) return;
+    const tag = (e.target && e.target.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+    if (e.key === ' ' || e.code === 'Space'){
+      if (!flashEl) return;                    // 需先用 Tab 定位异常卡
+      e.preventDefault();
+      const id = flashEl.dataset.cardId, side = flashEl.dataset.cardSide, orphan = flashEl.dataset.cardOrphan === '1';
+      openCardAction(id, side, orphan, flashEl);
+      return;
+    }
+    if (e.key === 'Tab'){
+      const ae = document.activeElement;
+      const nothing = !ae || ae === document.body || ae === document.documentElement;
+      if (!nothing) return; // 焦点在真实控件上时，Tab 走正常焦点流转
+      const els = anomalyEls();
+      if (!els.length) return;
+      e.preventDefault();
+      const cur = flashEl && els.includes(flashEl) ? els.indexOf(flashEl) : -1;
+      flashAnomaly(els[(cur + 1) % els.length]);
+    }
+  });
+
+  // 漏斗过滤
+  document.querySelectorAll('.seg').forEach(n => n.addEventListener('click', () => {
+    n.classList.add('is-tap'); setTimeout(() => n.classList.remove('is-tap'), 260);
+    statusFilter = n.dataset.filter; renderFunnel(); renderCards(true);
+  }));
+
+  $('toStep2').addEventListener('click', () => { renderChecks(); goStep(2); });
+  $('backTo1').addEventListener('click', () => goStep(1));
+  $('toStep3').addEventListener('click', () => goStep(3));
+  $('backBtn').addEventListener('click', () => {
+    const params = new URLSearchParams({ restore:'1', building:taskBuilding, code:taskCode });
+    window.location.href = '../map/index.html?' + params.toString();
+  });
+  $('submitBtn').addEventListener('click', () => { if (!$('submitBtn').disabled) openAudit(); });
+  $('draftBtn').addEventListener('click', () => showToast('草稿已保存'));
+  $('draftBtn2').addEventListener('click', () => showToast('草稿已保存'));
+
+  // 自定义下拉（替代原生 select，展开面板符合 TDesign 规范）
+  // 可搜索下拉采用 TDesign SelectInput 模式：触发器本身即输入框，键入即时过滤，面板内不再单独放搜索框
+  function closeUiSelects(){
+    document.querySelectorAll('.ui-select.is-open').forEach(o => {
+      const t = o.querySelector('.ui-select__trigger');
+      if (t && t.tagName === 'INPUT'){ const lv = t.getAttribute('data-last') || ''; if (t.value !== lv) t.value = lv; }
+      o.classList.remove('is-open');
+    });
+  }
+  document.querySelectorAll('.ui-select[data-select]').forEach(sel => {
+    const trigger = sel.querySelector('.ui-select__trigger');
+    const panel = sel.querySelector('.ui-select__panel');
+    const isInput = trigger && trigger.tagName === 'INPUT';
+    const searchable = sel.hasAttribute('data-search');
+    const targetId = sel.getAttribute('data-target');
+    const emptyEl = searchable ? sel.querySelector('[data-empty]') : null;
+    const valueEl = sel.querySelector('.ui-select__value');
+    const opts = () => panel.querySelectorAll('.ui-select__option');
+    if (isInput) trigger.setAttribute('data-last', trigger.value || '');
+
+    function filterOptions(q){
+      q = (q || '').trim().toLowerCase();
+      let shown = 0;
+      opts().forEach(o => {
+        const hay = (o.getAttribute('data-id') || '') + ' ' + (o.getAttribute('data-name') || o.textContent);
+        const hit = !q || hay.toLowerCase().includes(q);
+        o.style.display = hit ? '' : 'none';
+        if (hit) shown++;
+      });
+      if (emptyEl) emptyEl.style.display = shown ? 'none' : 'block';
+    }
+    function openPanel(){
+      if (sel.classList.contains('is-open')) return;
+      document.querySelectorAll('.ui-select.is-open').forEach(o => { if (o !== sel){ const t = o.querySelector('.ui-select__trigger'); if (t && t.tagName === 'INPUT'){ const lv = t.getAttribute('data-last') || ''; if (t.value !== lv) t.value = lv; } o.classList.remove('is-open'); } });
+      sel.classList.add('is-open');
+      if (searchable){ filterOptions(''); if (trigger.select) { try { trigger.select(); } catch(e){} } }
+    }
+
+    if (isInput){
+      trigger.addEventListener('focus', openPanel);
+      trigger.addEventListener('click', e => { e.stopPropagation(); openPanel(); });
+      trigger.addEventListener('input', e => { if (!sel.classList.contains('is-open')) sel.classList.add('is-open'); filterOptions(e.target.value); });
+      trigger.addEventListener('keydown', e => { if (e.key === 'Escape'){ sel.classList.remove('is-open'); trigger.value = trigger.getAttribute('data-last') || ''; } });
+    } else {
+      trigger.addEventListener('click', e => { e.stopPropagation(); const wasOpen = sel.classList.contains('is-open'); closeUiSelects(); if (!wasOpen) sel.classList.add('is-open'); });
+    }
+
+    panel.addEventListener('click', e => e.stopPropagation());
+    if (isInput) panel.addEventListener('mousedown', e => e.preventDefault()); // 选取时保持输入框聚焦
+
+    opts().forEach(opt => {
+      opt.addEventListener('click', e => {
+        e.stopPropagation();
+        opts().forEach(o => o.classList.remove('is-selected'));
+        opt.classList.add('is-selected');
+        const id = opt.getAttribute('data-id') || '';
+        const name = opt.getAttribute('data-name') || opt.textContent.trim();
+        if (isInput){ trigger.value = (id ? id + ' ' : '') + name; trigger.setAttribute('data-last', trigger.value); }
+        else if (valueEl) valueEl.textContent = opt.textContent.trim();
+        if (targetId){ const t = document.getElementById(targetId); if (t) t.value = id; }
+        sel.classList.remove('is-open');
+        if (isInput) trigger.blur();
+      });
+    });
+  });
+  document.addEventListener('click', closeUiSelects);
+
+  $('taskObjectTitle').textContent = taskObjectLabel;
+  $('targetBuildingInput').value = 'BD-DEMO-' + taskCodeNumber.padStart(3,'0') + ' ' + taskObjectLabel;
+  $('targetBuildingInput').setAttribute('data-last', $('targetBuildingInput').value);
+  const selectedTargetOption = document.querySelector('[data-select] .ui-select__option.is-selected');
+  if (selectedTargetOption){
+    selectedTargetOption.dataset.id = 'BD-DEMO-' + taskCodeNumber.padStart(3,'0');
+    selectedTargetOption.dataset.name = taskObjectLabel;
+    const idLabel = selectedTargetOption.querySelector('.opt-id'), nameLabel = selectedTargetOption.querySelector('.opt-name');
+    if (idLabel) idLabel.textContent = selectedTargetOption.dataset.id;
+    if (nameLabel) nameLabel.textContent = taskObjectLabel;
+  }
+  $('surveyBuildingName').textContent = taskObjectLabel + '（实测）';
+  $('auditBuilding').textContent = taskObjectLabel;
+  loadDataset();   // 装载当前幢的 40 层全状态演示数据集并首渲染
+  const demoView = taskParams.get('view');
+  if (demoView === 'table' || demoView === 'compact') density = 'compact';
+  else if (demoView === 'cards' || demoView === 'standard') density = 'standard';
+  document.querySelectorAll('#densityToggle .ds-toggle__btn').forEach(b => {
+    const active = b.dataset.density === density;
+    b.classList.toggle('is-on', active);
+    b.setAttribute('aria-pressed', String(active));
+  });
+  const demoFilter = taskParams.get('filter');
+  if (['all','linked','review','unlinked'].includes(demoFilter)) statusFilter = demoFilter;
+  const demoStep = Number(taskParams.get('step'));
+  if (demoStep === 2) renderChecks();
+  if ([1,2,3].includes(demoStep)) goStep(demoStep);
+  renderFunnel();
+  renderCards(true);
+
+  /* ============ 提交轻提示：视口内智能定位（不再因按钮靠边溢出屏幕） ============ */
+  let __tip = null;
+  function ensureTip(){
+    if (!__tip){ __tip = document.createElement('div'); __tip.className = 'smart-tip'; document.body.appendChild(__tip); }
+    return __tip;
+  }
+  function showSmartTip(anchor){
+    const txt = anchor.getAttribute('data-tip');
+    if (!txt) return;
+    const tip = ensureTip();
+    tip.textContent = txt;
+    tip.style.display = 'block';
+    const r = anchor.getBoundingClientRect();
+    const tr = tip.getBoundingClientRect();
+    const vw = window.innerWidth, vh = window.innerHeight, m = 8;
+    let top = r.bottom + 8;                              // 优先显示在按钮下方
+    if (top + tr.height > vh - m) top = r.top - tr.height - 8;   // 下方放不下 → 翻到上方
+    if (top < m) top = m;
+    if (top + tr.height > vh - m) top = vh - m - tr.height;      // 仍超高 → 贴顶夹紧
+    let left = r.left + r.width / 2 - tr.width / 2;       // 水平居中于按钮
+    if (left < m) left = m;                              // 左溢 → 贴左夹紧
+    if (left + tr.width > vw - m) left = vw - m - tr.width;      // 右溢 → 贴右夹紧
+    tip.style.top = top + 'px';
+    tip.style.left = left + 'px';
+  }
+  function hideSmartTip(){ if (__tip) __tip.style.display = 'none'; }
+  const submitWrapEl = $('submitWrap');
+  if (submitWrapEl){
+    submitWrapEl.addEventListener('mouseenter', () => showSmartTip(submitWrapEl));
+    submitWrapEl.addEventListener('mouseleave', hideSmartTip);
+  }
+  window.addEventListener('resize', hideSmartTip);
+
+  bindFloorSlider();   // 楼层区间滑块：绑定拖拽 + 轨道点击就近设界 + 仅看异常层
+  bindFloorInputs();   // 楼层范围输入框：直接驱动 floorLo/floorHi，与滑块双向同步
+</script>
+<script>
+  (function(){
+    const ids=['drawerMask','linkModal','auditModal'];
+    const layout=document.querySelector('.layout');
+    let returnFocus=null;
+    function refreshDialogState(){
+      const open=ids.filter(id=>document.getElementById(id).classList.contains('is-open'));
+      const topId=open[open.length-1];
+      if(topId&&!returnFocus){
+        const top=document.getElementById(topId);
+        returnFocus=top.__returnFocus || document.activeElement;
+      }
+      ids.forEach(id=>{
+        const el=document.getElementById(id),active=id===topId;
+        el.setAttribute('aria-hidden',String(!active));
+        if(active)el.removeAttribute('inert');else el.setAttribute('inert','');
+      });
+      if(topId){
+        layout.setAttribute('inert','');
+        const top=document.getElementById(topId);
+        requestAnimationFrame(()=>top.querySelector('.drawer__close,#modalCancel,#auditCancel,button,[tabindex="0"]')?.focus());
+      }else{
+        layout.removeAttribute('inert');
+        const target=returnFocus;returnFocus=null;
+        requestAnimationFrame(()=>{
+          if(target?.isConnected) target.focus?.();
+        });
+      }
+    }
+    const observer=new MutationObserver(refreshDialogState);
+    ids.forEach(id=>observer.observe(document.getElementById(id),{attributes:true,attributeFilter:['class']}));
+    refreshDialogState();
+  }());
+</script>
+</body>
+</html>

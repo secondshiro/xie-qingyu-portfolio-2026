@@ -1,0 +1,106 @@
+---
+interface Section {
+  id: string;
+  label: string;
+}
+
+interface Props {
+  title?: string;
+  sections?: Section[];
+}
+
+const { title = '房产 GIS 体验重构', sections = [
+  { id: 'result', label: '00 / 先看结果' },
+  { id: 'origin', label: '01 / 项目源头' },
+  { id: 'problem', label: '02 / 问题重定义' },
+  { id: 'workspaces', label: '03 / 核心方案' },
+  { id: 'strategy', label: '04 / 行业判断' },
+  { id: 'tradeoffs', label: '05 / 设计取舍' },
+  { id: 'impact', label: '06 / 价值与边界' },
+  { id: 'ai-collaboration', label: '07 / AI 协作' },
+] } = Astro.props;
+---
+
+<nav class="case-toc" aria-label="案例目录" data-case-toc>
+  <p class="case-toc__title">{title}</p>
+  <div class="case-toc__tree" data-case-toc-tree>
+    <span class="case-toc__stem" aria-hidden="true"></span>
+    <ol>
+      {sections.map((section, index) => (
+        <li>
+          <span class="case-toc__branch" aria-hidden="true"></span>
+          <a href={`#${section.id}`} aria-current={index === 0 ? 'true' : undefined} data-active={index === 0 ? '' : undefined}>
+            <span>{section.label}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+    <span class="case-toc__dot" aria-hidden="true" data-case-toc-dot></span>
+  </div>
+</nav>
+
+<script>
+  const toc = document.querySelector<HTMLElement>('[data-case-toc]');
+  const tree = toc?.querySelector<HTMLElement>('[data-case-toc-tree]');
+  const dot = toc?.querySelector<HTMLElement>('[data-case-toc-dot]');
+  const closing = document.querySelector<HTMLElement>('.case-closing');
+  const sectionElements = Array.from(document.querySelectorAll<HTMLElement>('.case-section'));
+  const visibleSections = new Set<string>();
+
+  const moveDot = (activeLink: HTMLAnchorElement) => {
+    const label = activeLink.querySelector<HTMLElement>('span');
+    if (!tree || !dot || !label) return;
+    const treeRect = tree.getBoundingClientRect();
+    const labelRect = label.getBoundingClientRect();
+    const x = labelRect.right - treeRect.left + 8;
+    const y = labelRect.top - treeRect.top + (labelRect.height - 6) / 2;
+    dot.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+  };
+
+  const setActiveSection = (activeId: string) => {
+    if (!toc) return;
+    for (const link of toc.querySelectorAll<HTMLAnchorElement>('a')) {
+      const isActive = link.hash === `#${activeId}`;
+      if (isActive) {
+        link.setAttribute('aria-current', 'true');
+        link.setAttribute('data-active', '');
+        moveDot(link);
+      } else {
+        link.removeAttribute('aria-current');
+        link.removeAttribute('data-active');
+      }
+    }
+  };
+
+  const updateVisibility = () => {
+    if (!toc || !closing || sectionElements.length === 0) return;
+
+    const readingLine = window.scrollY + Math.min(window.innerHeight * 0.32, 280);
+    const firstSectionTop = sectionElements[0].offsetTop;
+    const isInStory = readingLine >= firstSectionTop && readingLine < closing.offsetTop;
+    toc.classList.toggle('is-visible', isInStory);
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) visibleSections.add(entry.target.id);
+      else visibleSections.delete(entry.target.id);
+    }
+    if (visibleSections.size === 0) return;
+    const activeSection = [...visibleSections]
+      .map((id) => document.getElementById(id))
+      .filter((section): section is HTMLElement => Boolean(section))
+      .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top)[0];
+    if (activeSection) setActiveSection(activeSection.id);
+  }, { rootMargin: '-15% 0% -60% 0%', threshold: 0 });
+
+  sectionElements.forEach((section) => observer.observe(section));
+  updateVisibility();
+  setActiveSection(sectionElements[0]?.id ?? 'result');
+  window.addEventListener('scroll', updateVisibility, { passive: true });
+  window.addEventListener('resize', () => {
+    updateVisibility();
+    const activeLink = toc?.querySelector<HTMLAnchorElement>('a[data-active]');
+    if (activeLink) moveDot(activeLink);
+  });
+</script>

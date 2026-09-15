@@ -1,0 +1,196 @@
+---
+import ProjectFold from '../components/ProjectFold.astro';
+import SiteLayout from '../layouts/SiteLayout.astro';
+---
+
+<SiteLayout
+  title="谢擎宇｜AI 原生产品体验设计师"
+  description="谢擎宇的产品体验设计作品集，记录复杂系统、AI 工作流与视觉系统的设计实践。"
+  current="home"
+>
+  <main id="main" tabindex="-1">
+    <section class="home-hero" aria-labelledby="home-title">
+      <div class="site-container home-hero__intro">
+        <h1 id="home-title">AI 原生产品体验设计师</h1>
+        <p class="home-hero__lead">我是谢擎宇，擅长复杂业务产品的体验设计，有视觉与品牌设计背景。对我来说，设计需要理解人的工作，也需要判断技术适合用在哪里。现在，AI 已经参与我的设计过程，想法可以更早成为能亲手试用的原型和工具。</p>
+        <a class="home-hero__email" href="mailto:second988@qq.com">second988@qq.com <span aria-hidden="true">→</span></a>
+      </div>
+
+    </section>
+
+    <ProjectFold
+      id="selected-work"
+      eyebrow="代表案例 · 01"
+      title="房产 GIS 体验重构"
+      summary="房产工作人员要在地图上找到楼栋、查看整幢，再核对测绘后的房屋关系。旧系统切换模块后需要重新确认当前楼栋；我重构了总图、整幢和核对任务，留下三个可操作原型。"
+      href="/work/real-estate-gis/"
+    />
+
+    <ProjectFold
+      id="ai-review"
+      eyebrow="工具实践 · 02"
+      title="让 AI 在设计评审中问到关键处"
+      summary="全选漏了其他页，取消后又无法下载，这些项目里的问题让我开始整理检查方法。我把经验写成给 AI 使用的规则，再用真实评审不断补全。"
+      href="/work/edgecase-planner/"
+      tone="stone"
+    />
+
+    <ProjectFold
+      id="brand-system"
+      eyebrow="代表案例 · 03"
+      title="新禾智飞品牌系统提案"
+      summary="不同供应商制作的物料放在一起，很难看出来自同一个品牌。我设计了标识组合、颜色字体规范和制作模板，让后续物料有共同的依据。"
+      href="/work/brand-system/"
+    />
+
+    <ProjectFold
+      id="execution-query"
+      eyebrow="工具实践 · 04"
+      title="执行网查询助手"
+      summary="律师按名单复核执行记录，需要反复查询、抄录和比较。我做了一个本地助手，人工完成官网验证后接着处理名单，并生成表格，减少逐条抄录和重新排表。"
+      href="/work/execution-query/"
+      tone="stone"
+    />
+
+    <section class="home-about" id="about" aria-labelledby="about-title">
+      <div class="site-container home-about__grid">
+        <p class="home-about__label">关于</p>
+        <div class="home-about__content">
+          <h2 id="about-title">12 年设计经验，新的探索还在继续。</h2>
+          <p class="home-about__statement">我的经历横跨视觉、品牌与产品体验，参与过低空智航、房屋安全等领域的后台、大屏与 App 设计。复杂业务里，一个界面往往牵连着前后好几步工作，这也是我理解产品体验的起点。近年，我开始用 AI 开发工具，也把设计评审经验写成 AI 能使用的规则。这些尝试让我能亲自验证更多设计想法，进一步判断方案在实际使用中是否行得通。</p>
+          <div class="home-about__actions">
+            <a class="home-about__download" href="/resume/xie-qingyu-resume.pdf" download="谢擎宇-体验设计师简历.pdf">下载简历 · PDF <span aria-hidden="true">↓</span></a>
+            <a href="mailto:second988@qq.com">second988@qq.com <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</SiteLayout>
+
+<style>
+  .home-hero {
+    overflow: clip;
+    background: var(--color-paper);
+  }
+
+  .home-hero__intro {
+    display: grid;
+    min-height: clamp(15rem, 30vh, 18rem);
+    align-content: center;
+    gap: 1.1rem;
+    padding-block: 2.5rem 2rem;
+  }
+
+  .home-hero h1 {
+    font-size: 2.75rem;
+    line-height: 1;
+  }
+
+  .home-hero__lead {
+    max-width: 44rem;
+    color: var(--color-muted);
+    font-size: clamp(1rem, 1.45vw, 1.2rem);
+    line-height: 1.65;
+  }
+
+  .home-hero__email {
+    display: inline-flex;
+    width: max-content;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--color-accent);
+    font-size: 0.92rem;
+    text-decoration: none;
+  }
+
+  .home-about {
+    background: var(--color-panel);
+  }
+
+  .home-about__grid {
+    display: grid;
+    grid-template-columns: minmax(7rem, 0.45fr) minmax(0, 1.55fr);
+    gap: clamp(2rem, 6vw, 7rem);
+    padding-block: var(--section-space);
+  }
+
+  .home-about__label {
+    color: var(--color-muted);
+    font-size: 0.76rem;
+  }
+
+  .home-about__content {
+    display: grid;
+    gap: 2rem;
+  }
+
+  .home-about h2 {
+    font-size: 2.5rem;
+    font-weight: 400;
+    line-height: 1.3;
+  }
+
+  .home-about__statement {
+    max-width: 49rem;
+    color: var(--color-muted);
+    font-size: clamp(1rem, 1.6vw, 1.25rem);
+    line-height: 1.75;
+  }
+
+  .home-about__content a {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--color-accent);
+    font-size: 0.94rem;
+  }
+
+  .home-about__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+  }
+
+  .home-about__actions .home-about__download {
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-control);
+    background: var(--color-ink);
+    color: var(--color-paper);
+    text-decoration: none;
+  }
+
+  @media (max-width: 63.125rem) {
+    .home-hero__intro {
+      min-height: 15.5rem;
+    }
+
+    .home-about__grid {
+      grid-template-columns: 8rem minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 42rem) {
+    .home-hero__intro {
+      min-height: auto;
+      gap: 1rem;
+      padding-block: 4rem 3rem;
+    }
+
+    .home-hero h1 {
+      font-size: 2.25rem;
+      line-height: 1.04;
+    }
+
+    .home-about__grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .home-about h2 {
+      font-size: 1.75rem;
+    }
+  }
+</style>

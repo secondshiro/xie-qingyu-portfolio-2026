@@ -1,0 +1,24 @@
+---
+interface Props {
+  id: string;
+  label: string;
+  title: string;
+  intro?: string;
+  tone?: 'paper' | 'stone' | 'panel';
+}
+
+const { id, label, title, intro, tone = 'paper' } = Astro.props;
+---
+
+<section class:list={['case-section', `case-section--${tone}`]} id={id}>
+  <div class="site-container case-section__grid">
+    <div class="case-section__body">
+      <header class="case-section__header">
+        <p class="case-section__label">{label}</p>
+        <h2>{title}</h2>
+        {intro && <p>{intro}</p>}
+      </header>
+      <slot />
+    </div>
+  </div>
+</section>

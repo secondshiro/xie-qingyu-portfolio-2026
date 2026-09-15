@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>&#20998;&#23618;&#20998;&#25143;&#22270;&#65372;&#25968;&#23383;&#20303;&#25151;&#19968;&#20307;&#21270;&#24179;&#21488;</title>
+<link rel="stylesheet" href="workspace-tdesign.css">
+<style>html,body{width:100%;min-width:100%;height:100%;overflow:hidden}.workspace-shell{width:100%;min-width:100%}.workspace-shell.building>section{width:100%;min-width:100%}.workspace-shell .wk-global-search>svg{display:block;width:16px;height:16px;flex:0 0 16px;fill:none;stroke:currentColor;overflow:visible}.workspace-shell .wk-global-search>svg circle,.workspace-shell .wk-global-search>svg path{fill:none;stroke:currentColor}
+*{box-sizing:border-box}body{margin:0}.building{height:100vh;overflow:hidden;background:var(--wk-bg-page)}.building,.building button,.building input{font-family:var(--wk-font-family)}.main{display:flex;flex:1;min-height:0}.column{display:flex;min-width:0;flex:1;flex-direction:column;background:var(--wk-bg-surface)}.wk-toolbar{position:relative;z-index:20;overflow:visible}.bar-search{width:184px}.sep{width:1px;height:20px;background:var(--wk-border)}.inspector-pad{height:100%;padding:12px;position:relative}.collapse{position:absolute;top:8px;right:8px}.plan-head{display:flex;justify-content:space-between;margin:0 0 8px;font-size:16px;font-weight:600}.plan-head small{font-size:12px;font-weight:400;color:var(--wk-text-placeholder)}.plan{height:108px;display:grid;place-items:center;background:#f4f8f8;border:1px solid var(--wk-border);border-radius:6px}.plan b{width:104px;height:66px;border:2px solid #ff8a00;box-shadow:inset 24px 12px #ff8a00}.props{display:grid;grid-template-columns:78px minmax(0,1fr);gap:8px;margin:12px 0 0;font-size:14px}.props dt{color:var(--wk-text-placeholder)}.props dd{margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.hidden{display:none!important}.folded{height:100%;align-items:center;flex-direction:column;gap:12px;padding-top:4px}.folded span{color:var(--wk-text-secondary);font-size:12px;letter-spacing:2px;writing-mode:vertical-rl}.matrix{position:relative;flex:1;min-height:0;overflow:auto;background:#fff}.matrix-canvas{width:1915px;min-height:100%}.head,.row{display:grid;grid-template-columns:46px 56px 724px 483px 606px}.head{position:sticky;top:0;z-index:10;height:32px;border-bottom:1px solid var(--wk-border);color:var(--wk-text-placeholder);font-size:12px;text-align:center}.head>*{display:grid;place-items:center;background:var(--wk-bg-subtle)}.row{height:34px;margin-top:2px}.floor{display:grid;place-items:center;background:#fff;box-shadow:inset -1px 0 var(--wk-border);font-size:12px}.actual,.nominal{position:sticky;z-index:12;background:#fff}.actual{left:0}.nominal{left:46px}.head .actual,.head .nominal{z-index:14;background:var(--wk-bg-subtle)}.unit-band{display:grid;gap:2px;min-width:0;padding-left:2px;border-left:3px solid #8d99a8;background:#fff}.head b{border-left:3px solid #8d99a8}.room{position:relative;display:flex;align-items:center;justify-content:center;min-width:0;overflow:hidden;border:0;padding:0 4px;background:#cbd2ee;color:#16161a;cursor:pointer;font-size:12px;font-weight:600;text-overflow:ellipsis;white-space:nowrap;text-shadow:-1px 0 #fff,0 1px #fff,1px 0 #fff,0 -1px #fff}.room:hover{outline:1px solid var(--wk-primary);outline-offset:-1px}.room:focus-visible,.room.selected{outline:2px solid var(--wk-primary);outline-offset:-2px;z-index:2}.state-band{position:absolute;inset:0;display:flex;z-index:0}.state-band i{flex:1;background:var(--state)}.room__label{position:relative;z-index:1;overflow:hidden;text-overflow:ellipsis}.room.dim{opacity:.18}.matrix-empty{position:absolute;inset:32px 0 0;display:none;place-items:center;background:rgba(255,255,255,.92);z-index:16}.matrix-empty.show{display:grid}.matrix-foot{height:34px;display:flex;align-items:center;gap:18px;padding:0 12px;background:var(--wk-bg-subtle);border-top:1px solid var(--wk-border);color:var(--wk-text-secondary);font-size:12px}.legend{position:absolute;top:164px;right:0;bottom:0;z-index:30;width:272px;box-shadow:var(--wk-shadow-float)}.legend-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--wk-border)}.legend-hint{padding:8px 14px;background:var(--wk-bg-subtle);color:var(--wk-text-placeholder);font-size:12px}.legend-scroll{overflow:auto}.legend-group{padding:10px 14px;border-bottom:1px solid var(--wk-border)}.legend-group b{font-size:12px}.legend-item{display:flex;align-items:center;min-height:30px;gap:8px;color:var(--wk-text-secondary);font-size:12px;cursor:pointer}.legend-item:has(input:checked){background:var(--wk-primary-bg);color:var(--wk-primary);font-weight:600}.swatch{width:12px;height:12px;flex:0 0 12px;border:1px solid var(--wk-border-control);border-radius:4px;background:var(--state)}.legend-item input{width:16px;height:16px;accent-color:var(--wk-primary)}.toast{position:absolute;left:50%;bottom:48px;display:none;z-index:50;transform:translateX(-50%);padding:9px 14px;color:#fff;background:#1d2129;border-radius:4px;font-size:12px}.toast.show{display:block}@media(max-width:900px){.wk-brand{min-width:auto}.wk-brand__sub,.nav-text{display:none}.bar-search{width:150px}.wk-object-header__context{display:none}}
+</style>
+<style>
+.plan{overflow:hidden}.plan img{display:block;max-width:100%;max-height:100%;object-fit:contain}
+</style>
+<style>
+.wk-dropdown__trigger{display:inline-flex;align-items:center;gap:10px}
+.wk-dropdown__trigger svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.wk-dropdown.is-open .wk-dropdown__trigger svg{transform:rotate(180deg)}
+.building .wk-toolbar{z-index:100}
+.building #quickDrop{z-index:101}
+.building #quickDrop .wk-dropdown__menu{z-index:9999}
+</style>
+</head>
+<style>
+.workspace-shell .room.selected,
+.workspace-shell .room.is-selected {
+  z-index: 2;
+}
+.workspace-shell .room.is-selected::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  border: 3px solid #0052D9;
+}
+.workspace-shell .matrix.has-room-selection .room:not(.is-selected) {
+  opacity: .18;
+}
+</style>
+<body>
+<div class="workspace-shell building"><section style="height:100%;display:flex;flex-direction:column;position:relative;overflow:hidden"><header class="wk-header"><div class="wk-brand">
+<span class="wk-brand__mark">&#20303;</span><span>&#25968;&#23383;&#20303;&#25151;&#19968;&#20307;&#21270;&#24179;&#21488; <span class="wk-brand__sub">&#31354;&#38388;&#24037;&#20316;&#21488;</span></span>
+</div>
+<label class="wk-global-search"><svg viewbox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.5"></circle><path d="m10.5 10.5 3 3" stroke="currentColor" stroke-width="1.5"></path></svg><input id="globalSearch" placeholder="&#25628;&#32034;&#27004;&#30424; / &#22320;&#22336; / &#24162; / &#25143;&#23460;&#65292;&#22238;&#36710;&#23450;&#20301;"></label><div class="wk-header__actions">
+<button class="wk-btn wk-btn--ghost nav-text">&#28040;&#24687;</button><button class="wk-btn wk-btn--ghost nav-text">&#24110;&#21161;</button><span class="wk-brand__mark">&#31649;</span>
+</div></header><div class="wk-object-header">
+<button id="back" class="wk-object-header__back"><svg viewbox="0 0 16 16" fill="none"><path d="M10 3.5 5.5 8l4.5 4.5" stroke="currentColor" stroke-width="1.5"></path></svg>&#36820;&#22238;&#22320;&#22270;</button><span class="wk-object-header__divider"></span><div class="wk-object-header__identity">
+<b id="title" class="wk-object-header__title">&#23431;&#27982;&#19968;&#21495; &middot; 17&#24162;</b><span class="wk-object-header__view">&#20998;&#23618;&#20998;&#25143;&#22270;</span>
+</div>
+<span class="wk-object-header__context">&#22320;&#22270;&#19978;&#19979;&#25991;&#24050;&#20445;&#30041;</span>
+</div>
+<div class="wk-toolbar">
+<div class="wk-toolbar__group">
+<div id="quickDrop" class="wk-dropdown">
+<button id="quick" class="wk-btn wk-dropdown__trigger" onclick="menu('quickDrop',event)"><span>&#20840;&#37096;&#25143;&#23460;</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></button><div class="wk-dropdown__menu">
+<button class="wk-dropdown__item is-active" data-q="all">&#20840;&#37096;&#25143;&#23460;</button><button class="wk-dropdown__item" data-q="sale">&#21487;&#21806;</button><button class="wk-dropdown__item" data-q="reserve">&#21487;&#23450;</button>
+</div>
+</div>
+<input id="search" class="wk-input bar-search" placeholder="&#25628;&#32034;&#25151;&#21495;&#25110;&#26435;&#21033;&#20154;"><label class="wk-switch">&#26435;&#21033;&#20154;<input id="owner" type="checkbox"><i class="wk-switch__track"></i></label><label class="wk-switch">&#22270;&#20363;<input id="legendToggle" type="checkbox"><i class="wk-switch__track"></i></label>
+</div>
+<span class="sep"></span><span class="wk-toolbar__spacer"></span><div class="wk-business-actions">
+<button class="wk-btn">&#21382;&#21490;&#35760;&#24405;</button><button class="wk-btn">&#19994;&#21153;&#32500;&#25252;</button>
+</div>
+</div>
+<div class="main">
+<aside id="inspector" class="wk-object-inspector"><div class="wk-object-inspector__expanded inspector-pad">
+<button class="wk-btn wk-btn--ghost wk-btn--sm wk-icon-btn collapse" onclick="inspector.classList.add('is-collapsed')" aria-label="&#25240;&#21472;&#23646;&#24615;&#26639;"><svg viewbox="0 0 16 16" fill="none"><path d="m10 3.5-4.5 4.5L10 12.5" stroke="currentColor" stroke-width="1.5"></path></svg></button><div class="plan-head">
+<span>&#24179;&#38754;&#22270;</span><small>&#31354;&#38388;&#21442;&#32771;</small>
+</div>
+<div class="plan"><img src="assets/17-building-plan-reference.png" alt="17幢平面图空间参考"></div>
+<div class="wk-tabs">
+<button id="basic" class="wk-tab is-active">&#22522;&#26412;&#23646;&#24615;</button><button id="business" class="wk-tab">&#19994;&#21153;&#23646;&#24615;</button>
+</div>
+<dl id="buildingProps" class="props">
+<dt>&#24403;&#21069;&#23545;&#35937;</dt>
+<dd id="bcode">17&#24162;</dd>
+<dt>&#39033;&#30446;&#21517;&#31216;</dt>
+<dd id="bname">&#23431;&#27982;&#19968;&#21495;</dd>
+<dt>&#24320;&#21457;&#21830;</dt>
+<dd title="&#40644;&#20872;&#23431;&#27982;&#25151;&#22320;&#20135;&#24320;&#21457;&#26377;&#38480;&#20844;&#21496;">&#40644;&#20872;&#23431;&#27982;&#25151;&#22320;&#20135;&#24320;&#21457;&#26377;&#38480;&#20844;&#21496;</dd>
+<dt>&#27979;&#32472;&#31867;&#22411;</dt>
+<dd>&#23454;&#27979;</dd>
+<dt>&#24162;&#31867;&#22411;</dt>
+<dd>&#26377;&#22270;&#24162;</dd>
+<dt>&#25968;&#25454;&#35828;&#26126;</dt>
+<dd>&#20316;&#21697;&#38598;&#28436;&#31034;&#25968;&#25454;</dd>
+</dl>
+<dl id="businessProps" class="props hidden">
+<dt>入库状态</dt>
+<dd>已入库</dd>
+<dt>业务状态</dt>
+<dd>已备案</dd>
+<dt>登记状态</dt>
+<dd>存在抵押登记</dd>
+<dt>维护状态</dt>
+<dd>可发起业务维护</dd>
+<dt>数据说明</dt>
+<dd>作品集演示数据</dd>
+</dl>
+<dl id="roomProps" class="props hidden">
+<dt>&#24403;&#21069;&#23545;&#35937;</dt>
+<dd id="roomName">&#26410;&#36873;&#25321;&#25143;&#23460;</dd>
+<dt>&#24314;&#31569;&#38754;&#31215;</dt>
+<dd>128.60 m&sup2;</dd>
+<dt>&#29992;&#36884;</dt>
+<dd>&#20303;&#23429;</dd>
+<dt>&#27979;&#32472;&#31867;&#22411;</dt>
+<dd>&#23454;&#27979;</dd>
+</dl>
+</div>
+<div class="wk-object-inspector__collapsed folded">
+<button class="wk-btn wk-btn--ghost wk-btn--sm wk-icon-btn" onclick="inspector.classList.remove('is-collapsed')" aria-label="&#23637;&#24320;&#23646;&#24615;&#26639;"><svg viewbox="0 0 16 16" fill="none"><path d="m6 3.5 4.5 4.5L6 12.5" stroke="currentColor" stroke-width="1.5"></path></svg></button><span>27&#23618; &middot; &#24162;&#23646;&#24615;</span>
+</div></aside><main class="column"><div class="matrix">
+<div class="matrix-canvas">
+<div class="head">
+<span class="floor actual">&#23454;&#38469;&#23618;</span><span class="floor nominal">&#21517;&#20041;&#23618;</span><b>1&#21333;&#20803; &middot; &#26368;&#22810;6&#25143;</b><b>2&#21333;&#20803; &middot; &#26368;&#22810;4&#25143;</b><b>3&#21333;&#20803; &middot; &#26368;&#22810;5&#25143;</b>
+</div>
+<div id="rows"></div>
+</div>
+<div id="empty" class="matrix-empty" role="status" aria-live="polite"><div class="wk-empty">
+<div class="wk-empty__title">&#26410;&#25214;&#21040;&#21305;&#37197;&#25143;&#23460;</div>
+<div class="wk-empty__description">&#35831;&#20462;&#25913;&#25151;&#21495;&#25110;&#26435;&#21033;&#20154;&#20851;&#38190;&#35789;&#65292;&#25110;&#28165;&#38500;&#29366;&#24577;&#31579;&#36873;&#12290;</div>
+</div></div>
+</div>
+<div class="matrix-foot">
+<span>&#24403;&#21069;&#30697;&#38453; <b id="total">0</b>&#25143;</span><span>&#24403;&#21069;&#21487;&#35265; <b id="visible">0</b>&#25143;</span><span>&#24050;&#36873; <b id="selected">0</b></span>
+</div></main>
+</div>
+<aside id="legend" class="wk-status-legend legend hidden"><div class="legend-head">
+<b>&#19994;&#21153;&#29366;&#24577;&#22270;&#20363;</b><button class="wk-btn wk-btn--ghost wk-btn--sm wk-icon-btn" id="closeLegend" aria-label="&#20851;&#38381;&#22270;&#20363;"><svg viewbox="0 0 16 16" fill="none"><path d="m4 4 8 8m0-8-8 8" stroke="currentColor" stroke-width="1.5"></path></svg></button>
+</div>
+<div class="legend-hint">&#21487;&#32452;&#21512;&#31579;&#36873;&#65306;&#21246;&#36873;&#20219;&#19968;&#29366;&#24577;&#21363;&#32858;&#28966;&#20854;&#23545;&#24212;&#25143;&#23460;&#12290;</div>
+<div class="legend-scroll">
+<div class="legend-group">
+<b>&#20132;&#26131;&#19982;&#22791;&#26696;</b><label class="legend-item"><input type="checkbox" value="presale"><i class="swatch" style="--state:#bdf284"></i>&#24050;&#39044;&#21806;&#35768;&#21487;</label><label class="legend-item"><input type="checkbox" value="filing"><i class="swatch" style="--state:#cbd2ee"></i>&#24050;&#22791;&#26696;</label><label class="legend-item"><input type="checkbox" value="stock"><i class="swatch" style="--state:#ef83e9"></i>&#24050;&#23384;&#37327;&#25151;&#22791;&#26696;</label>
+</div>
+<div class="legend-group">
+<b>&#39044;&#21578;&#30331;&#35760;</b><label class="legend-item"><input type="checkbox" value="prebuy"><i class="swatch" style="--state:#56c778"></i>&#24050;&#39044;&#36141;&#39044;&#21578;</label><label class="legend-item"><input type="checkbox" value="premortgage"><i class="swatch" style="--state:#ff8248"></i>&#24050;&#39044;&#25269;&#39044;&#21578;</label>
+</div>
+<div class="legend-group">
+<b>&#26435;&#21033;&#19982;&#25285;&#20445;</b><label class="legend-item"><input type="checkbox" value="mortgage"><i class="swatch" style="--state:#5b58b5"></i>&#24050;&#25269;&#25276;</label><label class="legend-item"><input type="checkbox" value="objection"><i class="swatch" style="--state:#fff100"></i>&#24050;&#24322;&#35758;</label>
+</div>
+<div class="legend-group">
+<b>&#38480;&#21046;&#19982;&#22788;&#32622;</b><label class="legend-item"><input type="checkbox" value="seizure"><i class="swatch" style="--state:#cf0000"></i>&#24050;&#26597;&#23553;</label><label class="legend-item"><input type="checkbox" value="restricted"><i class="swatch" style="--state:#d90068"></i>&#24050;&#26435;&#21033;&#38480;&#21046;</label>
+</div>
+<div class="legend-group">
+<b>&#25151;&#23627;&#24615;&#36136;</b><p>&#9733; &#21830;&#21697;&#25151;&#12288;&#9679; &#32463;&#27982;&#36866;&#29992;&#25151;<br>&#9651; &#25286;&#36801;&#23433;&#32622;&#25151;&#12288;&#9633; &#29289;&#19994;&#31649;&#29702;&#29992;&#25151;</p>
+</div>
+</div></aside><div id="toast" class="toast"></div></section></div>
+<script>
+const q=new URLSearchParams(location.search),building=q.get('building')||'&#23431;&#27982;&#19968;&#21495;',code=q.get('code')||'17&#24162;',num=code.replace(/\D/g,'')||'17';title.textContent=building+' &middot; '+code;bcode.textContent=code;bname.textContent=building;const COLORS={filing:'#cbd2ee',mortgage:'#5b58b5',prebuy:'#56c778',premortgage:'#ff8248',objection:'#fff100',restricted:'#d90068',seizure:'#cf0000',stock:'#ef83e9',presale:'#bdf284'},SYMS=['&#9733;','&#9733;','&#9679;','&#9651;','&#9633;'];let mode='all',selectedCell=null;function statuses(seed){let a=['filing'];if(seed%3===0)a.push('mortgage');if(seed%7===0)a.push('seizure');if(seed%11===0)a.push('restricted');if(seed%5===0)a.push('prebuy');return a}function roomsOn(f,u){return u===1&&f===15?2:u===1&&f===8?6:u===2&&f===20?3:u===3&&f===12?5:u===3&&f===3?2:4}function render(){let h='';for(let f=27;f>=1;f--){h+='<div class="row"><span class="floor actual">'+f+'</span><span class="floor nominal">'+(f===18?'17A&#23618;':f+'&#23618;')+'</span>';for(let u=1;u<=3;u++){let n=roomsOn(f,u);h+='<div class="unit-band" style="grid-template-columns:repeat('+n+',minmax(118px,1fr))">';for(let i=1;i<=n;i++){let s=f*17+u*7+i,room=''+(f*100+i),states=statuses(s),ownerName=['&#24352;&#26576;&#31561;2&#20154;','&#28246;&#21271;&#26576;&#32622;&#19994;&#26377;&#38480;&hellip;','&#26446;&#26576;','&#40644;&#20872;&#24066;&#26576;&#29289;&#19994;&#31649;&hellip;'][s%4],bands=states.map(x=>'<i style="--state:'+COLORS[x]+'"></i>').join('');h+='<button class="room" data-room="'+room+'" data-owner="'+ownerName+'" data-states="'+states.join(',')+'" data-unit="'+u+'" title="'+u+'&#21333;&#20803; '+room+'&#23460;"><span class="state-band">'+bands+'</span><span class="room__label">'+SYMS[s%5]+room+'</span></button>'}h+='</div>'}h+='</div>'}rows.innerHTML=h;document.querySelectorAll('.room').forEach(x=>x.addEventListener('click',()=>pick(x)));total.textContent=document.querySelectorAll('.room').length;apply()}function pick(x){if(selectedCell)selectedCell.classList.remove('selected');selectedCell=selectedCell===x?null:x;if(selectedCell){selectedCell.classList.add('selected');roomProps.classList.remove('hidden');buildingProps.classList.add('hidden');roomName.textContent=x.dataset.unit+'&#21333;&#20803; &middot; '+x.dataset.room+'&#23460;'}else{roomProps.classList.add('hidden');buildingProps.classList.remove('hidden')}selected.textContent=selectedCell?'1':'0'}function apply(){let text=search.value.trim().toLowerCase(),chosen=[...document.querySelectorAll('#legend input:checked')].map(x=>x.value),count=0;document.querySelectorAll('.room').forEach(x=>{let states=x.dataset.states.split(','),quick=mode==='all'||states.includes(mode)||(mode==='multi'&&states.length>1),legend=!chosen.length||chosen.some(v=>states.includes(v)),find=!text||x.dataset.room.includes(text)||x.dataset.owner.toLowerCase().includes(text),hit=quick&&legend&&find;x.classList.toggle('dim',!hit);if(hit)count++});visible.textContent=count;empty.classList.toggle('show',count===0)}function menu(id,e){e.stopPropagation();let x=document.getElementById(id),open=!x.classList.contains('is-open');document.querySelectorAll('.wk-dropdown').forEach(y=>y.classList.remove('is-open'));x.classList.toggle('is-open',open)}function toastMsg(t){toast.textContent=t;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1600)}document.addEventListener('click',()=>document.querySelectorAll('.wk-dropdown').forEach(x=>x.classList.remove('is-open')));document.querySelectorAll('[data-q]').forEach(x=>x.addEventListener('click',()=>{mode=x.dataset.q;quick.textContent=x.textContent;document.querySelectorAll('[data-q]').forEach(y=>y.classList.toggle('is-active',y===x));apply()}));search.addEventListener('input',apply);owner.addEventListener('change',()=>document.querySelectorAll('.room').forEach(x=>x.querySelector('.room__label').textContent=owner.checked?x.dataset.owner:x.dataset.room));legendToggle.addEventListener('change',()=>legend.classList.toggle('hidden',!legendToggle.checked));closeLegend.addEventListener('click',()=>{legendToggle.checked=false;legend.classList.add('hidden')});document.querySelectorAll('#legend input').forEach(x=>x.addEventListener('change',apply));basic.addEventListener('click',()=>{basic.classList.add('is-active');business.classList.remove('is-active');buildingProps.classList.toggle('hidden',!!selectedCell);roomProps.classList.toggle('hidden',!selectedCell)});business.addEventListener('click',()=>{business.classList.add('is-active');basic.classList.remove('is-active');roomProps.classList.add('hidden');buildingProps.classList.remove('hidden');toastMsg('&#19994;&#21153;&#23646;&#24615;&#20026;&#20316;&#21697;&#38598;&#28436;&#31034;&#25968;&#25454;')});globalSearch.addEventListener('keydown',e=>{if(e.key==='Enter'){let v=e.target.value.trim();if(/^\d{3,4}$/.test(v)){search.value=v;apply();toastMsg('&#24050;&#22312;&#24403;&#21069;&#24162;&#23450;&#20301; '+v+' &#23460;')}else toastMsg((building+code).includes(v)?'&#24403;&#21069;&#24050;&#20301;&#20110; '+building+' &middot; '+code:'&#35831;&#36820;&#22238;&#22320;&#22270;&#32487;&#32493;&#25628;&#32034;&#20854;&#20182;&#24162;')}});back.addEventListener('click',()=>location.href='../map/index.html?'+new URLSearchParams({restore:'1',building,code}));if(q.get('owner')==='1')owner.click();if(q.get('legend')==='1'){legendToggle.checked=true;legend.classList.remove('hidden')}render();if(q.get('room')){let x=[...document.querySelectorAll('.room')].find(x=>x.dataset.room===q.get('room'));if(x)pick(x)}
+</script>
+<script>
+  const pageParams=new URLSearchParams(location.search);
+  document.getElementById('title').textContent=(pageParams.get('building')||'宇济一号')+' · '+(pageParams.get('code')||'17幢');
+  document.querySelector('.plan-head small')?.remove();
+  const businessProps=document.getElementById('businessProps');
+  document.getElementById('business').addEventListener('click',()=>{
+    document.getElementById('buildingProps').classList.add('hidden');
+    document.getElementById('roomProps').classList.add('hidden');
+    businessProps.classList.remove('hidden');
+    document.getElementById('toast').classList.remove('show');
+  });
+  document.getElementById('basic').addEventListener('click',()=>businessProps.classList.add('hidden'));
+  document.querySelectorAll('.room').forEach(room=>room.addEventListener('click',()=>{
+    if(room.classList.contains('selected'))document.getElementById('roomName').textContent=room.dataset.unit+'单元 · '+room.dataset.room+'室';
+  }));
+</script>
+</body>
+<script>
+  const decodePageText = value => {
+    const holder = document.createElement('textarea');
+    holder.innerHTML = value || '';
+    return holder.value;
+  };
+  ['title', 'bcode', 'bname', 'roomName'].forEach(id => {
+    const node = document.getElementById(id);
+    if (node) node.textContent = decodePageText(node.textContent);
+  });
+  document.querySelectorAll('.room').forEach(room => {
+    room.dataset.owner = decodePageText(room.dataset.owner);
+    room.title = decodePageText(room.title);
+  });
+  document.getElementById('owner').addEventListener('change', () => {
+    document.querySelectorAll('.room').forEach(room => {
+      const label = room.querySelector('.room__label');
+      if (label && document.getElementById('owner').checked) label.textContent = room.dataset.owner;
+    });
+  });
+</script>
+<script>
+  document.querySelectorAll('.room').forEach(room => room.addEventListener('click', () => {
+    const matrix = room.closest('.matrix');
+    document.querySelectorAll('.room.is-selected').forEach(item => item.classList.remove('is-selected'));
+    matrix?.classList.remove('has-room-selection');
+    if (room.classList.contains('selected')) {
+      room.classList.add('is-selected');
+      matrix?.classList.add('has-room-selection');
+    }
+  }));
+</script>
+<script>
+  document.querySelectorAll('#legend input').forEach(input => input.addEventListener('change', () => {
+    selectedCell = null;
+    document.querySelectorAll('.room.selected, .room.is-selected').forEach(room => {
+      room.classList.remove('selected', 'is-selected');
+      room.style.removeProperty('box-shadow');
+    });
+    document.querySelector('.matrix')?.classList.remove('has-room-selection');
+    document.getElementById('selected').textContent = '0';
+    document.getElementById('roomProps').classList.add('hidden');
+    document.getElementById('buildingProps').classList.remove('hidden');
+  }));
+</script>
+<script>
+  document.addEventListener('click', event => {
+    const room = event.target.closest('.room');
+    if (!room) return;
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.room').forEach(item => item.style.removeProperty('box-shadow'));
+    });
+  });
+</script>
+<script>
+  // 快速筛选只保留业务常用的交易状态：全部户室、可售、可定。
+  document.querySelectorAll('.room').forEach((room, index) => {
+    room.dataset.availability = index % 5 === 0 ? 'reserve' : (index % 3 === 0 ? 'sale' : 'other');
+  });
+  window.apply = function(){
+    const text = search.value.trim().toLowerCase();
+    const chosen = [...document.querySelectorAll('#legend input:checked')].map(x => x.value);
+    let count = 0;
+    document.querySelectorAll('.room').forEach(room => {
+      const states = room.dataset.states.split(',');
+      const quick = mode === 'all' || room.dataset.availability === mode;
+      const legend = !chosen.length || chosen.some(v => states.includes(v));
+      const find = !text || room.dataset.room.includes(text) || room.dataset.owner.toLowerCase().includes(text);
+      const hit = quick && legend && find;
+      room.classList.toggle('dim', !hit);
+      if (hit) count++;
+    });
+    visible.textContent = count;
+    empty.classList.toggle('show', count === 0);
+  };
+  apply();
+</script>
+</html>

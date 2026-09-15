@@ -1,0 +1,28 @@
+# Dependencies and build output
+node_modules/
+dist/
+.astro/
+execution-query-tool/
+
+# Local environment and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Test output and local diagnostics
+playwright-report/
+test-results/
+coverage/
+artifacts/
+
+# Local agent state and historical source material
+.impeccable/
+.superpowers/
+portfolio-site-handoff/
+
+# Operating system and editor files
+.DS_Store
+.idea/
+.vscode/

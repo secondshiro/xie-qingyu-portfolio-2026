@@ -1,0 +1,109 @@
+/* =============================================================
+   TDesign（腾讯）token 层 · 信创映射版
+   - 链接顺序：colors_and_type.css → system.css → tdesign-tokens.css（本文件最后加载，覆盖源力 token）
+   - 已全局挂载（2026-08-11）：portfolio/screens 全部 11 个 HTML 页面均引用，system.css 已含抽屉 is-open 修复
+   - 保留 system.css 已验证规则：反线框背景分层 / 去左描边 / 图例色块 / 抽屉根因修复
+   - 信创约束：无渐变/blur/bounce、主蓝≤10%、中文黑体；warning 用 TDesign #E37318（比 #946200 更鲜活）
+   ============================================================= */
+
+:root {
+  /* —— 品牌蓝：TDesign 默认 #0052D9 —— */
+  --primary-6: #0052D9;
+  --primary-5: #266FE8;          /* hover */
+  --primary-active: #003CAB;     /* active / pressed */
+  --primary-1: #ECF2FE;          /* 浅蓝底 */
+  --primary-hover: #266FE8;
+  --primary-disabled-bg: #A9C4FB;
+  --color-primary-bg: #ECF2FE;
+  --color-primary-bg-hover: #D4E3FC;
+
+  /* —— 中性冷灰：TDesign 风格 —— */
+  --text-1: #16161A;
+  --text-2: #4B4B4B;
+  --text-3: #646A73;             /* 信创加深，全场景 ≥4.5 */
+  --text-disabled: #C9CDD4;
+  --bg-page: #F3F3F3;            /* TDesign page */
+  --bg-surface: #FFFFFF;
+  --bg-subtle: #F3F3F3;          /* TDesign secondary-container */
+  --bg-hover: #F3F3F3;
+  --bg-white: #FFFFFF;
+  --bg-sidebar: #F3F3F3;
+  --border-1: #E3E6EB;           /* TDesign hairline */
+  --border-2: #DCDCDC;           /* TDesign 控件描边 */
+  --border-3: #DCDCDC;
+  --color-border-3: #DCDCDC;
+  --grey-3: #ECEDED;
+
+  /* —— 语义色：TDesign（warning 用官方 #E37318，比 #946200 更鲜活；小字加粗保可读） —— */
+  --color-success: #2BA471;
+  --color-success-bg: #E8F7EE;
+  --color-success-hover: #1F9A5C;
+  --color-danger: #D54941;
+  --color-danger-bg: #FEF0F0;
+  --color-danger-hover: #C93B33;
+  --color-warning: #E37318;      /* TDesign 官方 warning，更正亮 */
+  --color-warning-bg: #FFF3E8;
+  --color-warning-hover: #C25205;
+  --color-link: #0052D9;
+
+  /* —— 字阶（TDesign，根治 flat-type-hierarchy） —— */
+  --td-brand-blue-rgb: 0, 82, 217;
+
+  /* —— 语义字阶：业务界面只保留 5 个可感知层级 —— */
+  --type-meta: 12px;       /* 状态、辅助说明、表头 */
+  --type-body: 14px;       /* 正文、数据、控件 */
+  --type-title: 16px;      /* 卡片与区块标题 */
+  --type-page: 20px;       /* 页面 / 对象标题 */
+  --type-stat: 30px;       /* 统计数字，限看板使用 */
+}
+
+/* —— 焦点环：把硬编码源力蓝 rgba(22,100,255) 改为 TDesign 蓝 —— */
+.filter-input:focus, .filter-select:focus,
+.input:focus, .select:focus, .textarea:focus {
+  box-shadow: 0 0 0 1px var(--primary-6), 0 1px 1px rgba(0,0,0,0.05), 0 0 0 3px rgba(0,82,217,0.15);
+}
+.filter-input:focus, .filter-select:focus { box-shadow: 0 0 0 1px var(--primary-6), 0 1px 1px rgba(0,0,0,0.05), 0 0 0 3px rgba(0,82,217,0.15); }
+
+/* —— Sidenav 激活态浅蓝底（硬编码源力蓝 → TDesign 蓝） —— */
+.menu-item.active { background: rgba(0,82,217,0.08); }
+.menu-sub-item.active { background: rgba(0,82,217,0.08); }
+
+/* —— 字阶拉开（impeccable 标记 flat-type-hierarchy 的主修复） —— */
+.page-header-title { font-size: var(--type-page); line-height: 28px; }
+.card__title,.map-col__title,.drawer__title { font-size: var(--type-title); }
+.stat__value { font-size: var(--type-stat); line-height: 38px; }
+.data-table,.data-table th,.descriptions__label,.descriptions__value { font-size: var(--type-body); }
+.data-table th { font-weight: 600; }
+.btn,.filter-select,.filter-input,.filter-date,.segmented-picker-item,.nav-link,.search-input { font-size: var(--type-body); }
+.btn--sm,.status-tag,.breadcrumb,.group-title,.badge { font-size: var(--type-meta); }
+
+/* —— TDesign 圆角（默认 6px；卡片/弹层保留 8px large） —— */
+.btn, .filter-select, .filter-input, .filter-date, .filter-icon-btn,
+.input, .select, .textarea, .pagination__btn, .segmented-picker-item, .modal {
+  border-radius: 6px;
+}
+
+/* —— 按钮主色 hover/active 跟随 TDesign —— */
+.btn--primary { background: var(--primary-6); }
+.btn--primary:hover { background: var(--primary-5); }
+
+/* —— 状态标签圆点（保持 pill + 小色点，TDesign 语义） —— */
+.status-tag { border-radius: 4px; }
+
+/* ════════════════ 源力前缀遗留变量 → TDesign 别名（防御性） ════════════════
+   当前 11 个工作流屏均未使用源力前缀变量（属 preview/component 遗留死代码），
+   此别名层确保任何遗留/未来引用都解析到 TDesign 基线，避免源力蓝 (#1664FF) 回渗。 */
+:root {
+  --primary-yuanliBlue-1: var(--primary-1);
+  --primary-yuanliBlue-5: var(--primary-5);
+  --primary-yuanliBlue-6: var(--primary-6);
+  --primary-yuanliBlue-7: var(--primary-active);
+  --text-yuanliNeutral-7: var(--text-2);
+  --text-yuanliNeutral-9: var(--text-1);
+  --text-yuanliNeutral-6: var(--text-3);
+  --status-yuanliWarning-6: var(--color-warning);
+  --status-yuanliSuccess-6: var(--color-success);
+  --status-yuanliDanger-6: var(--color-danger);
+  --border-yuanliBorder-2: var(--border-2);
+  --border-yuanliBorder-3: var(--border-3);
+}

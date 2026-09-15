@@ -1,0 +1,21 @@
+{
+  "name": "qingyu-portfolio",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
+    "build": "ASTRO_TELEMETRY_DISABLED=1 astro check && ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",
+    "serve:test": "node tools/serve-static.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@astrojs/check": "latest",
+    "astro": "latest",
+    "typescript": "latest"
+  },
+  "devDependencies": {
+    "@playwright/test": "latest"
+  }
+}

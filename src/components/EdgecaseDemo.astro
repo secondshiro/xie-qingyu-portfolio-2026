@@ -1,0 +1,74 @@
+---
+interface Props { resetOnPage?: boolean; mode?: 'selection' | 'download' | 'recovery' | 'upload' | 'context'; }
+const { mode = 'selection', resetOnPage = false } = Astro.props;
+---
+<figure class="demo" data-demo={mode} data-reset-on-page={resetOnPage ? "true" : "false"}>
+  <figcaption class="demo-caption"><span>交互示意</span><span>{({selection:'分页与选择',download:'打包进度',recovery:'取消后的恢复',upload:'材料提交',context:'返回后保留操作状态'})[mode]}</span></figcaption>
+  <div class="demo-shell">
+    <div class="demo-sidebar" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <div class="demo-body">
+      <div class="demo-skeleton" aria-hidden="true"><i></i><i></i></div>
+      {mode === 'selection' && <div class="selection-demo">
+        <div class="selection-tools"><label><input type="checkbox" data-select-all /> 全选</label><span data-count aria-live="polite">已选 0 项</span></div>
+        <div class="skeleton-table">{[0,1,2].map(i=><label class="skeleton-row"><input type="checkbox" data-row={i} aria-label={`选择第 ${i+1} 项`} /><span class="skeleton-cell" aria-hidden="true"></span><span class="skeleton-cell short" aria-hidden="true"></span></label>)}</div>
+        <div class="pagination"><span>共 6 项</span><button type="button" data-page="1" aria-pressed="true">1</button><button type="button" data-page="2" aria-pressed="false">2</button></div>
+        <p class="demo-prompt">{resetOnPage ? "试着全选、翻页，再回来：选择已丢失。" : "试着勾选、翻页，再回来：选择继续保留。"}</p>
+        <p class="demo-question">AI 应先问：这些选择需要跨页保留吗？</p>
+      </div>}
+      {mode === 'download' && <div class="operation-demo">
+        <div class="ghost-rows" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="operation-line"><span class="mock-button">批量下载</span><span class="silent">点击后，没有反馈</span></div>
+        <div class="operation-line improved"><span class="mock-button">正在打包</span><span>1 / 10 · 10%</span></div>
+        <div class="progress-track" aria-hidden="true"><i></i></div>
+        <p class="demo-prompt">增加进度提示，让等待变得可理解。</p>
+      </div>}
+      {mode === 'recovery' && <div class="operation-demo">
+        <div class="ghost-rows" aria-hidden="true"><i></i><i></i></div>
+        <div class="mini-dialog"><strong>保存下载文件</strong><span class="skeleton-cell" aria-hidden="true"></span><span class="mock-button secondary">取消</span></div>
+        <div class="operation-line"><span class="mock-button secondary">再次下载</span><span class="error-state">提示“已下载”</span></div>
+        <p class="demo-prompt">文件没有保存，下载操作却无法继续。</p>
+      </div>}
+      {mode === 'upload' && <div class="upload-demo">
+        <div class="upload-step"><span class="step-number">1</span><strong>上传材料</strong><span class="file-row"><span aria-hidden="true">▤</span> 申请材料.pdf <span class="success-state">上传完成</span></span></div>
+        <div class="upload-step"><span class="step-number">2</span><strong>AI 预审</strong><span class="file-row">检查材料内容 <span class="waiting-state">处理中…</span></span></div>
+        <p class="demo-prompt">用于解释差异：文件传完了，内容检查可能还在继续。</p>
+      </div>}
+      {mode === 'context' && <div class="context-demo">
+        <div class="context-switch"><button type="button" data-context="before" aria-pressed="true">修复前</button><button type="button" data-context="after" aria-pressed="false">修复后</button></div>
+        <div class="context-path"><div><span>进入整幢前</span><strong>☐ 道路图层</strong><small>已关闭</small></div><span aria-hidden="true">→</span><div><span>查看整幢后返回</span><strong data-layer>☑ 道路图层</strong><small data-layer-caption>又被打开了</small></div></div>
+        <p class="demo-question" data-context-result aria-live="polite">修复前：还要重新关闭一次道路。</p>
+      </div>}
+    </div>
+  </div>
+</figure>
+<script>
+  document.querySelectorAll<HTMLElement>('[data-demo="selection"]').forEach(root => {
+    let currentPage = 1;
+    const selected = new Set<number>();
+    const rows = Array.from(root.querySelectorAll<HTMLInputElement>('[data-row]'));
+    const all = root.querySelector<HTMLInputElement>('[data-select-all]')!;
+    const render = () => {
+      rows.forEach((row,i) => {row.checked = selected.has((currentPage-1)*3+i);row.setAttribute('aria-label', `选择第 ${(currentPage-1)*3+i+1} 项`);});
+      all.checked = rows.every(row=>row.checked);
+      all.indeterminate = !all.checked && rows.some(row=>row.checked);
+      root.querySelector('[data-count]')!.textContent = `已选 ${selected.size} 项`;
+      root.querySelectorAll<HTMLElement>('[data-page]').forEach(button=>button.setAttribute('aria-pressed',String(Number(button.dataset.page)===currentPage)));
+    };
+    rows.forEach((row,i)=>row.addEventListener('change',()=>{const key=(currentPage-1)*3+i;row.checked?selected.add(key):selected.delete(key);render();}));
+    all.addEventListener('change',()=>{rows.forEach((_,i)=>{const key=(currentPage-1)*3+i;all.checked?selected.add(key):selected.delete(key);});render();});
+    root.querySelectorAll<HTMLElement>('[data-page]').forEach(button=>button.addEventListener('click',()=>{if(root.dataset.resetOnPage==="true" && currentPage!==Number(button.dataset.page)) selected.clear();currentPage=Number(button.dataset.page);render();}));
+  });
+  document.querySelectorAll<HTMLElement>('[data-demo="context"]').forEach(root=>{
+    root.querySelectorAll<HTMLElement>('[data-context]').forEach(button=>button.addEventListener('click',()=>{
+      const after=button.dataset.context==='after';
+      root.querySelectorAll<HTMLElement>('[data-context]').forEach(item=>item.setAttribute('aria-pressed',String(item===button)));
+      root.querySelector('[data-layer]')!.textContent=after?'☐ 道路图层':'☑ 道路图层';
+      root.querySelector('[data-layer-caption]')!.textContent=after?'仍然关闭':'又被打开了';
+      root.querySelector('[data-context-result]')!.textContent=after?'修复后：保留上一次选择，直接继续工作。':'修复前：还要重新关闭一次道路。';
+    }));
+  });
+</script>
+<style>
+.demo{margin:0;min-width:0;--demo-blue:#2459c4;}.demo-caption{display:flex;justify-content:space-between;gap:1rem;margin-bottom:1rem;font-size:12px;color:var(--color-muted);}.demo-shell{display:grid;grid-template-columns:54px minmax(0,1fr);border:1px solid var(--color-line);border-radius:10px;background:#fff;overflow:hidden;color:#303744;}.demo-sidebar{padding:24px 15px;background:#f3f4f6;display:flex;flex-direction:column;gap:25px;}.demo-sidebar i{height:9px;background:#e0e3e8;border-radius:3px;}.demo-sidebar i:first-child{height:23px;margin-bottom:12px;}.demo-body{padding:24px;min-width:0;}.demo-skeleton{display:flex;justify-content:space-between;margin-bottom:26px;}.demo-skeleton i{width:26%;height:13px;background:#e9ebef;border-radius:3px;}.demo-skeleton i:last-child{width:15%;}.selection-tools,.operation-line,.pagination{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:13px;}.selection-tools{justify-content:space-between;margin-bottom:12px;}.selection-tools label{display:flex;align-items:center;gap:8px;min-height:44px;}.demo input{width:18px;height:18px;accent-color:var(--demo-blue);cursor:pointer;flex-shrink:0;}.skeleton-row{display:flex;align-items:center;gap:18px;min-height:54px;border-top:1px solid #eff0f2;cursor:pointer;}.skeleton-cell{display:block;max-width:100%;width:48%;height:10px;background:#eceef1;border-radius:3px;}.skeleton-cell.short{width:19%;margin-left:auto;}.pagination{justify-content:flex-end;margin-top:12px;}.pagination span{color:#6c7584;margin-right:8px;}.demo button{min-height:44px;min-width:44px;padding:8px 14px;background:#f4f5f7;border:1px solid transparent;border-radius:5px;font:inherit;cursor:pointer;color:#303744;}.demo button[aria-pressed="true"]{color:var(--demo-blue);background:#edf3ff;border-color:#afc5ee;}.demo-prompt{font-size:13px;color:#657080;margin-top:18px;line-height:1.65;}.demo-question{margin-top:18px;padding:14px 16px;background:#f0f4fc;color:#304d78;font-size:14px;line-height:1.65;border-radius:5px;}.ghost-rows{display:grid;gap:18px;margin:20px 0 28px;}.ghost-rows i{height:10px;width:85%;background:#eceef1;}.ghost-rows i:nth-child(2){width:65%;}.mock-button{display:inline-flex;padding:10px 15px;background:var(--demo-blue);color:white;border-radius:5px;font-size:13px;}.mock-button.secondary{background:#f2f4f7;color:#475569;}.silent{color:#8c94a0;}.improved{margin-top:20px;}.progress-track{height:4px;background:#edf0f5;margin-top:14px;border-radius:2px;}.progress-track i{display:block;width:10%;height:100%;background:var(--demo-blue);}.mini-dialog{padding:16px;border:1px solid #e4e7ec;border-radius:7px;display:grid;gap:18px;font-size:14px;margin-bottom:24px;}.mini-dialog .mock-button{justify-self:end;}.error-state{color:#a94836;}.upload-demo{display:grid;gap:20px;}.upload-step{display:grid;grid-template-columns:28px 1fr;gap:12px;font-size:15px;align-items:center;}.step-number{border-radius:50%;background:#edf3ff;color:var(--demo-blue);width:28px;height:28px;text-align:center;line-height:28px;}.file-row{grid-column:2;display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap;font-size:13px;padding:15px;background:#f8f9fb;border-radius:5px;}.success-state{color:#32765b;}.waiting-state{color:#78602f;}.context-switch{display:flex;gap:8px;font-size:14px;margin-bottom:26px;}.context-path{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:center;}.context-path>div{display:grid;gap:14px;padding:18px;background:#f8f9fb;}.context-path span,.context-path small{font-size:13px;color:#687383;}.context-path strong{font-size:17px;font-weight:500;}
+@media(max-width:45rem){.demo-shell{grid-template-columns:28px minmax(0,1fr);}.demo-sidebar{padding:20px 7px;}.demo-body{padding:16px;}.context-path{grid-template-columns:1fr;gap:10px;}.context-path>span{transform:rotate(90deg);justify-self:center;}.file-row{grid-column:1/-1;}.demo-caption{font-size:11px;}}
+</style>

@@ -1,0 +1,36 @@
+---
+import '../styles/global.css';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteNav from '../components/SiteNav.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  current?: 'home' | 'work';
+}
+
+const { title, description, current } = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#F7F7F4" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <!-- THESIS: 作品集是一份连续展开的产品设计专刊；真实作品先证明能力，拒绝卡片墙和长简历首页。
+    OWN-WORLD: 暖白与柔和石色色面、墨色无衬线、克制橙色折页标记、大型无设备框产品画面、极少边界。
+    STORY: 访客先理解 AI 原生产品体验定位，再看到真实 GIS 证据，进入完整案例或发送邮件。
+    FIRST VIEWPORT: 52px 导航；上部约 40% 为中等尺度定位与邮箱；下部约 60% 为全宽 GIS 画面；第二折露出案例标题。
+    FORM: 展开式作品册，七个候选方向中的第 4 个，seed aeb67359；批准构图为 unfolding-folio-b.webp。
+    FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md -->
+    <a class="skip-link" href="#main">跳到主要内容</a>
+    <SiteNav current={current} />
+    <slot />
+    <SiteFooter current={current} />
+  </body>
+</html>

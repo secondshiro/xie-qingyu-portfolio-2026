@@ -1,0 +1,48 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  caption: string;
+  kind: 'confirmed' | 'observed' | 'redesigned' | 'proposal';
+  width: number;
+  height: number;
+  priority?: boolean;
+  class?: string;
+  label?: string;
+  video?: boolean;
+  poster?: string;
+}
+
+const { src, alt, caption, kind, width, height, priority = false, class: className, label, video = false, poster } = Astro.props;
+const labels = {
+  confirmed: '已确认事实',
+  observed: '留存材料',
+  redesigned: '重构方案',
+  proposal: '本次提案',
+};
+---
+
+<figure class:list={['media-stage', className]}>
+  <div class="media-stage__frame">
+    {
+      video ? (
+        <video src={src} poster={poster} controls playsinline preload="metadata" width={width} height={height} aria-label={alt} />
+      ) : (
+        <img
+          src={src}
+          alt={alt}
+          width={width}
+          height={height}
+          loading={priority ? 'eager' : 'lazy'}
+          fetchpriority={priority ? 'high' : 'auto'}
+          decoding="async"
+          draggable="false"
+        />
+      )
+    }
+  </div>
+  <figcaption class="media-stage__caption">
+    <span class="evidence-label">{label ?? labels[kind]}</span>
+    <span>{caption}</span>
+  </figcaption>
+</figure>

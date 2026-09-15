@@ -1,0 +1,20 @@
+:root {
+  color-scheme: light;
+  --color-paper: #f7f7f4;
+  --color-ink: #26251e;
+  --color-muted: #67665f;
+  --color-stone: #e8e6e0;
+  --color-panel: #eeede8;
+  --color-soft: #f1f0eb;
+  --color-accent: #f54e00;
+  --color-line: rgb(38 37 30 / 10%);
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --page-inline: clamp(1rem, 3vw, 3rem);
+  --container: 82.5rem;
+  --reading: 45rem;
+  --section-space: clamp(5rem, 9vw, 7.5rem);
+  --radius-control: 0.35rem;
+  --radius-media: 0.625rem;
+  --shadow-fold: 0 22px 60px rgb(38 37 30 / 8%);
+  --focus: 0 0 0 3px var(--color-paper), 0 0 0 6px var(--color-ink);
+}

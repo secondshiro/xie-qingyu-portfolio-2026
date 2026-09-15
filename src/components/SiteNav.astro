@@ -1,0 +1,20 @@
+---
+interface Props {
+  current?: 'home' | 'work';
+}
+
+const { current } = Astro.props;
+const workHref = current === 'home' ? '#selected-work' : '/#selected-work';
+const aboutHref = current === 'home' ? '#about' : '/#about';
+---
+
+<nav class="site-nav" aria-label="网站导航">
+  <div class="site-container site-nav__inner">
+    <a class="site-nav__name" href="/" aria-current={current === 'home' ? 'page' : undefined}>谢擎宇</a>
+    <div class="site-nav__links">
+      <a href={workHref} aria-current={current === 'work' ? 'page' : undefined}>作品</a>
+      <a class="site-nav__about" href={aboutHref}>关于</a>
+      <a class="site-nav__email-label" href="mailto:second988@qq.com">second988@qq.com</a>
+    </div>
+  </div>
+</nav>

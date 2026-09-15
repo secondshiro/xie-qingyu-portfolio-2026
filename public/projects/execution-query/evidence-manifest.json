@@ -1,0 +1,17 @@
+{
+  "updated": "2026-09-13",
+  "items": [
+    {
+      "file": "console-synthetic.webp",
+      "kind": "real-product-synthetic-data",
+      "supports": "本地控制台的批量任务、结果状态和变化比较结构",
+      "publicSafe": true
+    },
+    {
+      "file": "export-synthetic.webp",
+      "kind": "real-product-synthetic-data",
+      "supports": "查询汇总、案件明细和未完成三张工作表的导出结构",
+      "publicSafe": true
+    }
+  ]
+}
