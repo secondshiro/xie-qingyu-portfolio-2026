@@ -2,6 +2,7 @@
 node_modules/
 dist/
 .astro/
+.wrangler/
 execution-query-tool/
 
 # Local environment and credentials
