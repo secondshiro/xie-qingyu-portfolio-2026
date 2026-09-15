@@ -86,6 +86,40 @@ test('首页折页之间不显示橙色标记', async ({ page }) => {
   await expect(page.locator('.project-fold__marker')).toHaveCount(0);
 });
 
+test('作品媒体不显示右键菜单或允许拖拽，普通区域不受影响', async ({ page }) => {
+  const casePaths = [
+    '/work/real-estate-gis/',
+    '/work/edgecase-planner/',
+    '/work/brand-system/',
+    '/work/execution-query/',
+  ];
+
+  for (const path of casePaths) {
+    await page.goto(path);
+    const allCaseMediaAreProtected = await page.locator('main img, main video').evaluateAll((elements) =>
+      elements.length > 0 && elements.every((element) => element.closest('[data-protected-media]')),
+    );
+    expect(allCaseMediaAreProtected).toBeTruthy();
+  }
+
+  await page.goto('/work/real-estate-gis/');
+  const image = page.locator('.media-stage img').first();
+  const contextMenuAllowed = await image.evaluate((element) =>
+    element.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true })),
+  );
+  const dragAllowed = await image.evaluate((element) =>
+    element.dispatchEvent(new DragEvent('dragstart', { bubbles: true, cancelable: true })),
+  );
+
+  expect(contextMenuAllowed).toBeFalsy();
+  expect(dragAllowed).toBeFalsy();
+
+  const ordinaryContextMenuAllowed = await page.locator('body').evaluate((element) =>
+    element.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true })),
+  );
+  expect(ordinaryContextMenuAllowed).toBeTruthy();
+});
+
 test('三个原型深链可独立打开', async ({ request }) => {
   const paths = [
     '/projects/real-estate-gis/prototypes/map/index.html?restore=1&building=宇济一号&code=17幢',

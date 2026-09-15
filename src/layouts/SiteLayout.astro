@@ -32,5 +32,20 @@ const { title, description, current } = Astro.props;
     <SiteNav current={current} />
     <slot />
     <SiteFooter current={current} />
+    <script>
+      const protectedMedia = '[data-protected-media] img, [data-protected-media] video';
+
+      document.addEventListener('contextmenu', (event) => {
+        if (event.target instanceof Element && event.target.closest(protectedMedia)) {
+          event.preventDefault();
+        }
+      });
+
+      document.addEventListener('dragstart', (event) => {
+        if (event.target instanceof Element && event.target.closest(protectedMedia)) {
+          event.preventDefault();
+        }
+      });
+    </script>
   </body>
 </html>

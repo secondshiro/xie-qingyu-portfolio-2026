@@ -63,6 +63,7 @@ const tocSections = [
     <figure
       class="product-evidence"
       data-evidence-kind="real-product-synthetic-data"
+      data-protected-media
     >
       <div class="product-evidence__frame">
         <img
@@ -70,6 +71,7 @@ const tocSections = [
           width="1440"
           height="960"
           alt="执行网查询助手本地控制台，左侧为批量名单，右侧显示任务进度、结果状态与变化比较"
+          draggable="false"
         />
       </div>
       <figcaption class="artifact-caption">
@@ -92,9 +94,10 @@ const tocSections = [
         <p>我把这个区别也用在前后两次的变化比较里。如果将失败记成空结果，上次查到的案件就可能被误认为已经消失。因此，工具只比较成功查询留下的记录，区分首次记录、新增、存续和本次未见；未完成项不参与比较，留待重查。</p>
         <p>导出时，查询汇总用于查看每个对象的结果，案件明细供逐条核对，未完成项单独列出，方便安排下一次查询。三张工作表使用固定字段，使用者可以直接筛选和查看详情，少做网页抄录与重新排表。结果怎样用于后续工作，仍由律师判断。</p>
       </div>
-    <figure
+      <figure
         class="product-evidence"
         data-evidence-kind="real-product-synthetic-data"
+        data-protected-media
       >
         <div class="product-evidence__frame product-evidence__frame--sheet">
           <img
@@ -102,6 +105,7 @@ const tocSections = [
             width="1440"
             height="650"
             alt="执行网查询助手导出的 Excel，展示查询汇总、案件明细和未完成三张工作表"
+            draggable="false"
           />
         </div>
         <figcaption class="artifact-caption">

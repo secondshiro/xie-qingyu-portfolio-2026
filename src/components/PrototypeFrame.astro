@@ -17,8 +17,8 @@ const { src, title, poster, posterAlt, linkLabel } = Astro.props;
   </div>
   <div class="prototype-frame__viewport" data-prototype-viewport>
     <iframe src={src} title={title} loading="lazy" data-prototype-frame></iframe>
-    <div class="prototype-frame__fallback">
-      <img src={poster} alt={posterAlt} width="1440" height="900" loading="lazy" decoding="async" />
+    <div class="prototype-frame__fallback" data-protected-media>
+      <img src={poster} alt={posterAlt} width="1440" height="900" loading="lazy" decoding="async" draggable="false" />
       <p>该原型为桌面业务工作区。窄屏保留静态证据，可在新窗口打开完整版本。</p>
     </div>
   </div>
