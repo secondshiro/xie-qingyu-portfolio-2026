@@ -60,6 +60,7 @@ button {
 
 a:focus-visible,
 button:focus-visible,
+summary:focus-visible,
 iframe:focus-visible {
   border-radius: var(--radius-control);
   outline: 0;

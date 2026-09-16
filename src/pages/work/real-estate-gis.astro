@@ -78,7 +78,7 @@ const facts = [
       id="problem"
       label="02 / 问题重定义"
       title="找到楼栋以后，下一步还要重新确认对象"
-      intro="工作人员在地图上找到一栋楼，接下来要查看里面的户室，再核对测绘变更。这几步处理的是同一栋楼，旧模块之间却没有把当前楼栋和相关线索一起带过去。"
+      intro="旧系统按功能模块切开工作，我把操作路径重新组织到楼栋这个业务对象上。找到楼后，查看户室和核对测绘变更都沿用当前楼栋的信息。"
       tone="panel"
     >
       <div class="evidence-grid">
@@ -163,31 +163,36 @@ const facts = [
       title="三类公开产品帮我校准工作面分工"
       intro="在安排这三个工作面时，我参考了空间产品和工作流产品，重点看它们怎样让用户找到对象，以及怎样把复杂判断拆开。"
     >
-      <div class="reference-grid">
-        <article class="reference-card">
-          <span>直接行业平台</span>
-          <h3>行业平台提醒我保留具体业务路径</h3>
-          <p>平台覆盖的业务很多，工作人员仍要从眼前楼栋进入具体任务。本案因此把对象入口留在总图。</p>
-          <a href="https://www.supermap.com/zh-cn/a/solutions/119_4553.html" target="_blank" rel="noopener noreferrer">SuperMap 公开资料 ↗</a>
-        </article>
-        <article class="reference-card">
-          <span>空间交互标杆</span>
-          <h3>空间交互支持先定位楼栋</h3>
-          <p>空间产品展示了地图承载定位与对象交互的方式。本案让地图只负责找楼、选楼和打开对象信息。</p>
-          <a href="https://help.aliyun.com/zh/datav/datav-atlas/product-overview/what-is-datav-atlas/" target="_blank" rel="noopener noreferrer">DataV Atlas 公开资料 ↗</a>
-        </article>
-        <article class="reference-card">
-          <span>复杂工作流标杆</span>
-          <h3>工作流产品提供拆分判断的参照</h3>
-          <p>分支与状态的组织方式帮助我拆开测绘变更。本案用关系卡呈现依据，再把确认动作留给工作人员。</p>
-          <a href="https://www.feishu.cn/product/base" target="_blank" rel="noopener noreferrer">飞书多维表格公开资料 ↗</a>
-        </article>
-      </div>
-      <div class="opportunity-path" aria-label="设计机会路径">
-        <span>以空间为入口</span><i aria-hidden="true">→</i>
-        <span>以房屋幢为上下文</span><i aria-hidden="true">→</i>
-        <span>以业务判断为动作</span>
-      </div>
+      <details class="industry-references">
+        <summary>查看三类产品的参照依据<span aria-hidden="true">＋</span></summary>
+        <div class="industry-references__content">
+          <div class="reference-grid">
+            <article class="reference-card">
+              <span>直接行业平台</span>
+              <h3>行业平台提醒我保留具体业务路径</h3>
+              <p>平台覆盖的业务很多，工作人员仍要从眼前楼栋进入具体任务。本案因此把对象入口留在总图。</p>
+              <a href="https://www.supermap.com/zh-cn/a/solutions/119_4553.html" target="_blank" rel="noopener noreferrer">SuperMap 公开资料 ↗</a>
+            </article>
+            <article class="reference-card">
+              <span>空间交互标杆</span>
+              <h3>空间交互支持先定位楼栋</h3>
+              <p>空间产品展示了地图承载定位与对象交互的方式。本案让地图只负责找楼、选楼和打开对象信息。</p>
+              <a href="https://help.aliyun.com/zh/datav/datav-atlas/product-overview/what-is-datav-atlas/" target="_blank" rel="noopener noreferrer">DataV Atlas 公开资料 ↗</a>
+            </article>
+            <article class="reference-card">
+              <span>复杂工作流标杆</span>
+              <h3>工作流产品提供拆分判断的参照</h3>
+              <p>分支与状态的组织方式帮助我拆开测绘变更。本案用关系卡呈现依据，再把确认动作留给工作人员。</p>
+              <a href="https://www.feishu.cn/product/base" target="_blank" rel="noopener noreferrer">飞书多维表格公开资料 ↗</a>
+            </article>
+          </div>
+          <div class="opportunity-path" aria-label="设计机会路径">
+            <span>以空间为入口</span><i aria-hidden="true">→</i>
+            <span>以房屋幢为上下文</span><i aria-hidden="true">→</i>
+            <span>以业务判断为动作</span>
+          </div>
+        </div>
+      </details>
     </CaseSection>
 
     <CaseSection
@@ -244,3 +249,50 @@ const facts = [
     </section>
   </main>
 </SiteLayout>
+
+<style>
+  .industry-references > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    min-height: 2.75rem;
+    padding-block: 0.75rem;
+    color: var(--color-ink);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .industry-references > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .industry-references > summary span {
+    flex: none;
+    font-size: 1.25rem;
+  }
+
+  .industry-references[open] > summary span {
+    transform: rotate(45deg);
+  }
+
+  .industry-references__content {
+    display: grid;
+    gap: clamp(3rem, 6vw, 5rem);
+    padding-top: 1.5rem;
+  }
+</style>
+
+<script>
+  const references = document.querySelector<HTMLDetailsElement>('.industry-references');
+  const revealReferences = () => {
+    if (references && location.hash === '#strategy') references.open = true;
+  };
+
+  revealReferences();
+  window.addEventListener('hashchange', revealReferences);
+  // A repeated click on the current hash does not emit hashchange.
+  document.querySelector('a[href="#strategy"]')?.addEventListener('click', () => {
+    if (references) references.open = true;
+  });
+</script>

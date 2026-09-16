@@ -5,13 +5,13 @@
 - Astro 纯静态作品集；公开页面路由为 `/`、`/work/real-estate-gis/`、`/work/edgecase-planner/`、`/work/brand-system/` 与 `/work/execution-query/`，另有三个站内原型入口。
 - 公开联系方式只有 `second988@qq.com`。
 - 房产 GIS、品牌系统、AI 评审和执行网查询助手均已有独立案例证据。品牌系统属于提案性质，物料未投产。其他项目没有真实材料前不得创建详情页。
-- 本目录不是独立 Git 仓库，上层仓库包含大量无关内容。未经用户明确授权，不运行 `git add`、`git commit`、重置或清理命令。
+- 本目录已是独立 Git 仓库，`main` 跟踪 `origin/main`。未经用户明确授权，不运行 `git add`、`git commit`、推送、重置或清理命令。
 
 ## 开工前
 
 1. 先读 `README.md`、`TASK_STATUS.md`、`DESIGN.md`。
 2. 涉及定位和公开事实时再读 `PRODUCT.md`。
-3. 涉及页面结构时读 `docs/superpowers/specs/2026-09-02-portfolio-site-redesign-design.md`。
+3. 涉及页面结构时先读 `docs/README.md` 的当前结构入口。`docs/superpowers/` 是分阶段设计记录，不能据此覆盖当前代码与 `DESIGN.md`。
 4. `portfolio-site-handoff/` 是 2026-09-02 的历史输入，不代表当前实现状态。
 5. 凡写作、改写或校对任务，必须使用 `$human-writing` skill。作品集公开中文成稿还要完成现实题材检查、修订复核和配套文本扫描。
 
@@ -21,6 +21,7 @@
 - 不写上线结果、业务指标、团队规模或未提供的用户研究。
 - 不把房产产品蓝扩展为网站品牌色，不复制 Cursor 的品牌资产、Logo、文案或截图。
 - 保持每页一个 `h1`、跳到主内容链接、可见键盘焦点、减弱动效和窄屏原型降级。
+- 案例作品媒体需继续阻止右键菜单和拖拽。新媒体优先使用 `MediaStage`，特殊布局使用 `data-protected-media`。这只减少直接操作入口，不得记为加密或防下载。
 - 不在文件尾继续堆叠覆盖规则；优先修改语义变量、组件源规则和父级布局。
 
 ## 当前视觉合同
@@ -41,8 +42,3 @@ npm run build
 ```
 
 完成实现后至少运行与改动相关的测试；视觉、布局或组件变更应运行全部三项验证。
-
-
-## 2026-09-04 AI评审案例补充
-
-新增 `/work/edgecase-planner/` 与首页入口，基于真实飞行设计评审和信创原型修复材料。早期“仅GIS具备完整材料”的描述属于首版历史；此次已具备独立工具实践案例证据。沿用现有视觉与文案规范，未发布。其他既有案例保持现状。

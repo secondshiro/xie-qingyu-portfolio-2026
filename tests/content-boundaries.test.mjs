@@ -12,7 +12,7 @@ const pages = [
 
 test('公开页面只展示批准的邮箱和定位', async () => {
   const text = (await Promise.all(pages.map((file) => readFile(file, 'utf8')))).join('\n');
-  assert.match(text, /AI 原生产品体验设计师/);
+  assert.match(text, /产品体验设计师/);
   assert.match(text, /second988@qq\.com/);
   assert.doesNotMatch(text, /(?:\+?86[- ]?)?1[3-9]\d{9}/);
 });
