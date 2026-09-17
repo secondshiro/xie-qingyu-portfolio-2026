@@ -1,7 +1,7 @@
 # 执行网查询助手下一轮交接
 
-> 更新于 2026-09-16
-> 本地生产助手与作品集案例均已完成，一次真实浏览器小样本验收通过。用户已确认作品集网站公开发布。下一轮无需重做验证码路线讨论。
+> 更新于 2026-09-17
+> 本地生产助手与作品集案例均已完成，一次真实浏览器小样本验收通过。用户已确认作品集网站公开发布。案例页截图从 2 张扩充到 5 张，并补充结构化视觉组件。下一轮无需重做验证码路线讨论。
 
 ## 作品集写作状态
 
@@ -39,8 +39,11 @@
 - 首页入口：`src/pages/index.astro`
 - 叙事与证据：`docs/projects/execution-query/portfolio-evidence-brief.md`
 - 公开证据清单：`public/projects/execution-query/evidence-manifest.json`
-- 产品界面：`public/projects/execution-query/console-synthetic.webp`
+- V1 旧工具界面：`public/projects/execution-query/v1-interface-synthetic.webp`
+- 当前控制台：`public/projects/execution-query/console-synthetic.webp`
+- 等待验证状态：`public/projects/execution-query/verification-waiting-synthetic.webp`
 - Excel 交付：`public/projects/execution-query/export-synthetic.webp`
+- 试用完成状态：`public/projects/execution-query/trial-completion-synthetic.webp`
 
 公开页面使用真实产品界面与固定虚构数据。阶段只主张一次真实浏览器小样本验收，后续按官网变化维护，没有真实主体、身份、案号、金额、验证码内容或现场任务 ID。
 
