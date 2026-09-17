@@ -22,6 +22,51 @@ const tocSections = [
 ];
 ---
 
+<style is:global>
+  .responsibility-split strong {
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  .product-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 0 auto;
+  }
+  .product-pair figure {
+    margin: 0;
+  }
+  .product-pair .product-evidence__frame {
+    aspect-ratio: 16 / 9;
+  }
+  .product-pair .product-evidence__frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .product-pair__label {
+    display: inline-block;
+    margin-bottom: .5rem;
+    color: var(--color-accent);
+    font-size: .72rem;
+    letter-spacing: .025em;
+  }
+  @media (max-width: 48rem) {
+    .product-pair {
+      grid-template-columns: 1fr;
+    }
+  }
+  .evidence-note {
+    margin: 0 0 2rem;
+    padding: .75rem 1rem;
+    border-left: 2px solid var(--color-accent);
+    background: var(--color-panel);
+    color: #8a2800;
+    font-size: .82rem;
+    line-height: 1.65;
+  }
+</style>
+
 <SiteLayout title="执行网查询助手｜谢擎宇" description="从反复核查关联公司的需求开始，重新安排人工验证、批量查询与结果整理，让一份名单查完后能够继续核对和交付。" current="work">
   <main class="case-page execution-query-page" id="main" tabindex="-1">
     <CaseHero
@@ -35,11 +80,72 @@ const tocSections = [
     <CaseSection id="origin" label="01 / 需求起点" title="同一批公司，需要一次次重新查询" intro="这项需求来自法律从业者对关联公司的持续复核。上次查过，并不意味着这次可以省略；使用者需要知道有没有新增被执行案件，也要打开详情核对具体情况。">
       <div class="case-copy">
         <p>我先做了 V1，让输入一个查询对象后读取案件列表和详情的过程跑通。单次查询能用以后，V2 加入名单排队和历史比较，V3 调整新增与撤销记录的颜色表达，到 V4 又补齐了详情、截图和 Excel 导出。工具逐渐覆盖了从查询到整理的过程，使用者也能把结果留下来，供下一次复核。</p>
+      </div>
+      <ol class="iteration-line" aria-label="工具四代演进">
+        <li><span>V1</span><div><strong>单次查询跑通</strong><p>一个输入框、一次查询，结果直接显示在下方。布局是单列居中，查询和展示合在一个流程里。</p></div></li>
+        <li><span>V2</span><div><strong>名单排队与历史</strong><p>加入批量名单输入和任务排队，查询历史保存到本地。布局从单列变为左右双区域：左侧名单，右侧进度。</p></div></li>
+        <li><span>V3</span><div><strong>状态颜色区分</strong><p>新增记录与撤销记录用不同颜色标注，使用者一眼看到哪些是上次没有的。展示逻辑从"列出全部"变为"标记变化"。</p></div></li>
+        <li><span>V4</span><div><strong>详情与导出</strong><p>补齐案件详情采集和 Excel 导出。布局增加变化比较面板，展示逻辑从"查看当前结果"扩展为"对比前后变化"。</p></div></li>
+      </ol>
+      <div class="case-copy">
+        <p>布局变化的驱动原因是查询量从一项变成一批。单列居中够用于一次查询，但一批名单需要同时看到输入和每项进度，于是改成左右双区域。后来加入历史比较后，结果区又向下扩展出变化面板，让使用者不用翻到别的地方找差异。</p>
         <p>这些功能是在旧工具上逐步增加的，查询方式、网站适配和展示界面绑得越来越紧。后来官网更新验证流程时，这个问题就显现出来了。</p>
+      </div>
+      <p class="evidence-note">下面的截图都是工具的真实界面，但公司名称、案号和金额是编的。真实查询对象是具体的人和公司，不能放在公开页面上。工具在本机用真实数据运行。</p>
+      <div class="product-pair" data-protected-media>
+        <figure class="product-evidence" data-evidence-kind="real-product-synthetic-data">
+          <p class="product-pair__label">V1 · 旧工具</p>
+          <div class="product-evidence__frame">
+            <img
+              src="/projects/execution-query/v1-interface-synthetic.webp"
+              width="1440"
+              height="960"
+              alt="旧工具 V1 界面，单列居中布局，单次查询输入框与结果列表"
+              draggable="false"
+            />
+          </div>
+          <figcaption class="artifact-caption">
+            <span>真实产品·合成数据</span>
+            单列居中，一次查一个。
+          </figcaption>
+        </figure>
+        <figure class="product-evidence" data-evidence-kind="real-product-synthetic-data">
+          <p class="product-pair__label">当前 · 本地控制台</p>
+          <div class="product-evidence__frame">
+            <img
+              src="/projects/execution-query/console-synthetic.webp"
+              width="1440"
+              height="960"
+              alt="当前控制台界面，左右双区域布局，左侧批量名单，右侧任务进度与变化比较"
+              draggable="false"
+            />
+          </div>
+          <figcaption class="artifact-caption">
+            <span>真实产品·合成数据</span>
+            左右双区域，一批同时管。
+          </figcaption>
+        </figure>
       </div>
     </CaseSection>
 
     <CaseSection id="breakage" label="02 / 网站变化" title="官网变了，原来的查询方式难以继续" intro="原先的字符图片验证换成了随机滑块和文字点选。完成验证后，查询和翻页还要接着使用当前浏览器里的状态，旧工具无法再按原来的方式读取结果。" tone="panel">
+      <div class="breakage-sequence">
+        <article>
+          <span>旧验证方式</span>
+          <h3>字符图片验证码</h3>
+          <p>提交名称后识别图片中的字符，通过即可获取结果列表。识别与查询在同一个请求中完成。</p>
+        </article>
+        <article>
+          <span>新验证方式</span>
+          <h3>随机滑块与文字点选</h3>
+          <p>题型包含旋转字形和行为校验。尝试本地图像识别和开源项目后，仍不足以稳定处理新题型。</p>
+        </article>
+        <article>
+          <span>状态依赖</span>
+          <h3>验证后会话绑定</h3>
+          <p>完成验证后，列表、翻页和详情需要继续使用当前浏览器会话。修补识别已不能解决整个查询过程的问题。</p>
+        </article>
+      </div>
       <div class="case-copy">
         <p>我尝试过本地图像识别，也检查了可复用的开源项目。实际题型包含旋转字形和行为校验，要继续处理就得投入模型、图像处理和反复调参。当时的尝试仍不足以支撑一批日常查询。</p>
         <p>即使识别了某一张图片，后面的列表、翻页和详情仍需要跟着官网页面继续操作。修补识别这一步，已经不能解决整个查询过程的问题，我需要重新考虑工具怎样配合网站工作。</p>
@@ -50,6 +156,18 @@ const tocSections = [
       <div class="case-copy">
         <p>做这个工具的起因，是逐项查询和整理结果太重复。即使验证码仍由人完成，名单排队、读取详情、保存历史和排表这些工作，依然可以交给工具。我也没有采用第三方打码服务，避免增加费用和外部依赖，以及由此带来的隐私问题。</p>
         <p>这个选择给交互设计留下了一个具体问题。人去官网完成验证后，不能还要回来重新提交名单。我让控制台保留当前查询项和剩余任务，浏览器负责接着读取官网结果，两边围绕同一批任务继续工作。</p>
+      </div>
+      <div class="responsibility-split">
+        <section class="responsibility-split__human">
+          <span>人</span>
+          <strong>完成安全验证</strong>
+          <p>在执行网页面完成随机滑块或文字点选。完成后无需重新提交名单，工具自动接续。</p>
+        </section>
+        <section>
+          <span>工具</span>
+          <strong>批量接续与结果整理</strong>
+          <p>名单排队、去重与空行处理；读取列表与案件详情；保存任务历史与变化比较；三表 Excel 导出。</p>
+        </section>
       </div>
     </CaseSection>
 
@@ -67,16 +185,16 @@ const tocSections = [
     >
       <div class="product-evidence__frame">
         <img
-          src="/projects/execution-query/console-synthetic.webp"
+          src="/projects/execution-query/verification-waiting-synthetic.webp"
           width="1440"
           height="960"
-          alt="执行网查询助手本地控制台，左侧为批量名单，右侧显示任务进度、结果状态与变化比较"
+          alt="执行网查询助手控制台等待验证状态，橙色提示条显示请在执行网页面完成安全验证，任务进度停在 0/2"
           draggable="false"
         />
       </div>
       <figcaption class="artifact-caption">
         <span>真实产品·合成数据</span>
-        控制台保留整批名单和每项进度，等待验证时也能看到任务停在哪里。画面使用固定虚构数据。
+        遇到安全验证时，控制台显示橙色提示条，任务停在当前项。使用者去官网完成验证后，工具自动接续。画面使用固定虚构数据。
       </figcaption>
     </figure>
       <div class="case-copy">
@@ -99,7 +217,7 @@ const tocSections = [
         data-evidence-kind="real-product-synthetic-data"
         data-protected-media
       >
-        <div class="product-evidence__frame product-evidence__frame--sheet">
+        <div class="product-evidence__frame">
           <img
             src="/projects/execution-query/export-synthetic.webp"
             width="1440"
@@ -120,6 +238,25 @@ const tocSections = [
         <p>名单从控制台提交后，工具准备好官网查询页。使用者通过文字点选完成一次人工验证，第一项取得案件列表和 1 / 1 详情，第二项接着使用同一页面，确认无记录。最终 2 / 2 项完成、0 项失败，导出的三张工作表也检查了结构、公式错误和显示情况。</p>
         <p>这次试用覆盖两项任务，说明当时的查询、人工接续和导出可以走通。不同批次的表现还需要继续观察，官网改变页面或验证流程后，也需要重新检查。</p>
       </div>
+    <figure
+      class="product-evidence"
+      data-evidence-kind="real-product-synthetic-data"
+      data-protected-media
+    >
+      <div class="product-evidence__frame">
+        <img
+          src="/projects/execution-query/trial-completion-synthetic.webp"
+          width="1440"
+          height="1678"
+          alt="执行网查询助手控制台完成状态，显示 2/2 项完成、1 项有记录、1 项无记录，以及与上次查询的变化比较"
+          draggable="false"
+        />
+      </div>
+      <figcaption class="artifact-caption">
+        <span>真实产品·合成数据</span>
+        试用完成状态：2 / 2 项完成、0 项失败，第一项有记录、第二项无记录，导出已可用。画面使用固定虚构数据。
+      </figcaption>
+    </figure>
       <div class="case-copy">
         <p>交给使用者的是本地控制台、任务历史和 Excel 导出，可以暂停、继续或安全取消任务，再从已有结果接着核对。给维护者的说明则记录了浏览器怎样接续任务，以及超时、断连和页面变化时该检查什么。后续遇到官网更新，可以先定位出错步骤，确认能读取结果后再恢复查询。</p>
       </div>

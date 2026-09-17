@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-13",
+  "updated": "2026-09-16",
   "items": [
     {
       "file": "console-synthetic.webp",
@@ -11,6 +11,24 @@
       "file": "export-synthetic.webp",
       "kind": "real-product-synthetic-data",
       "supports": "查询汇总、案件明细和未完成三张工作表的导出结构",
+      "publicSafe": true
+    },
+    {
+      "file": "v1-interface-synthetic.webp",
+      "kind": "real-product-synthetic-data",
+      "supports": "旧工具 V1 界面的单次查询输入与结果列表",
+      "publicSafe": true
+    },
+    {
+      "file": "verification-waiting-synthetic.webp",
+      "kind": "real-product-synthetic-data",
+      "supports": "控制台等待验证状态：橙色提示条、任务停在当前项、进度 0/2",
+      "publicSafe": true
+    },
+    {
+      "file": "trial-completion-synthetic.webp",
+      "kind": "real-product-synthetic-data",
+      "supports": "试用完成状态：2/2 项完成、有记录与无记录分类、变化比较",
       "publicSafe": true
     }
   ]
