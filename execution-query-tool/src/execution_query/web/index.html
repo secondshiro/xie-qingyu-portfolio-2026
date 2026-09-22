@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>执行网查询助手</title>
+    <link rel="stylesheet" href="/app/assets/dashboard.css">
+    <script src="/app/assets/dashboard.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
+    <header class="app-header">
+      <a class="brand" href="/app/" aria-label="执行网查询助手首页">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>执行网查询助手</span>
+      </a>
+      <div class="connection" aria-live="polite">
+        <span class="connection-dot" id="connection-dot" aria-hidden="true"></span>
+        <span id="bridge-status">正在连接浏览器</span>
+      </div>
+    </header>
+
+    <main id="main-content" tabindex="-1">
+      <section class="intro" aria-labelledby="page-title">
+        <p class="eyebrow">本地批量工作台</p>
+        <h1 id="page-title"><span>从名单开始，</span><span>验证时再去执行网</span></h1>
+        <p class="intro-copy">助手会自动打开或复用查询页。安全验证由你在官网完成，批量接续、结果整理和 Excel 导出留在这里。</p>
+      </section>
+
+      <div class="workspace">
+        <form class="query-panel" id="query-form">
+          <div class="panel-heading">
+            <div>
+              <p class="section-index">01</p>
+              <h2>准备查询名单</h2>
+            </div>
+            <span class="privacy-note">仅保存在本机</span>
+          </div>
+          <label for="subjects">查询主体</label>
+          <textarea id="subjects" name="subjects" rows="12" spellcheck="false" aria-describedby="subjects-help" placeholder="每行一个名称&#10;可选格式  名称,身份或机构代码"></textarea>
+          <div class="field-meta">
+            <p id="subjects-help">自动去除空行和重复项，单批最多 500 项。</p>
+            <output id="subject-count" for="subjects">0 项</output>
+          </div>
+          <p class="form-error" id="form-error" role="alert" hidden></p>
+          <div class="actions">
+            <button class="button button-primary" id="start-query" type="submit">开始批量查询</button>
+            <button class="button button-secondary" id="cancel-query" type="button" disabled>取消任务</button>
+          </div>
+        </form>
+
+        <section class="task-panel" aria-labelledby="current-task-title">
+          <div class="panel-heading">
+            <div>
+              <p class="section-index">02</p>
+              <h2 id="current-task-title">当前任务</h2>
+            </div>
+            <span class="status-badge" id="task-status">尚未开始</span>
+          </div>
+
+          <div class="verification-alert" id="verification-alert" role="status" hidden>
+            <div>
+              <strong>请在执行网页面完成安全验证</strong>
+              <p>完成后无需再次点击查询，助手会自动接续。</p>
+            </div>
+            <button class="button button-alert" id="focus-verification" type="button">前往验证</button>
+          </div>
+
+          <div class="empty-task" id="empty-task">
+            <span class="empty-glyph" aria-hidden="true">↗</span>
+            <h3>名单准备好后，从这里观察整批进度</h3>
+            <p>执行网页面会在后台准备，只有遇到安全验证时才切换过去。</p>
+          </div>
+
+          <div id="task-content" hidden>
+            <div class="progress-copy">
+              <span id="task-stage">正在准备</span>
+              <span id="progress-value">0 / 0</span>
+            </div>
+            <div class="progress-track" id="task-progress" role="progressbar" aria-label="批量查询进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <span id="progress-fill"></span>
+            </div>
+            <dl class="metrics">
+              <div><dt>总数</dt><dd id="metric-total">0</dd></div>
+              <div><dt>已完成</dt><dd id="metric-completed">0</dd></div>
+              <div><dt>有记录</dt><dd id="metric-records">0</dd></div>
+              <div><dt>无记录</dt><dd id="metric-empty">0</dd></div>
+              <div><dt>未完成</dt><dd id="metric-failed">0</dd></div>
+            </dl>
+            <div class="task-actions">
+              <button class="button button-secondary" id="resume-task" type="button" hidden>继续任务</button>
+              <a class="button button-link" id="export-task" href="#" aria-disabled="true">导出 Excel</a>
+            </div>
+            <ol class="task-items" id="task-items" aria-label="查询项目状态"></ol>
+
+            <section class="comparison-panel" id="comparison-panel" aria-labelledby="comparison-title" hidden>
+              <div class="comparison-heading">
+                <div>
+                  <p class="section-index">变化</p>
+                  <h3 id="comparison-title">与上次成功查询相比</h3>
+                </div>
+                <span id="comparison-date"></span>
+              </div>
+              <dl class="comparison-metrics">
+                <div><dt>新增</dt><dd id="comparison-new">0</dd></div>
+                <div><dt>存续</dt><dd id="comparison-unchanged">0</dd></div>
+                <div><dt>本次未见</dt><dd id="comparison-missing">0</dd></div>
+                <div><dt>首次记录</dt><dd id="comparison-baseline">0</dd></div>
+              </dl>
+              <ol class="comparison-subjects" id="comparison-subjects" aria-live="polite"></ol>
+              <p class="comparison-note">“本次未见”仅表示本次查询没有返回该记录，不直接等同于案件法律状态发生变化。</p>
+            </section>
+          </div>
+        </section>
+      </div>
+
+      <section class="history-panel" aria-labelledby="history-title">
+        <div class="panel-heading">
+          <div>
+            <p class="section-index">03</p>
+            <h2 id="history-title">最近任务</h2>
+          </div>
+          <button class="text-button" id="refresh-history" type="button">刷新</button>
+        </div>
+        <div class="history-empty" id="history-empty">完成第一批查询后，任务会出现在这里。</div>
+        <ol class="history-list" id="task-history" aria-live="polite"></ol>
+      </section>
+    </main>
+
+    <footer>
+      <p>数据、查询记录和导出均留在本机。页面变化与失败不会被写成“无记录”。</p>
+    </footer>
+  </body>
+</html>
