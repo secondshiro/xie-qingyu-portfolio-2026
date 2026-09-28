@@ -37,7 +37,7 @@ test('执行网公开证据使用合成或脱敏材料并保持可追溯', async
   const manifest = JSON.parse(
     await readFile('public/projects/execution-query/evidence-manifest.json', 'utf8'),
   );
-  assert.equal(manifest.updated, '2026-09-16');
+  assert.equal(manifest.updated, '2026-09-22');
   assert.equal(manifest.items.length, 5);
   const allowedKinds = new Set([
     'real-run-redacted',

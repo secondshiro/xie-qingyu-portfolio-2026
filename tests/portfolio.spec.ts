@@ -1,10 +1,10 @@
 import { expect, test } from '@playwright/test';
 
-test('关于提供键盘可用的 PDF 下载和联系入口', async ({ page, request }) => {
+test('首页提供键盘可用的 PDF 下载和联系入口', async ({ page, request }) => {
   await page.goto('/');
   const about = page.locator('#about');
   await expect(about.getByRole('link', { name: /查看完整案例/ })).toHaveCount(0);
-  const link = about.getByRole('link', { name: /下载简历/ });
+  const link = page.getByRole('link', { name: /下载简历/ });
   for (let i = 0; i < 25 && !(await link.evaluate(el => el === document.activeElement)); i++) {
     await page.keyboard.press('Tab');
   }
@@ -56,7 +56,7 @@ test('执行网案例展示人工接管、批量状态和三张导出表', async
   expect(ids).toEqual([
     'origin', 'breakage', 'decision', 'result', 'system', 'evidence',
   ]);
-  await expect(page.locator('[data-evidence-kind="real-product-synthetic-data"]')).toHaveCount(2);
+  await expect(page.locator('[data-evidence-kind="real-product-synthetic-data"]')).toHaveCount(5);
   await expect(page.locator('#result')).toContainText('安全验证由人完成');
   await expect(page.locator('#system')).toContainText('变化比较');
   await expect(page.locator('#system')).toContainText('本次未见');
@@ -77,7 +77,7 @@ test('跳到主要内容和核心入口可通过键盘访问', async ({ page }) 
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/#main$/);
   await expect(page.locator('#main')).toBeFocused();
-  await expect(page.locator('#selected-work').getByRole('link', { name: /查看完整案例/ })).toBeVisible();
+  await expect(page.locator('[data-work="0"]').getByRole('link', { name: /打开案例/ })).toBeVisible();
   await expect(page.getByRole('link', { name: /second988@qq.com/ }).first()).toBeVisible();
 });
 

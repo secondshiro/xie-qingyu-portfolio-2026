@@ -1,6 +1,6 @@
 # 文档索引
 
-更新于 2026-09-16。接手先读根目录 README.md、TASK_STATUS.md、DESIGN.md 与 AGENTS.md；涉及定位和事实再读 PRODUCT.md。
+更新于 2026-09-28。接手先读根目录 README.md、TASK_STATUS.md、DESIGN.md 与 AGENTS.md；涉及定位和事实再读 PRODUCT.md。
 
 ## 当前结构与维护
 
@@ -8,11 +8,16 @@
 | --- | --- |
 | [当前状态](../TASK_STATUS.md) | 实现、验证、发布边界和待办的唯一汇总 |
 | [设计规范](../DESIGN.md) | 字阶、颜色、媒体、目录、折叠与响应式合同 |
-| [首页简报](briefs/homepage.md) | 文字项目索引与职业定位 |
+| [首页简报](briefs/homepage.md) | 唱机首页结构、交互、素材、备份与验证 |
 | [GIS 素材索引](guides/gis-media-index.md) | 案例页的当前媒体与历史素材 |
 | [执行网维护](projects/execution-query/next-turn-handoff.md) | 独立本地工具与案例证据 |
+| [执行网文档](projects/execution-query/README.md) | 工具与证据入口；本地图标探索尚未定稿 |
+| [首页封面制作](guides/home-cover-prompts.md) | 已采用封面的提示词和装饰属性 |
+| [旧首页备份](../backups/homepage-before-turntable-2026-09-28/README.md) | 替换前源码、依赖和恢复方法 |
 
 公开路由为 `/`、`/work/real-estate-gis/`、`/work/edgecase-planner/`、`/work/brand-system/`、`/work/execution-query/`。源码入口为 `src/pages/`，公共结构由 `src/components/` 维护，样式位于 `src/styles/`。三个 GIS 原型位于 `public/projects/real-estate-gis/prototypes/`，无新增后端或 API。
+
+唱机方案已进入正式首页。`prototype/turntable/` 保留本地实验，不参与构建；后续直接修改正式源码并运行整站测试。首页视觉例外在 DESIGN.md 中单独定义，不覆盖案例页合同。
 
 执行网生产助手位于 `execution-query-tool/`，有独立依赖与运行方式，不随作品集静态发布。本次文案和文档整理没有改变工具 API、环境变量或数据结构。
 
@@ -77,4 +82,6 @@
 | [superpowers/specs/2026-09-10-execution-query-assistant-human-verification-design.md](superpowers/specs/2026-09-10-execution-query-assistant-human-verification-design.md) | 历史计划、草稿或验收记录 |
 | [superpowers/specs/2026-09-10-execution-query-production-tool-and-case-design.md](superpowers/specs/2026-09-10-execution-query-production-tool-and-case-design.md) | 历史计划、草稿或验收记录 |
 | [superpowers/specs/2026-09-12-execution-query-local-console-design.md](superpowers/specs/2026-09-12-execution-query-local-console-design.md) | 历史计划、草稿或验收记录 |
-| [history/context-cleanup-2026-09-16.md](history/context-cleanup-2026-09-16.md) | 本次文档同步与检查记录 |
+| [history/homepage-delivery-2026-09-28.md](history/homepage-delivery-2026-09-28.md) | 首页替换、备份、验证与文档整理记录 |
+| [guides/home-cover-prompts.md](guides/home-cover-prompts.md) | 正式封面制作记录 |
+| [history/context-cleanup-2026-09-16.md](history/context-cleanup-2026-09-16.md) | 2026-09-16 文档同步与检查记录 |

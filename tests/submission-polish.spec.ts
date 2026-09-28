@@ -5,8 +5,10 @@ for (const width of [1440, 1280, 1024, 1010, 390, 375]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto('/');
     await expect(page.locator('h1')).toHaveText('产品体验设计师');
-    await expect(page.locator('#ai-review')).toContainText('AI 工作流');
-    await expect(page.locator('#execution-query')).toContainText('人工验证');
+    await page.locator('[data-select="1"]').click();
+    await expect(page.locator('[data-work="1"]')).toContainText('AI 工作流');
+    await page.locator('[data-select="3"]').click();
+    await expect(page.locator('[data-work="3"]')).toContainText('人工验证');
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
     await page.screenshot({ path: `/private/tmp/submission-home-${width}.png`, fullPage: true });
     await page.goto('/work/real-estate-gis/');
