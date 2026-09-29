@@ -12,15 +12,15 @@ const { mode = 'selection', resetOnPage = false } = Astro.props;
         <div class="selection-tools"><label><input type="checkbox" data-select-all /> 全选</label><span data-count aria-live="polite">已选 0 项</span></div>
         <div class="skeleton-table">{[0,1,2].map(i=><label class="skeleton-row"><input type="checkbox" data-row={i} aria-label={`选择第 ${i+1} 项`} /><span class="skeleton-cell" aria-hidden="true"></span><span class="skeleton-cell short" aria-hidden="true"></span></label>)}</div>
         <div class="pagination"><span>共 6 项</span><button type="button" data-page="1" aria-pressed="true">1</button><button type="button" data-page="2" aria-pressed="false">2</button></div>
-        <p class="demo-prompt">{resetOnPage ? "试着全选、翻页，再回来：选择已丢失。" : "试着勾选、翻页，再回来：选择继续保留。"}</p>
-        <p class="demo-question">AI 应先问：这些选择需要跨页保留吗？</p>
+        <p class="demo-prompt">{resetOnPage ? "试着全选、翻页，再回来。选择会丢失。" : "试着勾选、翻页，再回来。选择继续保留。"}</p>
+        <p class="demo-question">AI 先问这些选择是否需要跨页保留。</p>
       </div>}
       {mode === 'download' && <div class="operation-demo">
         <div class="ghost-rows" aria-hidden="true"><i></i><i></i><i></i></div>
         <div class="operation-line"><span class="mock-button">批量下载</span><span class="silent">点击后，没有反馈</span></div>
         <div class="operation-line improved"><span class="mock-button">正在打包</span><span>1 / 10 · 10%</span></div>
         <div class="progress-track" aria-hidden="true"><i></i></div>
-        <p class="demo-prompt">增加进度提示，让等待变得可理解。</p>
+        <p class="demo-prompt">数量和百分比提示让用户知道打包进行到了哪一步。</p>
       </div>}
       {mode === 'recovery' && <div class="operation-demo">
         <div class="ghost-rows" aria-hidden="true"><i></i><i></i></div>
@@ -31,12 +31,12 @@ const { mode = 'selection', resetOnPage = false } = Astro.props;
       {mode === 'upload' && <div class="upload-demo">
         <div class="upload-step"><span class="step-number">1</span><strong>上传材料</strong><span class="file-row"><span aria-hidden="true">▤</span> 申请材料.pdf <span class="success-state">上传完成</span></span></div>
         <div class="upload-step"><span class="step-number">2</span><strong>AI 预审</strong><span class="file-row">检查材料内容 <span class="waiting-state">处理中…</span></span></div>
-        <p class="demo-prompt">用于解释差异：文件传完了，内容检查可能还在继续。</p>
+        <p class="demo-prompt">文件传完了，内容检查可能还在继续。</p>
       </div>}
       {mode === 'context' && <div class="context-demo">
         <div class="context-switch"><button type="button" data-context="before" aria-pressed="true">修复前</button><button type="button" data-context="after" aria-pressed="false">修复后</button></div>
         <div class="context-path"><div><span>进入整幢前</span><strong>☐ 道路图层</strong><small>已关闭</small></div><span aria-hidden="true">→</span><div><span>查看整幢后返回</span><strong data-layer>☑ 道路图层</strong><small data-layer-caption>又被打开了</small></div></div>
-        <p class="demo-question" data-context-result aria-live="polite">修复前：还要重新关闭一次道路。</p>
+        <p class="demo-question" data-context-result aria-live="polite">修复前，还要重新关闭一次道路。</p>
       </div>}
     </div>
   </div>
@@ -64,7 +64,7 @@ const { mode = 'selection', resetOnPage = false } = Astro.props;
       root.querySelectorAll<HTMLElement>('[data-context]').forEach(item=>item.setAttribute('aria-pressed',String(item===button)));
       root.querySelector('[data-layer]')!.textContent=after?'☐ 道路图层':'☑ 道路图层';
       root.querySelector('[data-layer-caption]')!.textContent=after?'仍然关闭':'又被打开了';
-      root.querySelector('[data-context-result]')!.textContent=after?'修复后：保留上一次选择，直接继续工作。':'修复前：还要重新关闭一次道路。';
+      root.querySelector('[data-context-result]')!.textContent=after?'修复后，保留上一次选择，可以接着操作。':'修复前，还要重新关闭一次道路。';
     }));
   });
 </script>

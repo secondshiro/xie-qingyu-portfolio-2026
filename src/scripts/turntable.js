@@ -15,6 +15,20 @@
   let selected = 0;
   let loaded = 0;
   let face = 'a';
+  const casePaths = new Set(articles.map(article => new URL(article.querySelector('.work__open').href, location.href).pathname));
+  const returnStateKey = 'portfolio:home';
+  try {
+    const previous = document.referrer && new URL(document.referrer);
+    const fromCase = previous && previous.origin === location.origin && casePaths.has(previous.pathname);
+    const saved = history.state?.portfolioHome ?? (fromCase ? JSON.parse(sessionStorage.getItem(returnStateKey) || 'null') : null);
+    if (saved && Number.isInteger(saved.selected) && saved.selected >= 0 && saved.selected < sleeves.length) {
+      selected = saved.selected;
+      face = saved.face === 'b' ? 'b' : 'a';
+    }
+    if (fromCase) sessionStorage.removeItem(returnStateKey);
+  } catch {
+    // Private browsing or restricted storage must not prevent navigation.
+  }
   let sequence = 0;
   const animations = new Set();
   const title = index => articles[index].querySelector('.work__title').textContent.trim();
@@ -33,7 +47,7 @@
     });
     articles.forEach((article, i) => { article.hidden = i !== index; });
     paintFaces();
-    announcement.textContent = `已选择${title(index)}，${face === 'a' ? '设计思路' : '作品成果'}`;
+    announcement.textContent = `已选择${title(index)}，${face === 'a' ? '设计思路' : '交付与阶段'}`;
   }
 
   function syncDeck(index) {
@@ -156,7 +170,7 @@
     face = nextFace;
     sideButtons.forEach(item => item.setAttribute('aria-pressed', String(item.dataset.side === face)));
     paintFaces();
-    announcement.textContent = `${title(selected)}，${face === 'a' ? '设计思路' : '作品成果'}`;
+    announcement.textContent = `${title(selected)}，${face === 'a' ? '设计思路' : '交付与阶段'}`;
   }
   sideButtons.forEach(button => button.addEventListener('click', () => selectFace(button.dataset.side)));
   document.addEventListener('keydown', event => {
@@ -174,6 +188,21 @@
     else selectFace(face === 'a' ? 'b' : 'a');
   }));
 
+  document.addEventListener('click', event => {
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
+    const link = event.target instanceof Element && event.target.closest('a');
+    if (!link || link.hasAttribute('download') || (link.target && link.target !== '_self')) return;
+    const target = new URL(link.href, location.href);
+    if (target.origin !== location.origin || !casePaths.has(target.pathname)) return;
+    try {
+      const saved = { selected, face };
+      history.replaceState({ ...history.state, portfolioHome: saved }, '');
+      sessionStorage.setItem(returnStateKey, JSON.stringify(saved));
+    } catch {
+      // The case remains reachable when session storage is unavailable.
+    }
+  });
+
   reducedMotion.addEventListener('change', () => {
     if (reducedMotion.matches) settle();
   });
@@ -183,6 +212,7 @@
     media.addEventListener('dragstart', event => event.preventDefault());
   });
 
-  paintSelection(0);
+  paintSelection(selected);
+  selectFace(face);
   settle();
 })();

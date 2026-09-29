@@ -1,5 +1,6 @@
 ---
 import '../styles/home-turntable.css';
+import PageTransitionHead from '../components/PageTransitionHead.astro';
 ---
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -8,28 +9,27 @@ import '../styles/home-turntable.css';
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>谢擎宇｜产品体验设计师</title>
   <meta name="theme-color" content="#F7F7F4">
-  <meta name="description" content="谢擎宇的产品体验设计作品集，记录复杂业务、AI 工作流与视觉系统的设计实践。">
-
+  <meta name="description" content="谢擎宇的产品体验设计作品集，包含房产 GIS、AI 评审、品牌系统提案与执行网查询助手四个案例。">
+  <PageTransitionHead />
 </head>
 <body>
 <a class="skip" href="#main">跳到主要内容</a>
 <header class="bar">
   <a class="bar__name" href="#main">谢擎宇</a>
-  <nav aria-label="主导航"><a href="#selected-work">作品</a><a href="#about">关于</a><a class="bar__mail" href="mailto:second988@qq.com" aria-label="发送邮件至 second988@qq.com">联系 <span aria-hidden="true">↗</span></a></nav>
 </header>
 <main class="stage" id="main" tabindex="-1">
   <div class="showcase">
   <section class="hero" aria-labelledby="home-title">
     <div class="intro">
       <h1 id="home-title">产品体验设计师</h1>
-      <p class="intro__lead">我擅长复杂业务产品的体验设计，有视觉与品牌设计背景。也用 AI 将设计判断做成可操作的原型、工具和评审工作流。</p>
+      <p class="intro__lead">我关注复杂业务中，人们怎样找到信息并完成操作。设计时先理清业务关系，再沿着实际任务安排界面，让每一步都有所需的信息和反馈。</p>
       <div class="intro__actions"><a class="resume" href="/resume/xie-qingyu-resume.pdf" download="谢擎宇-体验设计师简历.pdf">下载简历 · PDF <span aria-hidden="true">↓</span></a><a href="mailto:second988@qq.com">second988@qq.com <span aria-hidden="true">↗</span></a></div>
     </div>
   </section>
   <div class="workstation">
   <div class="listening">
   <section class="collection" id="selected-work" aria-label="作品唱片架">
-    <p class="collection__hint">点选，看看不同实践 <span aria-hidden="true">↙</span></p>
+    <p class="collection__hint">选择作品，查看设计与交付 <span aria-hidden="true">↙</span></p>
     <ul class="crate" aria-label="选择项目">
       <li>
         <button class="sleeve" type="button" data-select="0" style="--disc: #ed5636" aria-pressed="true" aria-controls="work-0" aria-label="选择房产 GIS 体验重构">
@@ -96,7 +96,7 @@ import '../styles/home-turntable.css';
     <div class="panel__head">
       <div class="sides" role="group" aria-label="切换介绍内容">
         <button class="side" type="button" data-side="a" aria-pressed="true">A 面 · 设计思路</button>
-        <button class="side" type="button" data-side="b" aria-pressed="false">B 面 · 作品成果</button>
+        <button class="side" type="button" data-side="b" aria-pressed="false">B 面 · 交付与阶段</button>
       </div>
       <p class="panel__keys"><span><button type="button" data-direction="left" aria-label="上一张唱片">←</button><button type="button" data-direction="right" aria-label="下一张唱片">→</button> 选作品</span><span><button type="button" data-direction="up" aria-label="切换 A/B 面">↑</button><button type="button" data-direction="down" aria-label="切换 A/B 面">↓</button> 切换 A/B 面</span></p>
     </div>
@@ -104,32 +104,32 @@ import '../styles/home-turntable.css';
       <article class="work" id="work-0" data-work="0" aria-labelledby="work-title-0">
         <div class="work__heading"><h2 class="work__title" id="work-title-0">房产 GIS 体验重构</h2></div>
         <div class="work__faces">
-          <p class="work__text" data-face="a">房产工作人员要在地图上找到楼栋、查看整幢，再核对测绘后的房屋关系。我重构了总图、整幢和核对任务，让楼栋信息沿操作路径连续呈现。</p>
-          <p class="work__text" data-face="b" hidden>三个可操作原型覆盖总图、整幢与实测替换预测。结合真实界面截图和重构前后对照，可以查看信息关系、操作路径与核对方式的具体变化。</p>
+          <p class="work__text" data-face="a">工作人员在地图找到楼后，还要查看楼内房屋、核对测绘变更。我重新梳理这几步操作，让当前楼栋的信息随入口保留，切换页面后可以接着核对。</p>
+          <p class="work__text" data-face="b" hidden>完成总图、整幢和实测替换预测三个可操作原型，用于演示找楼、查看房屋和核对新旧测绘记录。这是个人回溯重构，实际办理效果仍待验证。</p>
         </div>
         <a class="work__open" href="/work/real-estate-gis/">打开案例 <span aria-hidden="true">↗</span></a>
       </article>
       <article class="work" id="work-1" data-work="1" aria-labelledby="work-title-1" hidden>
         <div class="work__heading"><h2 class="work__title" id="work-title-1">把设计经验整理成可复用的 AI 工作流</h2></div>
         <div class="work__faces">
-          <p class="work__text" data-face="a">全选漏了其他页，取消后又无法下载。这些项目里的问题让我开始整理检查方法。我把经验写成给 AI 使用的评审规则，由设计师确认业务要求和取舍，再用真实任务持续修正。</p>
-          <p class="work__text" data-face="b" hidden>从真实设计评审中整理检查规则，保留实际评审建议与规则回查记录。案例展示如何把具体问题写成 AI 可使用的规则，以及设计师如何确认建议和业务取舍。</p>
+          <p class="work__text" data-face="a">翻页后选择丢失、取消后无法下载，这些遗漏促使我整理评审经验。我让 AI 按规则观察和追问，再由设计师确认业务要求，用实际操作继续检查规则是否漏了问题。</p>
+          <p class="work__text" data-face="b" hidden>形成设计前梳理与设计后检查的评审规则，保留飞行计划和表单的评审记录。输入与纠错规则已补充并回查，飞行单选建议尚未实现。</p>
         </div>
         <a class="work__open" href="/work/edgecase-planner/">打开案例 <span aria-hidden="true">↗</span></a>
       </article>
       <article class="work" id="work-2" data-work="2" aria-labelledby="work-title-2" hidden>
         <div class="work__heading"><h2 class="work__title" id="work-title-2">新禾智飞品牌系统提案</h2></div>
         <div class="work__faces">
-          <p class="work__text" data-face="a">不同供应商制作的物料放在一起，很难看出来自同一个品牌。我设计了标识组合、颜色字体规范和制作模板，让后续物料有共同的依据。</p>
-          <p class="work__text" data-face="b" hidden>24 页品牌规范与六个子系统提案，包含标识组合、颜色字体规范和制作模板。结合已投产的旧触点，展示从问题梳理到统一规范的设计过程。</p>
+          <p class="work__text" data-face="a">不同供应商分批制作物料时，标识和版式各有做法。我把选标识、排信息和核规格的依据写成规范，再配套模板，供制作人员准备下一批物料时查用。</p>
+          <p class="work__text" data-face="b" hidden>完成 24 页品牌规范与六个子系统提案，覆盖标识组合、色彩字体和制作模板。结合已投产的旧物料说明设计依据，新提案物料尚未投产。</p>
         </div>
         <a class="work__open" href="/work/brand-system/">打开案例 <span aria-hidden="true">↗</span></a>
       </article>
       <article class="work" id="work-3" data-work="3" aria-labelledby="work-title-3" hidden>
         <div class="work__heading"><h2 class="work__title" id="work-title-3">执行网查询助手</h2></div>
         <div class="work__faces">
-          <p class="work__text" data-face="a">律师按名单复核执行记录，需要反复查询和整理。官网验证升级后，旧工具难以继续查询。我保留人工验证，让本地助手接着处理名单、比较结果并生成表格。</p>
-          <p class="work__text" data-face="b" hidden>案例展示人工验证、批量查询、结果比较与表格导出的工作流程，并提供 5 张界面截图和两项合成任务的真实浏览器验收记录。</p>
+          <p class="work__text" data-face="a">律师要反复核查同一批公司。官网升级验证方式后，我把人工验证留在网站，让本地助手保留当前任务和剩余名单，验证完成后接着查询，再整理结果供复核。</p>
+          <p class="work__text" data-face="b" hidden>完成本地查询助手、任务历史与三表 Excel 导出。案例有 5 张合成数据产品截图，以及 2026 年 9 月 12 日两项合成任务的浏览器试用记录，后续需按官网变化维护。</p>
         </div>
         <a class="work__open" href="/work/execution-query/">打开案例 <span aria-hidden="true">↗</span></a>
       </article>
@@ -141,7 +141,7 @@ import '../styles/home-turntable.css';
   </div>
   <section class="about" id="about" aria-labelledby="about-title">
     <h2 id="about-title">关于</h2>
-    <div><p>12 年设计经验，横跨视觉、品牌与产品体验，参与过低空智航、房屋安全等领域的设计。现在用 AI 开发原型与工具，将评审经验整理成规则，验证设计想法。</p></div>
+    <div><p>我有 12 年设计经验，涵盖视觉、品牌与产品体验，曾参与低空智航、房屋安全等项目。目前借助 AI 搭建原型和工具，也把评审经验写成规则，在后续设计中继续使用和回查。</p></div>
   </section>
 </main>
 <script src="../scripts/turntable.js"></script>

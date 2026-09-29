@@ -1,15 +1,17 @@
 # 文档索引
 
-更新于 2026-09-28。接手先读根目录 README.md、TASK_STATUS.md、DESIGN.md 与 AGENTS.md；涉及定位和事实再读 PRODUCT.md。
+更新于 2026-09-29。接手先读根目录 README.md、TASK_STATUS.md、DESIGN.md 与 AGENTS.md；涉及定位和事实再读 PRODUCT.md。
 
 ## 当前结构与维护
 
 | 入口 | 用途 |
 | --- | --- |
 | [当前状态](../TASK_STATUS.md) | 实现、验证、发布边界和待办的唯一汇总 |
+| [全站页面转场](guides/page-transitions.md) | 五页转场范围、点击与加载时序、首页状态恢复 |
 | [设计规范](../DESIGN.md) | 字阶、颜色、媒体、目录、折叠与响应式合同 |
-| [首页简报](briefs/homepage.md) | 唱机首页结构、交互、素材、备份与验证 |
+| [首页简报](briefs/homepage.md) | 唱机首页结构、导航、文案分工、预览与备份 |
 | [GIS 素材索引](guides/gis-media-index.md) | 案例页的当前媒体与历史素材 |
+| [全站文案润色](briefs/site-copy-polish/PROGRESS.md) | 五页文案处理、事实复核与验证结果 |
 | [执行网维护](projects/execution-query/next-turn-handoff.md) | 独立本地工具与案例证据 |
 | [执行网文档](projects/execution-query/README.md) | 工具与证据入口；本地图标探索尚未定稿 |
 | [首页封面制作](guides/home-cover-prompts.md) | 已采用封面的提示词和装饰属性 |

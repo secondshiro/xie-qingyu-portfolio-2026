@@ -1,0 +1,104 @@
+---
+import transitionStyles from '../styles/page-transition.css?url';
+---
+
+<link rel="stylesheet" href={transitionStyles} data-page-transition="portfolio" />
+<script is:inline>
+  (() => {
+    const root = document.documentElement;
+    const key = 'portfolio:page-curtain';
+    const pages = new Set([
+      '/',
+      '/work/real-estate-gis/',
+      '/work/edgecase-planner/',
+      '/work/brand-system/',
+      '/work/execution-query/',
+    ]);
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    let busy = false;
+    let recovery;
+    let storageAvailable = true;
+
+    const reset = () => {
+      clearTimeout(recovery);
+      delete root.dataset.pageTransitionPhase;
+      busy = false;
+    };
+    const waitForCurtain = (name, duration) => new Promise(resolve => {
+      const finish = () => {
+        root.removeEventListener('animationend', onEnd);
+        clearTimeout(timeout);
+        resolve();
+      };
+      const onEnd = event => {
+        if (event.target === root && event.animationName === name) finish();
+      };
+      root.addEventListener('animationend', onEnd);
+      const timeout = setTimeout(finish, duration + 150);
+    });
+
+    // Run in the head before the body paints. Keep the incoming document
+    // covered throughout parsing and loading, then reveal its finished layout.
+    try {
+      const pending = JSON.parse(sessionStorage.getItem(key) || 'null');
+      sessionStorage.removeItem(key);
+      const navigation = performance.getEntriesByType('navigation')[0];
+      if (pending?.to === location.href && Date.now() - pending.created < 30000 &&
+          navigation?.type === 'navigate' && !reducedMotion.matches) {
+        root.dataset.pageTransitionPhase = 'covered';
+        busy = true;
+        recovery = setTimeout(reset, 5000);
+        window.addEventListener('load', () => {
+          clearTimeout(recovery);
+          requestAnimationFrame(() => requestAnimationFrame(async () => {
+            if (!busy || reducedMotion.matches) return reset();
+            const finished = waitForCurtain('page-reveal', 380);
+            root.dataset.pageTransitionPhase = 'reveal';
+            await finished;
+            reset();
+          }));
+        }, { once: true });
+      }
+    } catch {
+      storageAvailable = false;
+    }
+
+    // Bubble after document handlers so the turntable saves its current face.
+    window.addEventListener('click', async event => {
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey ||
+          event.shiftKey || event.altKey || !(event.target instanceof Element)) return;
+      const link = event.target.closest('a[href]');
+      if (!link || link.hasAttribute('download') || (link.target && link.target !== '_self')) return;
+      const to = new URL(link.href, location.href);
+      const changesPage = to.pathname !== location.pathname || to.search !== location.search;
+      if (to.origin !== location.origin || !pages.has(location.pathname) || !pages.has(to.pathname) ||
+          !changesPage || reducedMotion.matches || !storageAvailable) return;
+      if (busy) return event.preventDefault();
+      try {
+        sessionStorage.setItem(key, JSON.stringify({ to: to.href, created: Date.now() }));
+      } catch {
+        storageAvailable = false;
+        return;
+      }
+      event.preventDefault();
+      busy = true;
+      const finished = waitForCurtain('page-cover', 280);
+      root.dataset.pageTransitionPhase = 'cover';
+      await finished;
+      if (!busy) return;
+      root.dataset.pageTransitionPhase = 'covered';
+      recovery = setTimeout(reset, 8000);
+      try {
+        location.assign(to.href);
+      } catch {
+        sessionStorage.removeItem(key);
+        reset();
+      }
+    });
+
+    // Cached outgoing documents must not return with their curtain closed.
+    window.addEventListener('pageshow', event => { if (event.persisted) reset(); });
+    window.addEventListener('pagehide', () => clearTimeout(recovery));
+    reducedMotion.addEventListener('change', () => { if (reducedMotion.matches) reset(); });
+  })();
+</script>

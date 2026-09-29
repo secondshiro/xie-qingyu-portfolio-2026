@@ -1,0 +1,41 @@
+/* Shared by the homepage and all public cases. It is inert without JS. */
+:root {
+  --page-cover-duration: 280ms;
+  --page-reveal-duration: 380ms;
+  --page-transition-easing: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+html[data-page-transition-phase]::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  background: var(--color-stone, #e8e6e0);
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+html[data-page-transition-phase='cover']::before {
+  animation: page-cover var(--page-cover-duration) var(--page-transition-easing) both;
+}
+
+html[data-page-transition-phase='reveal']::before {
+  animation: page-reveal var(--page-reveal-duration) var(--page-transition-easing) both;
+}
+
+@keyframes page-cover {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes page-reveal {
+  from { transform: translateY(0); }
+  to { transform: translateY(-100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-page-transition-phase]::before {
+    content: none;
+    animation: none;
+  }
+}

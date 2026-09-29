@@ -3,8 +3,8 @@ import { access, readFile } from 'node:fs/promises';
 import test from 'node:test';
 
 const required = [
-  'public/projects/real-estate-gis/media/final/02-map-object-context.png',
-  'public/projects/real-estate-gis/media/final/12-building-current-overview.png',
+  'public/projects/real-estate-gis/media/final/map-current-overview.png',
+  'public/projects/real-estate-gis/media/final/building-current-overview.png',
   'public/projects/real-estate-gis/media/final/13-task-relations-focus.png',
   'public/projects/real-estate-gis/media/public/legacy-map-observed.webp',
   'public/projects/real-estate-gis/media/public/legacy-building-overview-observed.webp',

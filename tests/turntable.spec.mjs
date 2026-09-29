@@ -119,7 +119,7 @@ test('键盘焦点可见，左右键选片，上下键切换 A/B 且不滚动', 
   await expect(select(page, 1)).toHaveAttribute('aria-pressed', 'true');
   expect(await select(page, 1).evaluate(el => getComputedStyle(el).boxShadow)).toBe('none');
   expect(await select(page, 1).locator('.sleeve__title').evaluate(el => getComputedStyle(el).textDecorationLine)).toBe('underline');
-  await page.locator('.bar__mail').focus();
+  await page.locator('.intro__actions a[href^="mailto:"]').focus();
   await page.keyboard.press('ArrowRight');
   await expect(select(page, 2)).toHaveAttribute('aria-pressed', 'true');
   const before = await page.evaluate(() => scrollY);

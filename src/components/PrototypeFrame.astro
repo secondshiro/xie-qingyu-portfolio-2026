@@ -19,7 +19,7 @@ const { src, title, poster, posterAlt, linkLabel } = Astro.props;
     <iframe src={src} title={title} loading="lazy" data-prototype-frame></iframe>
     <div class="prototype-frame__fallback" data-protected-media>
       <img src={poster} alt={posterAlt} width="1440" height="900" loading="lazy" decoding="async" draggable="false" />
-      <p>该原型为桌面业务工作区。窄屏保留静态证据，可在新窗口打开完整版本。</p>
+      <p>这里展示原型截图。完整原型适合在桌面浏览，可通过下方链接在新窗口打开并操作。</p>
     </div>
   </div>
   <a class="prototype-frame__link" href={src} target="_blank" rel="noopener noreferrer">{linkLabel} ↗</a>

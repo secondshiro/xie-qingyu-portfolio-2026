@@ -153,14 +153,7 @@ figcaption {
   font-size: 0.84rem;
 }
 
-.site-nav__links a[aria-current]::after {
-  width: 0.28rem;
-  height: 0.28rem;
-  margin-left: 0.42rem;
-  border-radius: 50%;
-  background: var(--color-accent);
-  content: '';
-}
+
 
 .site-footer {
   background: var(--color-ink);
@@ -246,14 +239,6 @@ figcaption {
     padding-inline: 0.3rem;
   }
 
-  .site-nav__email-label {
-    font-size: 0;
-  }
-
-  .site-nav__email-label::after {
-    font-size: 0.8rem;
-    content: '邮箱';
-  }
 
   .media-stage__caption {
     align-items: flex-start;

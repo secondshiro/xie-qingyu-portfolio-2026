@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteNav from '../components/SiteNav.astro';
+import PageTransitionHead from '../components/PageTransitionHead.astro';
 
 interface Props {
   title: string;
@@ -20,6 +21,7 @@ const { title, description, current } = Astro.props;
     <meta name="description" content={description} />
     <meta name="theme-color" content="#F7F7F4" />
     <title>{title}</title>
+    <PageTransitionHead />
   </head>
   <body>
     <!-- THESIS: 作品集是一份连续展开的产品设计专刊；真实作品先证明能力，拒绝卡片墙和长简历首页。

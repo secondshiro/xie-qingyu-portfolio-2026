@@ -1,10 +1,14 @@
 # 首页结构与维护
 
-更新于 2026-09-28。正式首页为 `src/pages/index.astro`，独立样式为 `src/styles/home-turntable.css`，交互为 `src/scripts/turntable.js`。首页直接输出完整 HTML，不加载案例布局的全局样式，避免两套容器相互覆盖。
+更新于 2026-09-29。正式首页为 `src/pages/index.astro`，独立样式为 `src/styles/home-turntable.css`，交互为 `src/scripts/turntable.js`。首页直接输出完整 HTML，不加载案例布局的全局样式，避免两套容器相互覆盖。
 
 ## 内容与入口
 
 首屏依次提供个人定位、简历与邮箱、四个作品封套和唱机、当前作品介绍，最后为关于。作品顺序保持 GIS、AI 评审、品牌系统提案、执行网助手。每个项目的 A 面说明设计思路，B 面说明作品成果，案例按钮位于文案下方左侧。仅公开 `second988@qq.com`。
+
+首页页头只保留姓名，右侧不再显示作品、关于或联系入口。四篇作品页共用 `SiteNav.astro`，右上角仅保留“返回首页”。邮箱与简历继续放在首页定位文案下方。
+
+首屏介绍聚焦设计关注点与工作方式，关于区承担 12 年经历、参与领域和目前的 AI 实践，避免两处重复。润色时保留自然承接，在合适位置使用“目前”“并将”“在此过程中”等连接词，不为压缩字数把句子写成信息片段。当前正文以 `src/pages/index.astro` 为准，不在文档中维护第二份完整稿。
 
 点击封套或左右箭头选择作品，上下箭头切换 A/B 面。键盘方向键支持同样操作；封套内 Home/End 跳到首尾。键盘焦点通过标题下划线提示，其他控件保留焦点环。关闭 JavaScript 后仍有四篇案例的直接链接。
 
@@ -26,4 +30,4 @@
 
 替换前的首页及依赖保存在 `backups/homepage-before-turntable-2026-09-28/`，不生成公开路由。恢复方法见该目录 README。`prototype/turntable/` 仅保留设计实验，正式维护以 `src/` 为准。
 
-运行 `npm test`、`npm run test:e2e`、`npm run build`。`tests/turntable.spec.mjs` 覆盖全部选择、动画中断、无限旋转、减弱动效、键盘、无脚本入口和桌面构图，其他测试继续覆盖四篇案例。浏览器测试启动本地 4331 端口；正式预览使用 `npm run preview`，不要把 4334 的实验服务器当成构建结果。
+运行 `npm test`、`npm run test:e2e`、`npm run build`。`tests/turntable.spec.mjs` 覆盖全部选择、动画中断、无限旋转、减弱动效、键盘、无脚本入口和桌面构图，其他测试继续覆盖四篇案例。浏览器测试启动本地 4331 端口；正式预览使用 `npm run preview -- --host 127.0.0.1 --port 4336`。预览读取 `dist/`，修改源码后先运行 `npm run build` 再刷新；日常即时预览可用 `npm run dev`。4334 是历史实验服务器，不代表正式构建。
