@@ -1,6 +1,6 @@
 # 房产 GIS 素材索引
 
-更新于 2026-09-29。
+更新于 2026-10-08。
 
 这份索引区分“当前公开使用的素材”和“历史留存素材”。历史文件保留在原目录，不能作为当前方案截图引用。
 
@@ -10,12 +10,14 @@
 
 | 用途 | 文件或入口 | 说明 |
 | --- | --- | --- |
-| 案例页总图原型海报 | `public/projects/real-estate-gis/media/final/map-current-overview.png` | 2026-09-29 从站内原型截取，使用当前底图，展开图层并选中 17 幢 |
+| 案例页总图原型海报 | `public/projects/real-estate-gis/media/final/map-current-overview.png` | 2026-10-08 从站内原型截取，使用当前底图，展开图层并选中 17 幢 |
 | 案例页总图交互入口 | `public/projects/real-estate-gis/prototypes/map/index.html` | 当前可交互原型，页面上的完整入口以此为准 |
-| 案例页整幢对比图与原型海报 | `public/projects/real-estate-gis/media/final/building-current-overview.png` | 2026-09-29 从站内原型截取，使用当前平面参考图，打开 17 幢并选中 1 单元 1501 室 |
-| 案例页任务原型海报 | `public/projects/real-estate-gis/media/final/13-task-relations-focus.png` | 当前实测替换预测任务工作面 |
-| 设计取舍的矩阵局部 | `public/projects/real-estate-gis/media/final/15-decision-matrix.png` | 2026-09-29 已对照当前原型，楼层与户室状态色带一致 |
-| 设计取舍的关系卡局部 | `public/projects/real-estate-gis/media/final/16-decision-relation-card.png` | 2026-09-29 已对照当前原型，户室对应、面积差异与待核对状态一致 |
+| 案例页整幢对比图与原型海报 | `public/projects/real-estate-gis/media/final/building-current-overview.png` | 2026-10-08 从站内原型截取，使用当前平面参考图，打开 17 幢并选中 1 单元 1501 室 |
+| 案例页任务原型海报 | `public/projects/real-estate-gis/media/final/13-task-relations-focus.png` | 从当前站内原型截取，展示关系组及结构项待业务确认提示 |
+| 设计取舍的矩阵局部 | `public/projects/real-estate-gis/media/final/15-decision-matrix.png` | 2026-10-08 已对照当前原型，27 层、20 项状态定义与矩阵色带一致 |
+| 设计取舍的关系卡局部 | `public/projects/real-estate-gis/media/final/16-decision-relation-card.png` | 2026-10-08 已对照当前原型，1 单元 1501 室 94.20㎡ 与测绘侧 95.90㎡、待核对状态一致，画幅为 1190×117 |
+
+三个原型共用 `prototypes/demo-data.js` 的 27 层、322 户基础记录。图例含义与截图色值沿用原始材料，户室状态分配为合成演示数据。实测侧另含差异与复杂关系样例，未连接真实校验或提交。
 
 ## 历史版本
 

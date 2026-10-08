@@ -77,7 +77,10 @@ test('跳到主要内容和核心入口可通过键盘访问', async ({ page }) 
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/#main$/);
   await expect(page.locator('#main')).toBeFocused();
-  await expect(page.locator('[data-work="0"]').getByRole('link', { name: /打开案例/ })).toBeVisible();
+  const firstCase = page.getByRole('link', { name: '打开房产 GIS 体验重构', exact: true });
+  await expect(firstCase).toBeVisible();
+  await firstCase.focus();
+  await expect(firstCase).toBeFocused();
   await expect(page.getByRole('link', { name: /second988@qq.com/ }).first()).toBeVisible();
 });
 

@@ -29,35 +29,35 @@ import PageTransitionHead from '../components/PageTransitionHead.astro';
   <div class="workstation">
   <div class="listening">
   <section class="collection" id="selected-work" aria-label="作品唱片架">
-    <p class="collection__hint">选择作品，查看设计与交付 <span aria-hidden="true">↙</span></p>
-    <ul class="crate" aria-label="选择项目">
+    <p class="collection__hint"><span class="collection__hint-hover">悬停换片 · 点击看案例</span><span class="collection__hint-touch">点击封面，查看案例</span></p>
+    <ul class="crate" aria-label="作品索引">
       <li>
-        <button class="sleeve" type="button" data-select="0" style="--disc: #ed5636" aria-pressed="true" aria-controls="work-0" aria-label="选择房产 GIS 体验重构">
+        <a class="sleeve" href="/work/real-estate-gis/" data-select="0" style="--disc: #ed5636" aria-current="true" aria-controls="work-0" aria-label="打开房产 GIS 体验重构">
           <span class="sleeve__record" aria-hidden="true"><span class="record__grooves"></span><span class="record__label"></span></span>
-          <span class="sleeve__cover" data-protected-media><img src="/images/home/covers/gis-v5.webp" alt="" width="640" height="640" draggable="false"></span>
-          <span class="sleeve__caption"><span class="sleeve__number">01</span><span class="sleeve__title">房产 GIS 体验重构</span></span>
-        </button>
+          <span class="sleeve__cover" data-protected-media><img src="/images/home/covers/gis-v5.webp" alt="" width="640" height="640" draggable="false"><span class="sleeve__open" aria-hidden="true">查看案例</span></span>
+          <span class="sleeve__caption"><span class="sleeve__number">01</span><span class="sleeve__title">房产 GIS 体验重构<span class="sleeve__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8" /></svg></span></span></span>
+        </a>
       </li>
       <li>
-        <button class="sleeve" type="button" data-select="1" style="--disc: #328bd2" aria-pressed="false" aria-controls="work-1" aria-label="选择把设计经验整理成可复用的 AI 工作流">
+        <a class="sleeve" href="/work/edgecase-planner/" data-select="1" style="--disc: #328bd2" aria-current="false" aria-controls="work-1" aria-label="打开 AI 评审工作流案例">
           <span class="sleeve__record" aria-hidden="true"><span class="record__grooves"></span><span class="record__label"></span></span>
-          <span class="sleeve__cover" data-protected-media><img src="/images/home/covers/review-v5.webp" alt="" width="640" height="640" draggable="false"></span>
-          <span class="sleeve__caption"><span class="sleeve__number">02</span><span class="sleeve__title">AI 评审工作流</span></span>
-        </button>
+          <span class="sleeve__cover" data-protected-media><img src="/images/home/covers/review-v5.webp" alt="" width="640" height="640" draggable="false"><span class="sleeve__open" aria-hidden="true">查看案例</span></span>
+          <span class="sleeve__caption"><span class="sleeve__number">02</span><span class="sleeve__title">AI 评审工作流<span class="sleeve__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8" /></svg></span></span></span>
+        </a>
       </li>
       <li>
-        <button class="sleeve" type="button" data-select="2" style="--disc: #e6b42e" aria-pressed="false" aria-controls="work-2" aria-label="选择新禾智飞品牌系统提案">
+        <a class="sleeve" href="/work/brand-system/" data-select="2" style="--disc: #e6b42e" aria-current="false" aria-controls="work-2" aria-label="打开新禾智飞品牌系统提案">
           <span class="sleeve__record" aria-hidden="true"><span class="record__grooves"></span><span class="record__label"></span></span>
-          <span class="sleeve__cover" data-protected-media><img src="/images/home/covers/brand-v5.webp" alt="" width="640" height="640" draggable="false"></span>
-          <span class="sleeve__caption"><span class="sleeve__number">03</span><span class="sleeve__title">新禾智飞品牌系统</span></span>
-        </button>
+          <span class="sleeve__cover" data-protected-media><img src="/images/home/covers/brand-v5.webp" alt="" width="640" height="640" draggable="false"><span class="sleeve__open" aria-hidden="true">查看案例</span></span>
+          <span class="sleeve__caption"><span class="sleeve__number">03</span><span class="sleeve__title">新禾智飞品牌系统<span class="sleeve__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8" /></svg></span></span></span>
+        </a>
       </li>
       <li>
-        <button class="sleeve" type="button" data-select="3" style="--disc: #36a879" aria-pressed="false" aria-controls="work-3" aria-label="选择执行网查询助手">
+        <a class="sleeve" href="/work/execution-query/" data-select="3" style="--disc: #36a879" aria-current="false" aria-controls="work-3" aria-label="打开执行网查询助手">
           <span class="sleeve__record" aria-hidden="true"><span class="record__grooves"></span><span class="record__label"></span></span>
-          <span class="sleeve__cover" data-protected-media><img src="/images/home/covers/query-v5.webp" alt="" width="640" height="640" draggable="false"></span>
-          <span class="sleeve__caption"><span class="sleeve__number">04</span><span class="sleeve__title">执行网查询助手</span></span>
-        </button>
+          <span class="sleeve__cover" data-protected-media><img src="/images/home/covers/query-v5.webp" alt="" width="640" height="640" draggable="false"><span class="sleeve__open" aria-hidden="true">查看案例</span></span>
+          <span class="sleeve__caption"><span class="sleeve__number">04</span><span class="sleeve__title">执行网查询助手<span class="sleeve__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8" /></svg></span></span></span>
+        </a>
       </li>
     </ul>
   </section>
@@ -104,10 +104,9 @@ import PageTransitionHead from '../components/PageTransitionHead.astro';
       <article class="work" id="work-0" data-work="0" aria-labelledby="work-title-0">
         <div class="work__heading"><h2 class="work__title" id="work-title-0">房产 GIS 体验重构</h2></div>
         <div class="work__faces">
-          <p class="work__text" data-face="a">工作人员在地图找到楼后，还要查看楼内房屋、核对测绘变更。我重新梳理这几步操作，让当前楼栋的信息随入口保留，切换页面后可以接着核对。</p>
+          <p class="work__text" data-face="a">房产管理需要对应地图上的楼栋与楼内房屋信息。我围绕地图定位、整幢查看和测绘核对重新安排信息与操作，用三个原型呈现设计取舍。</p>
           <p class="work__text" data-face="b" hidden>完成总图、整幢和实测替换预测三个可操作原型，用于演示找楼、查看房屋和核对新旧测绘记录。这是个人回溯重构，实际办理效果仍待验证。</p>
         </div>
-        <a class="work__open" href="/work/real-estate-gis/">打开案例 <span aria-hidden="true">↗</span></a>
       </article>
       <article class="work" id="work-1" data-work="1" aria-labelledby="work-title-1" hidden>
         <div class="work__heading"><h2 class="work__title" id="work-title-1">把设计经验整理成可复用的 AI 工作流</h2></div>
@@ -115,7 +114,6 @@ import PageTransitionHead from '../components/PageTransitionHead.astro';
           <p class="work__text" data-face="a">翻页后选择丢失、取消后无法下载，这些遗漏促使我整理评审经验。我让 AI 按规则观察和追问，再由设计师确认业务要求，用实际操作继续检查规则是否漏了问题。</p>
           <p class="work__text" data-face="b" hidden>形成设计前梳理与设计后检查的评审规则，保留飞行计划和表单的评审记录。输入与纠错规则已补充并回查，飞行单选建议尚未实现。</p>
         </div>
-        <a class="work__open" href="/work/edgecase-planner/">打开案例 <span aria-hidden="true">↗</span></a>
       </article>
       <article class="work" id="work-2" data-work="2" aria-labelledby="work-title-2" hidden>
         <div class="work__heading"><h2 class="work__title" id="work-title-2">新禾智飞品牌系统提案</h2></div>
@@ -123,7 +121,6 @@ import PageTransitionHead from '../components/PageTransitionHead.astro';
           <p class="work__text" data-face="a">不同供应商分批制作物料时，标识和版式各有做法。我把选标识、排信息和核规格的依据写成规范，再配套模板，供制作人员准备下一批物料时查用。</p>
           <p class="work__text" data-face="b" hidden>完成 24 页品牌规范与六个子系统提案，覆盖标识组合、色彩字体和制作模板。结合已投产的旧物料说明设计依据，新提案物料尚未投产。</p>
         </div>
-        <a class="work__open" href="/work/brand-system/">打开案例 <span aria-hidden="true">↗</span></a>
       </article>
       <article class="work" id="work-3" data-work="3" aria-labelledby="work-title-3" hidden>
         <div class="work__heading"><h2 class="work__title" id="work-title-3">执行网查询助手</h2></div>
@@ -131,7 +128,6 @@ import PageTransitionHead from '../components/PageTransitionHead.astro';
           <p class="work__text" data-face="a">律师要反复核查同一批公司。官网升级验证方式后，我把人工验证留在网站，让本地助手保留当前任务和剩余名单，验证完成后接着查询，再整理结果供复核。</p>
           <p class="work__text" data-face="b" hidden>完成本地查询助手、任务历史与三表 Excel 导出。案例有 5 张合成数据产品截图，以及 2026 年 9 月 12 日两项合成任务的浏览器试用记录，后续需按官网变化维护。</p>
         </div>
-        <a class="work__open" href="/work/execution-query/">打开案例 <span aria-hidden="true">↗</span></a>
       </article>
     </div>
     <p class="sr-only" data-announcement aria-live="polite" aria-atomic="true"></p>
@@ -141,7 +137,7 @@ import PageTransitionHead from '../components/PageTransitionHead.astro';
   </div>
   <section class="about" id="about" aria-labelledby="about-title">
     <h2 id="about-title">关于</h2>
-    <div><p>我有 12 年设计经验，涵盖视觉、品牌与产品体验，曾参与低空智航、房屋安全等项目。目前借助 AI 搭建原型和工具，也把评审经验写成规则，在后续设计中继续使用和回查。</p></div>
+    <div><p>我有 12 年设计经验，从刊物、品牌视觉转向大屏、后台与 App 的产品设计。目前借助 AI 制作原型和查询工具，也把评审经验整理成检查规则，在实际操作中检验和修订。</p></div>
   </section>
 </main>
 <script src="../scripts/turntable.js"></script>

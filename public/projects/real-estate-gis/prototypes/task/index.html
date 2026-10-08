@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="tdesign-tokens.css">
   <link rel="stylesheet" href="workspace-tdesign.css">
   <!-- S4-06 V8 · 实测替换预测（功能6 / 屏06）
-       已确认业务：从 HME 中间库选择实测幢，检查关联幢与重复替换，设置变更层及幢户关联后提交楼盘入库审核。
+       原始记录包含选择实测幢、校验与设置入库模式；本页只演示这些步骤，不执行真实业务校验或提交。
        设计推演：面积差异、建议关联以及结构关系的提示，用于压力测试复杂关系模型，具体规则仍需业务确认。
        V8 重构（结合 Gemini 视觉蓝图 + 流转矩阵/原路返回设计）：
        ① 废弃双表 → 卡片行组（Row-Group）轴心布局（幢/层/户/用途抽卡头，预测→差异→实测横向对比，拆分在卡内纵向堆叠防错位）
@@ -435,6 +435,7 @@
       .btn:active, .seg:active, .rg:active, .ds-toggle__btn:active, .link-candidate__row:active, .check-item:active { transform: none !important; }
     }
   </style>
+<script src="../demo-data.js"></script>
 </head>
 <body>
   <div class="layout workspace-shell" data-wk-legacy="true">
@@ -455,9 +456,9 @@
           <div class="task-object-identity"><b class="task-object-title" id="taskObjectTitle">宇济一号 · 17幢</b><span class="task-object-view">实测替换预测</span></div>
           <div class="task-object-actions">
             <span class="submit-wrap" id="submitWrap">
-              <button class="btn btn--primary" id="submitBtn" disabled>提交替换入库</button>
+              <button class="btn btn--primary" id="submitBtn" disabled>演示提交确认</button>
             </span>
-            <button class="btn btn--sm" id="draftBtn">存草稿</button>
+            <button class="btn btn--sm" id="draftBtn">演示存草稿</button>
             <span class="gate-hint" id="gateHint"></span>
           </div>
         </div>
@@ -475,17 +476,15 @@
           <div class="step-panel is-active" id="step1">
             <div class="card" style="padding:20px;">
               <div class="card__title" style="margin-bottom:16px;">查找替换数据</div>
-              <span class="task-demo-meta">40 层演示数据</span>
+              <span class="task-demo-meta">27 层演示数据 · 不连接真实业务</span>
               <div class="field-row">
                 <div class="field" style="flex:2 1 260px;">
-                  <label>实测测绘幢（从 HME 中间库选择）</label>
+                  <label>实测测绘幢（演示数据）</label>
                   <div class="ui-select" data-select data-search>
                     <input id="targetBuildingInput" type="text" class="ui-select__trigger" data-trigger value="BD-2024-001 金桂苑 1-6 幢" placeholder="搜索幢 ID 或名称…">
                     <span class="ui-select__caret"></span>
                     <div class="ui-select__panel" data-panel>
                       <div class="ui-select__option is-selected" data-option data-id="BD-2024-001" data-name="金桂苑 1-6 幢"><span class="opt-id">BD-2024-001</span><span class="opt-name">金桂苑 1-6 幢</span></div>
-                      <div class="ui-select__option" data-option data-id="BD-2024-002" data-name="金桂苑 7-9 幢"><span class="opt-id">BD-2024-002</span><span class="opt-name">金桂苑 7-9 幢</span></div>
-                      <div class="ui-select__option" data-option data-id="BD-2023-118" data-name="阳光里 1-3 幢"><span class="opt-id">BD-2023-118</span><span class="opt-name">阳光里 1-3 幢</span></div>
                       <div class="ui-select__empty" data-empty style="display:none;">无匹配结果</div>
                     </div>
                   </div>
@@ -499,15 +498,13 @@
                     </button>
                     <div class="ui-select__panel" data-panel>
                       <div class="ui-select__option is-selected" data-option>整幢（全部楼层）</div>
-                      <div class="ui-select__option" data-option>仅住宅楼层</div>
-                      <div class="ui-select__option" data-option>仅商业楼层</div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="upload-zone">已选择中间库测绘数据：<b id="surveyBuildingName">金桂苑 1-6 幢（实测）</b><br><span style="font-size:12px">系统将在下一步校验关联幢和重复替换状态</span></div>
+              <div class="upload-zone">已选择中间库测绘数据 · <b id="surveyBuildingName">宇济一号 · 17幢（实测）</b><br><span style="font-size:12px">下一步展示关联幢和重复替换的演示反馈，不执行真实业务校验</span></div>
               <div style="margin-top:18px;display:flex;gap:10px;">
-                <button class="btn btn--primary btn--sm" id="toStep2">下一步：校验</button>
+                <button class="btn btn--primary btn--sm" id="toStep2">下一步 · 校验</button>
               </div>
             </div>
           </div>
@@ -515,11 +512,11 @@
           <!-- 步骤2 -->
           <div class="step-panel" id="step2">
             <div class="card" style="padding:20px;">
-              <div class="card__title" style="margin-bottom:16px;">校验结果</div>
+              <div class="card__title" style="margin-bottom:16px;">校验反馈演示</div>
               <div class="check-list" id="checkList"></div>
               <div style="margin-top:18px;display:flex;gap:10px;">
                 <button class="btn btn--sm" id="backTo1">上一步</button>
-                <button class="btn btn--primary btn--sm" id="toStep3">下一步：设入库模式</button>
+                <button class="btn btn--primary btn--sm" id="toStep3">下一步 · 设入库模式</button>
               </div>
             </div>
           </div>
@@ -529,14 +526,14 @@
             <!-- 结构变化提示：处理方式待业务确认 -->
             <div class="block-bar" id="blockBar">
               <svg class="block-bar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l8 4v5c0 4.5-3 7.5-8 9-5-1.5-8-4.5-8-9V7l8-4z" stroke-linejoin="round"/><path d="M12 9v4M12 16v.5" stroke-linecap="round"/></svg>
-              <div class="block-bar__body"><span class="status-tag status-tag--warning block-bar__evidence"><span class="dot"></span>待业务确认</span><span class="block-bar__message">检测到 <b id="blockCount">0</b> 项结构变化（拆分、合并、新增或删除），请结合楼盘变更业务核对处理。</span></div>
+              <div class="block-bar__body"><span class="status-tag status-tag--warning block-bar__evidence"><span class="dot"></span>待业务确认</span><span class="block-bar__message">演示含 <b id="blockCount">0</b> 项结构关系（拆分、合并、新增或删除），处置规则待确认，暂不演示提交。</span></div>
             </div>
 
             <!-- 漏斗看板 + 密度开关 -->
             <div class="board-tools">
               <div class="funnel" id="funnel">
                 <div class="segmented combo-seg">
-                  <button type="button" class="seg is-tone-neutral is-on" data-filter="all"><span class="seg__dot"></span><span class="seg__k">全部户室</span><span class="seg__v" id="fTotal">0</span></button>
+                  <button type="button" class="seg is-tone-neutral is-on" data-filter="all"><span class="seg__dot"></span><span class="seg__k">全部关系</span><span class="seg__v" id="fTotal">0</span></button>
                   <button type="button" class="seg is-tone-ok" data-filter="linked"><span class="seg__dot"></span><span class="seg__k">已关联</span><span class="seg__v" id="fLinked">0</span></button>
                   <button type="button" class="seg is-tone-danger" data-filter="review"><span class="seg__dot"></span><span class="seg__k">待核对</span><span class="seg__v" id="fReview">0</span></button>
                   <button type="button" class="seg is-tone-muted" data-filter="unlinked"><span class="seg__dot"></span><span class="seg__k">未关联</span><span class="seg__v" id="fUnlinked">0</span></button>
@@ -566,7 +563,7 @@
                     <span class="floor-range-input__cap">最小层</span>
                     <input type="number" id="floorInputMin" inputmode="numeric" min="1" step="1" />
                   </div>
-                  <span class="floor-range-input__to">–</span>
+                  <span class="floor-range-input__to">至</span>
                   <div class="floor-range-input__col">
                     <span class="floor-range-input__cap">最大层</span>
                     <input type="number" id="floorInputMax" inputmode="numeric" min="1" step="1" />
@@ -583,10 +580,10 @@
             <!-- 吸底操作条 -->
             <div class="compare-footer">
               <div class="compare-footer__left">
-                <span class="compare-footer__info">已关联 <b id="footLinked">0</b> 户 · 待核对 <b id="footReview" class="danger">0</b> 户 · 未关联 <b id="footUnlinked">0</b> 户</span>
+                <span class="compare-footer__info">已关联 <b id="footLinked">0</b> 组 · 待核对 <b id="footReview" class="danger">0</b> 组 · 未关联 <b id="footUnlinked">0</b> 组</span>
               </div>
               <div class="compare-footer__actions">
-                <button class="btn btn--sm" id="draftBtn2">存草稿</button>
+                <button class="btn btn--sm" id="draftBtn2">演示存草稿</button>
               </div>
             </div>
           </div>
@@ -619,7 +616,7 @@
     <div class="modal">
       <div class="modal__head" id="modalHead">选择测绘户室</div>
       <div class="modal__body">
-        <p class="tiny" id="modalTip" style="margin:0 0 12px;color:var(--text-2);">为现有户室 <b>—</b> 选择建议候选（按同幢、同层、房号相近等线索展示）：</p>
+        <p class="tiny" id="modalTip" style="margin:0 0 12px;color:var(--text-2);">为现有户室 <b>待选择</b> 选择建议候选（按同幢、同层、房号相近等线索展示）</p>
         <div class="link-candidate" id="modalCandidates"></div>
       </div>
       <div class="modal__foot">
@@ -634,7 +631,7 @@
     <div class="modal" style="max-width:460px;">
       <div class="modal__head" id="auditModalTitle">提交实测替换 · 确认</div>
       <div class="modal__body">
-        <div class="irreversible">确认后将使用所选实测数据替换当前预测楼盘数据，并提交入库。入库完成后进入楼盘入库审核流程。</div>
+        <div class="irreversible">此处只演示核对后的确认摘要。不会替换真实预测数据，也不会提交入库或审核。</div>
         <div class="audit-meta">
           <div class="audit-meta__item"><span class="audit-meta__k">目标幢</span><span class="audit-meta__v" id="auditBuilding">金桂苑 1-6 幢</span></div>
           <div class="audit-meta__item"><span class="audit-meta__k">已关联户室</span><span class="audit-meta__v" id="auditLinked">0</span></div>
@@ -642,9 +639,9 @@
           <div class="audit-meta__item"><span class="audit-meta__k">未关联</span><span class="audit-meta__v" id="auditUnlinked">0</span></div>
           <div class="audit-meta__item"><span class="audit-meta__k">总建筑面积差</span><span class="audit-meta__v" id="auditArea">0 m²</span></div>
           <div class="audit-meta__item"><span class="audit-meta__k">操作人</span><span class="audit-meta__v">演示经办人</span></div>
-          <div class="audit-meta__item"><span class="audit-meta__k">操作时间</span><span class="audit-meta__v" id="auditTime">—</span></div>
+          <div class="audit-meta__item"><span class="audit-meta__k">操作时间</span><span class="audit-meta__v" id="auditTime">待选择</span></div>
         </div>
-        <p class="tiny" style="color:var(--text-3);">提交后进入楼盘入库审核，实际入库结果与审核状态以业务系统为准。</p>
+        <p class="tiny" style="color:var(--text-3);">实际提交、入库和审核须在业务系统完成，当前页面只演示交互反馈。</p>
       </div>
       <div class="modal__foot">
         <button class="btn btn--sm" type="button" id="auditCancel">取消</button>
@@ -664,69 +661,36 @@
   const fmt = m => m.toFixed(2) + ' m²';
   const floorOf = fh => (fh == null ? null : parseInt(String(fh).slice(0, 2), 10));
 
-  // 单一数据集：金桂苑 1 幢（40 层），覆盖全状态样例（每类多条）
-  function buildRich40(){
+  // Existing-room data is shared with the building view; all measured differences are synthetic.
+  function buildDemoRelations(){
     const predict = [], measure = [], links = [];
     const r2 = n => Math.round(n * 100) / 100;
-    const bld = taskCodeNumber;
-    const codeOf = (f, u) => '1-1-' + String(f).padStart(2,'0') + String(u).padStart(2,'0');
-    const fullName = (f, u) => taskBuilding + bld + '幢' + String(f).padStart(2,'0') + String(u).padStart(2,'0') + '室';
-    const roomId = (f, u) => String(f).padStart(2,'0') + String(u).padStart(2,'0');
-    const nominalFloor = f => f === 18 ? '17A 层' : f + ' 层';
-    const P = (f, u, ext) => { const code = codeOf(f, u) + (ext||''); const mj = r2(86 + (f%4)*2.6 + u*0.4); const rm = roomId(f,u); return { id:'p'+f+'_'+u+(ext||''), code, name: fullName(f,u), dy:f, my:nominalFloor(f), fh:String(f).padStart(2,'0'), yt:'住宅', biz:'预售', mj, tn:r2(mj*0.8), ft:r2(mj*0.2), sdeGraphId:'G-'+rm, sdeHouseId:'H-'+rm, sdeVHouseId:'V-'+rm, entityId:'EP-'+rm }; };
-    const M = (f, u, ext, scale) => { const code = codeOf(f, u) + (ext||''); const mj = r2((86 + (f%4)*2.6 + u*0.4) * (scale==null?1:scale)); const rm = roomId(f,u); return { id:'m'+f+'_'+u+(ext||''), code, name: fullName(f,u), dy:f, my:nominalFloor(f), fh:String(f).padStart(2,'0'), yt:'住宅', mj, tn:r2(mj*0.8), ft:r2(mj*0.2), bmfHouseId:'B-'+rm, mergeRightId:'WQ-'+rm, entityId:'EM-'+rm }; };
-
-    // 特殊楼层规划（覆盖多状态样例，分散在不同楼层）
-    const SPECIAL = {
-      '8_2':'over-', '15_1':'pending', '15_3':'over+',
-      '20_1':'split', '25_2':'merge', '30_1':'add', '30_3':'del',
-      '33_1':'orphanP', '33_2':'orphanM', '35_1':'ambig'
-    };
-    for (let f = 1; f <= 40; f++){
-      for (let u = 1; u <= 3; u++){
-        const key = f + '_' + u, sp = SPECIAL[key];
-        if (sp === 'orphanP'){ predict.push(P(f,u)); continue; }                                   // 现有孤户（无测绘候选）→ 未匹配
-        if (sp === 'orphanM'){ measure.push(M(f,u)); continue; }                                   // 测绘孤户（无现有候选）→ 未匹配（反向）
-        if (sp === 'ambig'){ predict.push(P(f,u)); measure.push(M(f,u)); measure.push(M(f,u,'b',1)); continue; } // 现有孤户 + 同房号 2 测绘候选（歧义）
-        if (sp === 'add'){ measure.push(M(f,u)); links.push({ id:'L'+f+'_'+u, pred:null, meas:'m'+f+'_'+u, kind:'add', confirmed:false }); continue; }
-        if (sp === 'del'){ predict.push(P(f,u)); links.push({ id:'L'+f+'_'+u, pred:'p'+f+'_'+u, meas:null, kind:'del', confirmed:false }); continue; }
-        if (sp === 'split'){
-          const p = P(f,u); predict.push(p);
-          const ma = M(f,u,'a',0.55), mb = M(f,u,'b',0.55); measure.push(ma, mb);
-          links.push({ id:'L'+f+'_'+u+'a', pred:p.id, meas:ma.id, kind:'split', confirmed:false });
-          links.push({ id:'L'+f+'_'+u+'b', pred:p.id, meas:mb.id, kind:'split', confirmed:false });
-          continue;
-        }
-        if (sp === 'merge'){
-          const pa = P(f,u,'a'), pb = P(f,u,'b'); predict.push(pa, pb);
-          const m = M(f,u); measure.push(m);
-          links.push({ id:'L'+f+'_'+u+'a', pred:pa.id, meas:m.id, kind:'merge', confirmed:false });
-          links.push({ id:'L'+f+'_'+u+'b', pred:pb.id, meas:m.id, kind:'merge', confirmed:false });
-          continue;
-        }
-        // 常规 1:1：作为建议关联展示，仍保留人工核对入口
-        const p = P(f,u);
-        let scale = (u % 2 ? 1.012 : 0.988);
-        if (sp === 'over-') scale = 0.88;          // 面积差异演示数据
-        else if (sp === 'over+') scale = 1.09;
-        else if (sp === 'pending') scale = 1.018;
-        const m = M(f, u, null, scale);
-        predict.push(p); measure.push(m);
-        const confirmed = !(sp === 'over-' || sp === 'over+' || sp === 'pending');
-        links.push({ id:'L'+f+'_'+u, pred:p.id, meas:m.id, kind:'match', confirmed });
-      }
+    const P = r => ({id:'p'+r.id, code:taskCodeNumber+'-'+r.unit+'-'+r.number, name:taskBuilding+' '+taskCode+' '+r.unit+'单元 '+r.number+'室', dy:r.floor, unit:r.unit, number:r.number, my:r.nominal, fh:String(r.floor), yt:'住宅', biz:'预测记录（演示）', mj:r.area, tn:r2(r.area*0.8), ft:r2(r.area*0.2), sdeGraphId:'G-'+r.id, sdeHouseId:'H-'+r.id, sdeVHouseId:'V-'+r.id, entityId:'EP-'+r.id});
+    const M = (r, ext='', scale=1.012) => {const p=P(r),mj=r.id==='15_1_1'?95.90:r2(r.area*scale);return {...p,id:'m'+r.id+ext, suffix:ext, name:p.name+(ext?' '+ext:''), code:p.code+ext, biz:undefined,mj,tn:r2(mj*0.8),ft:r2(mj*0.2),sdeGraphId:undefined,sdeHouseId:undefined,sdeVHouseId:undefined,bmfHouseId:'B-'+r.id+ext,mergeRightId:'WQ-'+r.id+ext,entityId:'EM-'+r.id+ext}};
+    const link=(r,m,kind='match',confirmed=true)=>links.push({id:'L'+r.id+'_'+m.id,pred:'p'+r.id,meas:m.id,kind,confirmed});
+    GIS_DEMO.rooms.forEach(r=>predict.push(P(r)));
+    for(const r of GIS_DEMO.rooms){
+      if(r.id==='22_1_3'){links.push({id:'Ldel',pred:'p'+r.id,meas:null,kind:'del',confirmed:false});continue}
+      if(r.id==='23_1_1')continue;
+      if(r.id==='25_2_3')continue;
+      if(r.id==='20_1_1'){for(const ext of ['a','b']){const m=M(r,ext,0.55);measure.push(m);link(r,m,'split',false)}continue}
+      if(r.id==='25_2_2'){const other=GIS_DEMO.rooms.find(x=>x.id==='25_2_3'),m=M(r);m.mj=r2(r.area+other.area);measure.push(m);link(r,m,'merge',false);link(other,m,'merge',false);continue}
+      const scale=r.id==='8_1_2'?0.88:r.id==='15_2_3'?1.09:1.012;
+      const m=M(r,'',scale);measure.push(m);
+      if(r.id==='24_1_1'){measure.push(M(r,'候选2',1));continue}
+      link(r,m,'match',!['8_1_2','15_1_1','15_2_3'].includes(r.id));
     }
-    return { predict, measure, links };
+    const extraBase=GIS_DEMO.rooms.find(r=>r.id==='22_1_1');
+    const added=M(extraBase,'新增',1);measure.push(added);links.push({id:'Ladd',pred:null,meas:added.id,kind:'add',confirmed:false});
+    measure.push(M(GIS_DEMO.rooms.find(r=>r.id==='23_1_2'),'未关联',1));
+    return {predict,measure,links};
   }
-
-  /* ============ 数据集装载（仅 40 层单数据集） ============ */
   let PREDICTS = [], MEASURES = [], LINKS = [];
   function loadDataset(){
-    const d = buildRich40();
-    PREDICTS = d.predict; MEASURES = d.measure; LINKS = d.links;
-    statusFilter = 'all';
-    floorLo = null; floorHi = null; floorOnlyAnomaly = false;
-    const only = $('floorOnlyAnomaly'); if (only) only.checked = false;
+    const d = buildDemoRelations();
+    PREDICTS=d.predict;MEASURES=d.measure;LINKS=d.links;
+    statusFilter='all';floorLo=null;floorHi=null;floorOnlyAnomaly=false;
+    const only=$('floorOnlyAnomaly');if(only)only.checked=false;
     renderAll();
   }
 
@@ -824,7 +788,7 @@
     if (st === 'merge') return '<span style="color:var(--color-warning);font-weight:600;">2 户合并</span>';
     if (st === 'del' || st === 'done-del') return '<span style="color:var(--text-2);">无测绘对应</span>';
     if (st === 'add' || st === 'done-add') return '<span style="color:var(--text-2);">无现有对应</span>';
-    if (!diff) return { d:'—', over:false };
+    if (!diff) return { d:'未提供', over:false };
     const sign = diff.d > 0 ? '+' : '';
     return { d: sign + diff.d.toFixed(2), pct: (diff.rate*100).toFixed(1)+'%', over: diff.over };
   }
@@ -920,7 +884,7 @@
       const structural = c.links.some(isStructural);
       const anomaly = c.orphan || isAnomaly(st.st);
       const uiState = reviewState(c, st);
-      let predCode = '—', predMj = '—', measCode = '—', measMj = '—', diff = '—';
+      let predCode = '未提供', predMj = '未提供', measCode = '未提供', measMj = '未提供', diff = '未提供';
       if (c.orphan){
         if (isPred){ predCode = anchor.name; predMj = fmt(anchor.mj); } else { measCode = anchor.name; measMj = fmt(anchor.mj); }
         diff = '无对应户室';
@@ -928,8 +892,8 @@
         const preds = c.links.map(l => l.pred).filter(Boolean).map(P);
         const meas = c.links.map(l => l.meas).filter(Boolean).map(M);
         const p = preds[0], m = meas[0];
-        predCode = p ? p.name : '—'; predMj = p ? fmt(p.mj) : '—';
-        measCode = m ? m.name : '—'; measMj = m ? fmt(m.mj) : '—';
+        predCode = p ? p.name : '未提供'; predMj = p ? fmt(p.mj) : '未提供';
+        measCode = m ? m.name : '未提供'; measMj = m ? fmt(m.mj) : '未提供';
         if (c.links[0].kind === 'split') diff = '拆分 1→' + meas.length;
         else if (c.links[0].kind === 'merge') diff = '合并 ' + preds.length + '→1';
         else if (c.links[0].kind === 'add') diff = '新增测绘户';
@@ -937,8 +901,8 @@
         else { const df = linkDiff(c.links[0]); if (df){ diff = (df.d > 0 ? '+' : '') + df.d.toFixed(2); } }
       }
       const diffCls = (st.st === 'over') ? 'is-over' : (st.st === 'pending') ? 'is-pending' : (structural ? 'is-struct' : '');
-      const actualFloor = anchor ? anchor.dy : '—';
-      const nominalFloor = anchor ? anchor.my : '—';
+      const actualFloor = anchor ? anchor.dy : '未提供';
+      const nominalFloor = anchor ? anchor.my : '未提供';
       const uiLabel = uiState === 'linked' ? '已关联' : (uiState === 'review' ? '待核对' : '未关联');
       const action = uiState === 'linked' ? '查看' : (uiState === 'review' ? '核对' : '建立关联');
       return '<tr data-card tabindex="-1" data-card-id="' + c.anchorId + '" data-card-side="' + c.anchorType + '" data-card-anomaly="' + (anomaly?1:0) + '" data-card-orphan="' + (c.orphan?1:0) + '">'
@@ -960,12 +924,12 @@
   function csDetailHTML(isPred, anchor, partner){
     if (!anchor) return '';
     const f = [
-      ['房屋业务状态', isPred ? anchor.biz : (partner ? partner.biz : '—')],
-      ['SDE图形ID',  isPred ? anchor.sdeGraphId : '—'],
-      ['SDE房屋ID',  isPred ? anchor.sdeHouseId : '—'],
-      ['SDEV房屋ID', isPred ? anchor.sdeVHouseId : '—'],
-      ['BMF房屋ID',  !isPred ? anchor.bmfHouseId : (partner ? partner.bmfHouseId : '—')],
-      ['房屋并权ID', !isPred ? anchor.mergeRightId : (partner ? partner.mergeRightId : '—')],
+      ['房屋业务状态', isPred ? anchor.biz : (partner ? partner.biz : '未提供')],
+      ['SDE图形ID',  isPred ? anchor.sdeGraphId : '未提供'],
+      ['SDE房屋ID',  isPred ? anchor.sdeHouseId : '未提供'],
+      ['SDEV房屋ID', isPred ? anchor.sdeVHouseId : '未提供'],
+      ['BMF房屋ID',  !isPred ? anchor.bmfHouseId : (partner ? partner.bmfHouseId : '未提供')],
+      ['房屋并权ID', !isPred ? anchor.mergeRightId : (partner ? partner.mergeRightId : '未提供')],
       ['实体ID',     anchor.entityId]
     ];
     return '<div class="rg__detail__row">' + f.map(it => '<span class="f"><i>' + it[0] + '</i><span class="v" title="' + it[1] + '">' + it[1] + '</span></span>').join('') + '</div>';
@@ -979,12 +943,11 @@
     const st = isPred ? predictState(card.anchorId) : measureState(card.anchorId);
     const structural = card.links.some(isStructural);
     const shortRoom = o => {
-      if (!o) return '—';
-      const match = String(o.name || '').match(/(\d{4}室)$/);
-      return match ? match[1] : (o.code || o.name || '—');
+      if (!o) return '未提供';
+      return o.unit+'单元 · '+o.number+'室'+(o.suffix?' '+o.suffix:'');
     };
     const code = shortRoom(anchor || meas[0]);
-    const yt = anchor ? anchor.yt : (meas[0] ? meas[0].yt : '—');
+    const yt = anchor ? anchor.yt : (meas[0] ? meas[0].yt : '未提供');
     const floorContext = anchor ? ('实际 ' + anchor.dy + ' 层 · 名义 ' + anchor.my) : '楼层待确认';
     const anomaly = card.orphan || isAnomaly(st.st);
 
@@ -1015,9 +978,9 @@
       const sideLabel = isPred ? '现有' : '测绘';
       const missing = isPred ? '无对应测绘户室' : '无对应现有户室';
       const hintWord = isPred ? '测绘' : '现有';
-      main = '<div class="rg__axis">' + metric(sideLabel + '户室', shortRoom(anchor), anchor?fmt(anchor.mj):'—', 'm²')
+      main = '<div class="rg__axis">' + metric(sideLabel + '户室', shortRoom(anchor), anchor?fmt(anchor.mj):'未提供', 'm²')
         + deltaPill('', '未匹配', '待人工定夺')
-        + metric('对侧户室', missing, '—', '') + '</div>'
+        + metric('对侧户室', missing, '未提供', '') + '</div>'
         + '<div class="rg__hint rg__hint--unmatched">未找到建议的' + hintWord + '户室，请手动关联或确认处置。</div>';
     } else if (card.links[0].kind === 'split'){
       const p = preds[0];
@@ -1035,22 +998,22 @@
         + '<div class="rg__subs"><div class="rg__subs-panel">' + subs + '</div></div>';
     } else if (card.links[0].kind === 'add'){
       const m = meas[0];
-      main = '<div class="rg__axis">' + metric('现有户室', '无对应', '—', '')
+      main = '<div class="rg__axis">' + metric('现有户室', '无对应', '未提供', '')
         + deltaPill('is-struct-pill', '新增', '结构性变更')
         + metric('测绘户室', shortRoom(m), fmt(m.mj), 'm²') + '</div>';
     } else if (card.links[0].kind === 'del'){
       const p = preds[0];
       main = '<div class="rg__axis">' + metric('现有户室', shortRoom(p), fmt(p.mj), 'm²')
         + deltaPill('is-struct-pill', '删除', '结构性变更')
-        + metric('测绘户室', '无对应', '—', '') + '</div>';
+        + metric('测绘户室', '无对应', '未提供', '') + '</div>';
     } else {
       const l = card.links[0], p = preds[0], m = meas[0], df = linkDiff(l), dc = diffCellContent(st.st, df);
       let deltaHtml;
-      if (typeof dc === 'object') deltaHtml = deltaPill((dc.over?'is-over':(st.st==='pending'?'is-warn':'is-ok')), dc.d + ' m²', dc.d==='—'?'无差异':`演示差异 ${dc.pct}`);
+      if (typeof dc === 'object') deltaHtml = deltaPill((dc.over?'is-over':(st.st==='pending'?'is-warn':'is-ok')), dc.d + ' m²', dc.d==='未提供'?'无差异':`演示差异 ${dc.pct}`);
       else deltaHtml = deltaPill('is-struct-pill', dc, '结构性变更');
-      main = '<div class="rg__axis">' + metric('现有户室', shortRoom(p), p?fmt(p.mj):'—', 'm²')
+      main = '<div class="rg__axis">' + metric('现有户室', shortRoom(p), p?fmt(p.mj):'未提供', 'm²')
         + deltaHtml
-        + metric('测绘户室', shortRoom(m), m?fmt(m.mj):'—', 'm²') + '</div>';
+        + metric('测绘户室', shortRoom(m), m?fmt(m.mj):'未提供', 'm²') + '</div>';
     }
 
     const detail = csDetailHTML(isPred, anchor, isPred ? (meas[0] || null) : (preds[0] || null));
@@ -1076,7 +1039,7 @@
       counts[reviewState(card, state)]++;
     });
     const total = cards.length;
-    const pct = n => total ? (n/total*100).toFixed(1).replace(/\.0$/, '') + '%' : '—';
+    const pct = n => total ? (n/total*100).toFixed(1).replace(/\.0$/, '') + '%' : '未提供';
     $('fTotal').textContent = total;
     $('fLinked').textContent = counts.linked;
     $('fReview').textContent = counts.review;
@@ -1125,7 +1088,7 @@
     const _minI = $('floorInputMin'), _maxI = $('floorInputMax');
     if (_minI){ _minI.value = floorLo; _minI.min = fMinAll; _minI.max = fMaxAll; }
     if (_maxI){ _maxI.value = floorHi; _maxI.min = fMinAll; _maxI.max = fMaxAll; }
-    const _rr = $('rangeReadout'); if (_rr) _rr.textContent = floorLo + '–' + floorHi + ' 层';   /* 标题栏同步当前楼层范围 */
+    const _rr = $('rangeReadout'); if (_rr) _rr.textContent = floorLo + ' 至 ' + floorHi + ' 层';   /* 标题栏同步当前楼层范围 */
   }
   function bindFloorSlider(){
     const track = $('floorTrack');
@@ -1213,9 +1176,14 @@
     const wrap = $('submitWrap');
     bar.classList.toggle('is-on', struct > 0);
     if (struct > 0) $('blockCount').textContent = struct;
-    if (unmatched > 0){
+    if (struct > 0){
       btn.disabled = true;
-      wrap.setAttribute('data-tip', `存在 ${unmatched} 项未关联户室，须先建立关联。`);
+      wrap.setAttribute('data-tip', '结构关系的业务处置待确认，暂不演示提交。');
+      $('gateHint').textContent = '结构关系待业务确认';
+      $('gateHint').className = 'gate-hint is-warn';
+    } else if (unmatched > 0){
+      btn.disabled = true;
+      wrap.setAttribute('data-tip', `存在 ${unmatched} 项未关联户室，演示中需先核对对应或明确处置。`);
       $('gateHint').textContent = unmatched + ' 项未关联';
       $('gateHint').className = 'gate-hint is-warn';
     } else if (areaUnconfirmed > 0){
@@ -1226,7 +1194,7 @@
     } else {
       btn.disabled = false;
       wrap.removeAttribute('data-tip');
-      $('gateHint').textContent = '校验通过，可提交';
+      $('gateHint').textContent = '演示核对完成，可查看确认摘要';
       $('gateHint').className = 'gate-hint';
     }
   }
@@ -1243,7 +1211,7 @@
       const diff = (f[1] !== f[2]) && f[1] != null && f[2] != null;
       const v1 = (f[1] == null) ? 'none' : '';
       const v2 = (f[2] == null) ? 'none' : (diff ? 'diff' : '');
-      return '<div class="cmp__row' + (diff ? ' is-diff' : '') + '"><div class="cmp__k">' + f[0] + '</div><div class="cmp__col ' + v1 + '">' + (f[1] == null ? '—' : f[1]) + '</div><div class="cmp__sep"></div><div class="cmp__col ' + v2 + '">' + (f[2] == null ? '—' : f[2]) + '</div></div>';
+      return '<div class="cmp__row' + (diff ? ' is-diff' : '') + '"><div class="cmp__k">' + f[0] + '</div><div class="cmp__col ' + v1 + '">' + (f[1] == null ? '未提供' : f[1]) + '</div><div class="cmp__sep"></div><div class="cmp__col ' + v2 + '">' + (f[2] == null ? '未提供' : f[2]) + '</div></div>';
     }).join('');
   }
   let selectedRow = null;
@@ -1336,21 +1304,21 @@
     const bld = anchor.code.split('-')[0];
     if (modalSide === CARD_SIDE.PRED){
       head.textContent = '选择测绘户室';
-      tip.innerHTML = '为现有户室 <b>' + anchor.name + '</b> 查看建议关联候选（同幢 / 同层 / 房号相近）：';
+      tip.innerHTML = '为现有户室 <b>' + anchor.name + '</b> 查看建议关联候选（同幢 / 同层 / 房号相近）';
       const ranked = MEASURES.filter(m => m.code.split('-')[0] === bld && !LINKS.some(l => l.meas === m.id && l.pred))
         .map(m => ({ m })).sort((a, b) => Math.abs(a.m.dy-anchor.dy) - Math.abs(b.m.dy-anchor.dy) || a.m.fh.localeCompare(b.m.fh)).slice(0, 6);
       $('modalCandidates').innerHTML = ranked.length
-        ? ranked.map(r => '<div class="link-candidate__row" role="button" tabindex="0" data-pick="' + r.m.id + '"><span class="code">' + r.m.name + ' · ' + r.m.yt + ' ' + fmt(r.m.mj) + '</span><span class="conf">建议依据：同幢 · 同层或房号相近</span></div>').join('')
+        ? ranked.map(r => '<div class="link-candidate__row" role="button" tabindex="0" data-pick="' + r.m.id + '"><span class="code">' + r.m.name + ' · ' + r.m.yt + ' ' + fmt(r.m.mj) + '</span><span class="conf">建议依据 · 同幢 · 同层或房号相近</span></div>').join('')
         : '<div class="link-empty">同幢内未找到可匹配测绘户室，需返回检查测绘数据或关联幢。</div>';
       confirm.textContent = '确认关联';
       confirm.disabled = true;
     } else {
       head.textContent = '选择现有户室';
-      tip.innerHTML = '为测绘户室 <b>' + anchor.name + '</b> 查看建议关联候选（同幢 / 同层 / 房号相近）：';
+      tip.innerHTML = '为测绘户室 <b>' + anchor.name + '</b> 查看建议关联候选（同幢 / 同层 / 房号相近）';
       const ranked = PREDICTS.filter(p => p.code.split('-')[0] === bld && !LINKS.some(l => l.pred === p.id && l.meas))
         .map(p => ({ p })).sort((a, b) => Math.abs(a.p.dy-anchor.dy) - Math.abs(b.p.dy-anchor.dy) || a.p.fh.localeCompare(b.p.fh)).slice(0, 6);
       $('modalCandidates').innerHTML = ranked.length
-        ? ranked.map(r => '<div class="link-candidate__row" role="button" tabindex="0" data-pick="' + r.p.id + '"><span class="code">' + r.p.name + ' · ' + r.p.yt + ' ' + fmt(r.p.mj) + '</span><span class="conf">建议依据：同幢 · 同层或房号相近</span></div>').join('')
+        ? ranked.map(r => '<div class="link-candidate__row" role="button" tabindex="0" data-pick="' + r.p.id + '"><span class="code">' + r.p.name + ' · ' + r.p.yt + ' ' + fmt(r.p.mj) + '</span><span class="conf">建议依据 · 同幢 · 同层或房号相近</span></div>').join('')
         : '<div class="link-empty">同幢内未找到可匹配现有户室，需返回检查现有楼盘数据或关联幢。</div>';
       confirm.textContent = '确认关联';
       confirm.disabled = true;
@@ -1407,9 +1375,9 @@
     });
   }
   const CHECKS = [
-    { t:'关联幢检查', s:'pass', sub:taskObjectLabel + ' 已设置关联幢' },
-    { t:'重复替换检查', s:'pass', sub:'所选实测测绘幢尚未执行过替换入库' },
-    { t:'分层分户图数据', s:'pass', sub:'已从测绘图形读取户室分层分户数据' }
+    { t:'关联幢检查', s:'warn', sub:taskObjectLabel + ' 的预设演示结果，未检查真实关联' },
+    { t:'重复替换检查', s:'warn', sub:'演示检查位置，未查询历史替换记录' },
+    { t:'分层分户图数据', s:'warn', sub:'已载入合成户室样例，未读取真实测绘图形' }
   ];
   function renderChecks(){
     $('checkList').innerHTML = CHECKS.map((c,i) => '<div class="check-item check-item--'+c.s+' is-enter" style="--d:'+(i*70)+'ms"><span class="check-item__icon">' + (c.s==='pass'?'通过':c.s==='warn'?'提示':'失败') + '</span><div><div class="check-item__txt">'+c.t+'</div><div class="check-item__sub">'+c.sub+'</div></div></div>').join('');
@@ -1437,7 +1405,7 @@
   $('linkModal').addEventListener('click', e => { if (e.target.id === 'linkModal') closeLinkModal(); });
 
   $('auditCancel').addEventListener('click', closeAudit);
-  $('auditConfirm').addEventListener('click', () => { closeAudit(); showToast('已提交楼盘入库审核'); $('submitBtn').disabled = true; $('submitWrap').removeAttribute('data-tip'); $('gateHint').textContent = '已提交'; $('gateHint').className='gate-hint'; });
+  $('auditConfirm').addEventListener('click', () => { updateGate(); if ($('submitBtn').disabled) { closeAudit(); showToast('存在待核对项，未完成提交演示'); return; } closeAudit(); showToast('提交确认演示完成，未实际提交入库'); $('submitBtn').disabled = true; $('submitWrap').removeAttribute('data-tip'); $('gateHint').textContent = '演示完成'; $('gateHint').className='gate-hint'; });
   $('auditModal').addEventListener('click', e => { if (e.target.id === 'auditModal') closeAudit(); });
 
   function topOpenDialog(){
@@ -1513,8 +1481,8 @@
     window.location.href = '../map/index.html?' + params.toString();
   });
   $('submitBtn').addEventListener('click', () => { if (!$('submitBtn').disabled) openAudit(); });
-  $('draftBtn').addEventListener('click', () => showToast('草稿已保存'));
-  $('draftBtn2').addEventListener('click', () => showToast('草稿已保存'));
+  $('draftBtn').addEventListener('click', () => showToast('演示存草稿反馈，未保存真实业务数据'));
+  $('draftBtn2').addEventListener('click', () => showToast('演示存草稿反馈，未保存真实业务数据'));
 
   // 自定义下拉（替代原生 select，展开面板符合 TDesign 规范）
   // 可搜索下拉采用 TDesign SelectInput 模式：触发器本身即输入框，键入即时过滤，面板内不再单独放搜索框
@@ -1596,7 +1564,7 @@
   }
   $('surveyBuildingName').textContent = taskObjectLabel + '（实测）';
   $('auditBuilding').textContent = taskObjectLabel;
-  loadDataset();   // 装载当前幢的 40 层全状态演示数据集并首渲染
+  loadDataset();   // 装载当前幢的 27 层合成关系数据并首渲染
   const demoView = taskParams.get('view');
   if (demoView === 'table' || demoView === 'compact') density = 'compact';
   else if (demoView === 'cards' || demoView === 'standard') density = 'standard';

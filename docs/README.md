@@ -1,15 +1,18 @@
 # 文档索引
 
-更新于 2026-09-29。接手先读根目录 README.md、TASK_STATUS.md、DESIGN.md 与 AGENTS.md；涉及定位和事实再读 PRODUCT.md。
+更新于 2026-10-08。接手先读根目录 README.md、TASK_STATUS.md、DESIGN.md 与 AGENTS.md；涉及定位和事实再读 PRODUCT.md。
 
 ## 当前结构与维护
 
 | 入口 | 用途 |
 | --- | --- |
 | [当前状态](../TASK_STATUS.md) | 实现、验证、发布边界和待办的唯一汇总 |
+| [2026-10-08 接手记录](history/context-cleanup-2026-10-08.md) | 首页悬停与跳转、GIS 修订、四页收尾、验证和 Git 交付范围 |
 | [全站页面转场](guides/page-transitions.md) | 五页转场范围、点击与加载时序、首页状态恢复 |
 | [设计规范](../DESIGN.md) | 字阶、颜色、媒体、目录、折叠与响应式合同 |
 | [首页简报](briefs/homepage.md) | 唱机首页结构、导航、文案分工、预览与备份 |
+| [GIS 事实改版](briefs/gis-evidence-revision/PROGRESS.md) | 2026-10-08 原始 PM 记录复核、贡献归属与原型一致性 |
+| [GIS 读者视角修订](briefs/gis-reader-revision/REVIEW.md) | 首次阅读的叙述逻辑、证据取舍和本地预览复核 |
 | [GIS 素材索引](guides/gis-media-index.md) | 案例页的当前媒体与历史素材 |
 | [全站文案润色](briefs/site-copy-polish/PROGRESS.md) | 五页文案处理、事实复核与验证结果 |
 | [执行网维护](projects/execution-query/next-turn-handoff.md) | 独立本地工具与案例证据 |
@@ -24,6 +27,8 @@
 执行网生产助手位于 `execution-query-tool/`，有独立依赖与运行方式，不随作品集静态发布。本次文案和文档整理没有改变工具 API、环境变量或数据结构。
 
 ## 如何使用历史材料
+
+GIS 历史稿中的重复找楼判断已被 2026-10-08 原始记录复核撤回，当前依据见 [事实与贡献对照](briefs/gis-evidence-revision/EVIDENCE.md)。
 
 `superpowers/` 的规格和计划、`reviews/` 的审查、旧写作草稿与验收记录用于追溯当时的判断。它们的未勾选任务、自动验证路线、旧首页大图、项目数量和旧定位都不构成当前实施指令。遇到差异，以当前代码、根目录规则与当前状态为准。
 

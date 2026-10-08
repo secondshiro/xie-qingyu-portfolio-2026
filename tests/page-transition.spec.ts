@@ -16,7 +16,7 @@ const cases = [
   { path: '/work/execution-query/', name: '执行网助手', index: 3 },
 ];
 const gis = cases[0].path;
-const openCase = (page: Page, index = 0) => page.locator(`#work-${index} .work__open`);
+const openCase = (page: Page, index = 0) => page.locator(`[data-select="${index}"]`);
 const curtain = (page: Page) => page.locator('html');
 const settled = (page: Page) => expect(curtain(page)).not.toHaveAttribute('data-page-transition-phase', /.+/);
 
@@ -70,8 +70,7 @@ for (const { project, width } of cases.flatMap(project => [1440, 390].map(width 
       await imageGate;
       await route.fulfill({ contentType: 'image/svg+xml', body: '<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1" />' });
     });
-    await page.locator(`[data-select="${project.index}"]`).click();
-    await openCase(page, project.index).click({ noWaitAfter: true });
+    await page.locator(`[data-select="${project.index}"]`).click({ noWaitAfter: true });
     await expect.poll(() => samples.filter(sample => sample.url === '/' && sample.phase === 'covered').length).toBe(1);
     await expect.poll(() => requestedAt).toBeGreaterThan(0);
     const covered = samples.find(sample => sample.url === '/' && sample.phase === 'covered')!;
@@ -118,10 +117,10 @@ for (const project of cases) {
   test(`${project.name} 键盘往返保留唱片与 B 面，返回后操作正常`, async ({ page }) => {
     await observeTransitions(page);
     await page.goto('/');
-    await page.locator(`[data-select="${project.index}"]`).click();
+    await page.locator(`[data-select="${project.index}"]`).hover();
     await page.locator('[data-side="b"]').click();
     for (let i = 0; i < 2; i++) {
-      await openCase(page, project.index).focus();
+      await page.locator(`[data-select="${project.index}"]`).focus();
       await page.keyboard.press('Enter');
       await expect(page).toHaveURL(project.path);
       await settled(page);
@@ -136,13 +135,13 @@ for (const project of cases) {
       await settled(page);
       expect(await page.evaluate(() => window.transitionProbe.phases)).toContain('covered');
       await expect(page.locator('[data-side="b"]')).toHaveAttribute('aria-pressed', 'true');
-      await expect(page.locator(`[data-select="${project.index}"]`)).toHaveAttribute('aria-pressed', 'true');
+      await expect(page.locator(`[data-select="${project.index}"]`)).toHaveAttribute('aria-current', 'true');
       await expect(page.locator('[data-deck]')).toHaveAttribute('data-phase', 'idle');
     }
     await page.locator(`[data-select="${project.index}"]`).focus();
     await page.keyboard.press('ArrowRight');
     const next = (project.index + 1) % cases.length;
-    await expect(page.locator(`[data-select="${next}"]`)).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator(`[data-select="${next}"]`)).toHaveAttribute('aria-current', 'true');
     await expect(page.locator(`[data-select="${next}"]`)).toBeFocused();
   });
 }
@@ -173,7 +172,7 @@ test('全部案例在减弱动效下直接切页，首次访问与刷新不播�
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
   for (const project of cases) {
-    await page.locator(`[data-select="${project.index}"]`).click();
+    await page.locator(`[data-select="${project.index}"]`).hover();
     await openCase(page, project.index).click();
     await expect(page).toHaveURL(project.path);
     await expect(page.locator('[data-page-transition]')).toHaveAttribute('data-page-transition', 'portfolio');
@@ -231,7 +230,7 @@ test('禁用 JavaScript 与会话存储时全部案例仍能进入并返回', as
   const plain = await context.newPage();
   await plain.goto(`${baseURL}/`);
   for (const project of cases) {
-    await plain.locator(`.no-script a[href="${project.path}"]`).click();
+    await plain.locator(`[data-select="${project.index}"]`).click();
     await expect(plain).toHaveURL(`${baseURL}${project.path}`);
     await plain.locator('.site-nav__links a').click();
     await expect(plain).toHaveURL(`${baseURL}/`);
@@ -245,7 +244,7 @@ test('禁用 JavaScript 与会话存储时全部案例仍能进入并返回', as
   });
   await page.goto('/');
   for (const project of cases) {
-    await page.locator(`[data-select="${project.index}"]`).click();
+    await page.locator(`[data-select="${project.index}"]`).hover();
     await openCase(page, project.index).click();
     await expect(page).toHaveURL(project.path);
     expect(await page.evaluate(() => window.transitionProbe.phases)).toEqual([]);

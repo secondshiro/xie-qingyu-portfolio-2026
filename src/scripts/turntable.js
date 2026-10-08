@@ -15,7 +15,7 @@
   let selected = 0;
   let loaded = 0;
   let face = 'a';
-  const casePaths = new Set(articles.map(article => new URL(article.querySelector('.work__open').href, location.href).pathname));
+  const casePaths = new Set(sleeves.map(sleeve => new URL(sleeve.href, location.href).pathname));
   const returnStateKey = 'portfolio:home';
   try {
     const previous = document.referrer && new URL(document.referrer);
@@ -43,7 +43,7 @@
   function paintSelection(index) {
     selected = index;
     sleeves.forEach((sleeve, i) => {
-      sleeve.setAttribute('aria-pressed', String(i === index));
+      sleeve.setAttribute('aria-current', String(i === index));
     });
     articles.forEach((article, i) => { article.hidden = i !== index; });
     paintFaces();
@@ -150,7 +150,12 @@
     void playSelection(target, positions);
   }
 
-  sleeves.forEach((sleeve, index) => sleeve.addEventListener('click', () => select(index)));
+  sleeves.forEach((sleeve, index) => {
+    sleeve.addEventListener('pointerenter', event => {
+      if (event.pointerType === 'mouse') select(index);
+    });
+    sleeve.addEventListener('focus', () => select(index));
+  });
   crate.addEventListener('keydown', event => {
     if (event.metaKey || event.ctrlKey || event.altKey) return;
     const index = sleeves.indexOf(event.target);
@@ -194,6 +199,8 @@
     if (!link || link.hasAttribute('download') || (link.target && link.target !== '_self')) return;
     const target = new URL(link.href, location.href);
     if (target.origin !== location.origin || !casePaths.has(target.pathname)) return;
+    const sleeveIndex = sleeves.indexOf(link);
+    if (sleeveIndex >= 0) select(sleeveIndex);
     try {
       const saved = { selected, face };
       history.replaceState({ ...history.state, portfolioHome: saved }, '');
