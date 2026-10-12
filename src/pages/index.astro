@@ -22,7 +22,7 @@ import PageTransitionHead from '../components/PageTransitionHead.astro';
   <section class="hero" aria-labelledby="home-title">
     <div class="intro">
       <h1 id="home-title">产品体验设计师</h1>
-      <p class="intro__lead">我关注复杂业务中，人们怎样找到信息并完成操作。设计时先理清业务关系，再沿着实际任务安排界面，让每一步都有所需的信息和反馈。</p>
+      <p class="intro__lead">我做复杂业务的产品设计，也用 AI 把方案做成能操作、能检查的工具。这里有房产管理的交互重构、设计评审规则，以及从真实查询需求发展出的本地助手。</p>
       <div class="intro__actions"><a class="resume" href="/resume/xie-qingyu-resume.pdf" download="谢擎宇-体验设计师简历.pdf">下载简历 · PDF <span aria-hidden="true">↓</span></a><a href="mailto:second988@qq.com">second988@qq.com <span aria-hidden="true">↗</span></a></div>
     </div>
   </section>
@@ -36,28 +36,28 @@ import PageTransitionHead from '../components/PageTransitionHead.astro';
           <span class="sleeve__record" aria-hidden="true"><span class="record__grooves"></span><span class="record__label"></span></span>
           <span class="sleeve__cover" data-protected-media><img src="/images/home/covers/gis-v5.webp" alt="" width="640" height="640" draggable="false"><span class="sleeve__open" aria-hidden="true">查看案例</span></span>
           <span class="sleeve__caption"><span class="sleeve__number">01</span><span class="sleeve__title">房产 GIS 体验重构<span class="sleeve__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8" /></svg></span></span></span>
-        </a>
+        <span class="sleeve__stage">回溯原型</span></a>
       </li>
       <li>
         <a class="sleeve" href="/work/edgecase-planner/" data-select="1" style="--disc: #328bd2" aria-current="false" aria-controls="work-1" aria-label="打开 AI 评审工作流案例">
           <span class="sleeve__record" aria-hidden="true"><span class="record__grooves"></span><span class="record__label"></span></span>
           <span class="sleeve__cover" data-protected-media><img src="/images/home/covers/review-v5.webp" alt="" width="640" height="640" draggable="false"><span class="sleeve__open" aria-hidden="true">查看案例</span></span>
           <span class="sleeve__caption"><span class="sleeve__number">02</span><span class="sleeve__title">AI 评审工作流<span class="sleeve__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8" /></svg></span></span></span>
-        </a>
+        <span class="sleeve__stage">规则实践</span></a>
       </li>
       <li>
         <a class="sleeve" href="/work/brand-system/" data-select="2" style="--disc: #e6b42e" aria-current="false" aria-controls="work-2" aria-label="打开新禾智飞品牌系统提案">
           <span class="sleeve__record" aria-hidden="true"><span class="record__grooves"></span><span class="record__label"></span></span>
           <span class="sleeve__cover" data-protected-media><img src="/images/home/covers/brand-v5.webp" alt="" width="640" height="640" draggable="false"><span class="sleeve__open" aria-hidden="true">查看案例</span></span>
           <span class="sleeve__caption"><span class="sleeve__number">03</span><span class="sleeve__title">新禾智飞品牌系统<span class="sleeve__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8" /></svg></span></span></span>
-        </a>
+        <span class="sleeve__stage">品牌提案</span></a>
       </li>
       <li>
         <a class="sleeve" href="/work/execution-query/" data-select="3" style="--disc: #36a879" aria-current="false" aria-controls="work-3" aria-label="打开执行网查询助手">
           <span class="sleeve__record" aria-hidden="true"><span class="record__grooves"></span><span class="record__label"></span></span>
           <span class="sleeve__cover" data-protected-media><img src="/images/home/covers/query-v5.webp" alt="" width="640" height="640" draggable="false"><span class="sleeve__open" aria-hidden="true">查看案例</span></span>
           <span class="sleeve__caption"><span class="sleeve__number">04</span><span class="sleeve__title">执行网查询助手<span class="sleeve__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8" /></svg></span></span></span>
-        </a>
+        <span class="sleeve__stage">本地工具</span></a>
       </li>
     </ul>
   </section>
@@ -104,29 +104,29 @@ import PageTransitionHead from '../components/PageTransitionHead.astro';
       <article class="work" id="work-0" data-work="0" aria-labelledby="work-title-0">
         <div class="work__heading"><h2 class="work__title" id="work-title-0">房产 GIS 体验重构</h2></div>
         <div class="work__faces">
-          <p class="work__text" data-face="a">房产管理需要对应地图上的楼栋与楼内房屋信息。我围绕地图定位、整幢查看和测绘核对重新安排信息与操作，用三个原型呈现设计取舍。</p>
-          <p class="work__text" data-face="b" hidden>完成总图、整幢和实测替换预测三个可操作原型，用于演示找楼、查看房屋和核对新旧测绘记录。这是个人回溯重构，实际办理效果仍待验证。</p>
+          <p class="work__text" data-face="a">三个单元各有一间 1501 室，只看房号还无法确定是哪一户。我用保留单元与楼层关系的矩阵展示房屋，再让测绘核对中的新旧户室并排出现。</p>
+          <p class="work__text" data-face="b" hidden>个人回溯重构，交付总图、整幢和测绘核对三个可操作原型。可以对照旧稿查看布局变化，再用演示数据检查选择、关联和异常反馈。</p>
         </div>
       </article>
       <article class="work" id="work-1" data-work="1" aria-labelledby="work-title-1" hidden>
         <div class="work__heading"><h2 class="work__title" id="work-title-1">把设计经验整理成可复用的 AI 工作流</h2></div>
         <div class="work__faces">
-          <p class="work__text" data-face="a">翻页后选择丢失、取消后无法下载，这些遗漏促使我整理评审经验。我让 AI 按规则观察和追问，再由设计师确认业务要求，用实际操作继续检查规则是否漏了问题。</p>
-          <p class="work__text" data-face="b" hidden>形成设计前梳理与设计后检查的评审规则，保留飞行计划和表单的评审记录。输入与纠错规则已补充并回查，飞行单选建议尚未实现。</p>
+          <p class="work__text" data-face="a">让 AI 参与评审以后，我发现它会把上传与预审混成一个问题，也会漏掉输入限制。我据此修改检查指令和规则，保留原版与测试记录，逐项检查修改是否有效。</p>
+          <p class="work__text" data-face="b" hidden>个人工具实践，交付 Plan / Review 规则、评审记录与版本对照。案例展示一次指令修订和一次规则扩展，并用真实设计稿说明业务答复怎样改变建议。</p>
         </div>
       </article>
       <article class="work" id="work-2" data-work="2" aria-labelledby="work-title-2" hidden>
         <div class="work__heading"><h2 class="work__title" id="work-title-2">新禾智飞品牌系统提案</h2></div>
         <div class="work__faces">
-          <p class="work__text" data-face="a">不同供应商分批制作物料时，标识和版式各有做法。我把选标识、排信息和核规格的依据写成规范，再配套模板，供制作人员准备下一批物料时查用。</p>
-          <p class="work__text" data-face="b" hidden>完成 24 页品牌规范与六个子系统提案，覆盖标识组合、色彩字体和制作模板。结合已投产的旧物料说明设计依据，新提案物料尚未投产。</p>
+          <p class="work__text" data-face="a">不同供应商做出的物料，需要保留同一个品牌的识别。我把四种标识组合与使用场景对应起来，根据海报信息量和封面裁切范围安排模板，让规则对应到具体版面。</p>
+          <p class="work__text" data-face="b" hidden>品牌提案，包含 24 页规范与六个子系统。案例包含规范原件、海报模板对照和物料提案。</p>
         </div>
       </article>
       <article class="work" id="work-3" data-work="3" aria-labelledby="work-title-3" hidden>
         <div class="work__heading"><h2 class="work__title" id="work-title-3">执行网查询助手</h2></div>
         <div class="work__faces">
-          <p class="work__text" data-face="a">律师要反复核查同一批公司。官网升级验证方式后，我把人工验证留在网站，让本地助手保留当前任务和剩余名单，验证完成后接着查询，再整理结果供复核。</p>
-          <p class="work__text" data-face="b" hidden>完成本地查询助手、任务历史与三表 Excel 导出。案例有 5 张合成数据产品截图，以及 2026 年 9 月 12 日两项合成任务的浏览器试用记录，后续需按官网变化维护。</p>
+          <p class="work__text" data-face="a">律师要反复核查同一批公司。官网更换验证方式后，我保留官网的人工验证，让工具接续查询；结果中把“无记录”和“未完成”分开，避免把查询中断当成案件消失。</p>
+          <p class="work__text" data-face="b" hidden>本地工具已实现名单查询、任务历史与三表 Excel 导出。2026 年 9 月 12 日完成两项合成任务的浏览器试用，案例保留实际交接过程与结果检查。</p>
         </div>
       </article>
     </div>
@@ -137,7 +137,7 @@ import PageTransitionHead from '../components/PageTransitionHead.astro';
   </div>
   <section class="about" id="about" aria-labelledby="about-title">
     <h2 id="about-title">关于</h2>
-    <div><p>我有 12 年设计经验，从刊物、品牌视觉转向大屏、后台与 App 的产品设计。目前借助 AI 制作原型和查询工具，也把评审经验整理成检查规则，在实际操作中检验和修订。</p></div>
+    <div><p>我有 12 年设计经验，从刊物和品牌视觉逐渐转向大屏、后台与 App。现在也自己制作原型和工具，借助 AI 试方案，再回到业务规则和实际操作里检查。</p></div>
   </section>
 </main>
 <script src="../scripts/turntable.js"></script>

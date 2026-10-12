@@ -1,0 +1,88 @@
+<section class="redetection-demo" data-redetection-demo aria-labelledby="redetection-demo-title">
+  <header>
+    <span class="redetection-demo__label">AI 建议稿 · 交互示意</span>
+    <h3 id="redetection-demo-title">让用户在清空前作出明确选择</h3>
+    <p>以两项手动处理为例，试试取消和继续。</p>
+  </header>
+  <div class="redetection-demo__work">
+    <div>
+      <h4>当前手动处理</h4>
+      <ul data-manual-work>
+        <li>调整区域 A 的边界</li>
+        <li>补画区域 B，并添加标签“待核查”</li>
+      </ul>
+      <p data-empty-work hidden>演示中的手动处理已清空。</p>
+    </div>
+    <div class="redetection-demo__actions" data-demo-controls hidden>
+      <button type="button" data-redetect aria-haspopup="dialog" aria-controls="redetection-confirm">重新检测</button>
+      <button type="button" data-reset-demo>重置演示</button>
+    </div>
+  </div>
+  <p class="redetection-demo__status" role="status" data-demo-status>点击重新检测，查看确认方案。</p>
+  <p data-demo-fallback>确认方案先说明清空后果，取消保留当前处理，确认后清空。</p>
+  <dialog id="redetection-confirm" aria-labelledby="redetection-confirm-title" aria-describedby="redetection-confirm-copy">
+    <h3 id="redetection-confirm-title">重新检测并清空手动处理？</h3>
+    <p id="redetection-confirm-copy">重新检测将清空此前的手动处理。是否继续？</p>
+    <div class="redetection-demo__actions">
+      <button type="button" data-cancel-redetect autofocus>取消</button>
+      <button type="button" data-confirm-redetect>清空并重新检测</button>
+    </div>
+  </dialog>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-redetection-demo]').forEach(demo => {
+    const dialog = demo.querySelector<HTMLDialogElement>('dialog');
+    const open = demo.querySelector<HTMLButtonElement>('[data-redetect]');
+    const work = demo.querySelector<HTMLElement>('[data-manual-work]');
+    const empty = demo.querySelector<HTMLElement>('[data-empty-work]');
+    const status = demo.querySelector<HTMLElement>('[data-demo-status]');
+    if (!dialog || !open || !work || !empty || !status) return;
+    let confirmed = false;
+    open.addEventListener('click', () => {
+      confirmed = false;
+      dialog.showModal();
+    });
+    demo.querySelector('[data-cancel-redetect]')?.addEventListener('click', () => dialog.close());
+    demo.querySelector('[data-confirm-redetect]')?.addEventListener('click', () => {
+      confirmed = true;
+      work.hidden = true;
+      empty.hidden = false;
+      dialog.close();
+    });
+    dialog.addEventListener('close', () => {
+      status.textContent = confirmed
+        ? '手动处理已清空。'
+        : work.hidden ? '已取消，演示仍为空状态。' : '已取消，当前手动处理保留。';
+    });
+    demo.querySelector('[data-reset-demo]')?.addEventListener('click', () => {
+      work.hidden = false;
+      empty.hidden = true;
+      status.textContent = '已恢复示例处理。';
+    });
+    const controls = demo.querySelector<HTMLElement>('[data-demo-controls]');
+    if (controls) controls.hidden = false;
+    const fallback = demo.querySelector<HTMLElement>('[data-demo-fallback]');
+    if (fallback) fallback.hidden = true;
+  });
+</script>
+
+<style>
+  .redetection-demo { padding: 2rem; background: var(--color-panel); border-radius: var(--radius-media); display: grid; gap: 1.5rem; min-width: 0; }
+  .redetection-demo__label { color: var(--color-accent); font-size: .75rem; }
+  .redetection-demo h3 { font-size: 18px; font-weight: 500; margin: .75rem 0; }
+  .redetection-demo h4 { font-size: 15px; font-weight: 500; margin: 0 0 .5rem; }
+  .redetection-demo p,.redetection-demo li { font-size: 14px; color: var(--color-muted); }
+  .redetection-demo ul { padding-left: 1.25rem; margin: 0; }
+  .redetection-demo__work { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: start; gap: 1.5rem; }
+  .redetection-demo__actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+  .redetection-demo__actions[hidden] { display: none; }
+  .redetection-demo button { min-height: 44px; padding: .6rem .9rem; border: 1px solid var(--color-line); border-radius: var(--radius-control); background: var(--color-paper); color: var(--color-ink); font: inherit; font-size: 14px; cursor: pointer; }
+  .redetection-demo [data-confirm-redetect],.redetection-demo [data-redetect] { background: var(--color-ink); color: var(--color-paper); }
+  .redetection-demo__status { margin: 0; }
+  .redetection-demo dialog { padding: 1.75rem; width: min(30rem,calc(100% - 2rem)); max-width: calc(100% - 2rem); max-height: calc(100dvh - 2rem); overflow: auto; border: 1px solid var(--color-line); border-radius: var(--radius-media); background: var(--color-paper); color: var(--color-ink); }
+  .redetection-demo dialog::backdrop { background: rgb(26 25 21 / 65%); }
+  .redetection-demo dialog h3 { margin-top: 0; }
+  .redetection-demo dialog .redetection-demo__actions { margin-top: 1.5rem; }
+  @media(max-width:45rem) { .redetection-demo { padding: 1.25rem; } }
+</style>

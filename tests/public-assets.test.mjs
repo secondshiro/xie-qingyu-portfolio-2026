@@ -3,6 +3,8 @@ import { access, readFile } from 'node:fs/promises';
 import test from 'node:test';
 
 const required = [
+  'public/projects/edgecase-planner/change-review/waypoint-result.png',
+  'public/projects/edgecase-planner/change-review/photo-missing.png',
   'public/projects/real-estate-gis/media/final/map-current-overview.png',
   'public/projects/real-estate-gis/media/final/building-current-overview.png',
   'public/projects/real-estate-gis/media/final/13-task-relations-focus.png',

@@ -32,7 +32,8 @@ for (const width of [1440, 1280, 1024, 1010, 390, 375]) {
     await expect(details).toHaveAttribute('open');
     await page.reload();
     await expect(details).not.toHaveAttribute('open');
-    await expect(page.locator('#tradeoffs .decision-grid')).toBeVisible();
+    await expect(page.locator('#tradeoffs h3').first()).toContainText('三个单元都有 1501');
+    await expect(page.locator('#tradeoffs')).toContainText('横向移动');
   });
 }
 
@@ -76,7 +77,8 @@ test('五页公开成稿与品牌图片复核', async ({ page }) => {
   }
   for (const width of [1024, 375]) {
     await page.setViewportSize({ width, height: 900 });
-    const images = page.locator('main img');
+    while (await page.locator('main details:not([open]) > summary').count()) await page.locator('main details:not([open]) > summary').first().click();
+    const images = page.locator('main img').filter({ visible: true });
     for (const img of await images.all()) {
       await img.scrollIntoViewIfNeeded();
       await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);

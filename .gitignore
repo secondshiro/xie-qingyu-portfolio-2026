@@ -17,6 +17,8 @@ playwright-report/
 test-results/
 coverage/
 artifacts/
+/work/
+/.workbuddy/
 
 # Local agent state and historical source material
 .impeccable/

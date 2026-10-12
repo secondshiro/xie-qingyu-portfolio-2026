@@ -1,0 +1,562 @@
+{
+  "kind": "local-fault-simulation",
+  "capturedAt": "2026-10-10T06:07:57.665Z",
+  "websiteContacted": false,
+  "syntheticData": true,
+  "queries": [
+    {
+      "subject": "合成示例甲公司",
+      "recovering": false
+    },
+    {
+      "subject": "合成示例乙公司",
+      "recovering": false
+    },
+    {
+      "subject": "合成示例丙公司",
+      "recovering": false
+    },
+    {
+      "subject": "合成示例丙公司",
+      "recovering": true
+    }
+  ],
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/api/tasks"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tasks/f72a745d84cb45c7baa1b3100a3ffdd2/items/7c783027f049403a9c0535bd30806eea/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tasks/f72a745d84cb45c7baa1b3100a3ffdd2"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tasks"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tasks/53dda7697bd9428dbee6d4c69f08bb9b/items/b9524c7983584342aa71fdfc50d65af2/result"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tasks/53dda7697bd9428dbee6d4c69f08bb9b/items/c364e81582284b099a703031693936f1/result"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tasks/53dda7697bd9428dbee6d4c69f08bb9b/items/95c8e67647e84806a1c632b073965386/failure"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tasks/53dda7697bd9428dbee6d4c69f08bb9b"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tasks/53dda7697bd9428dbee6d4c69f08bb9b/comparison"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tasks/53dda7697bd9428dbee6d4c69f08bb9b"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tasks/53dda7697bd9428dbee6d4c69f08bb9b/resume"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tasks/53dda7697bd9428dbee6d4c69f08bb9b/items/95c8e67647e84806a1c632b073965386/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tasks/53dda7697bd9428dbee6d4c69f08bb9b"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tasks/53dda7697bd9428dbee6d4c69f08bb9b/comparison"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tasks/f72a745d84cb45c7baa1b3100a3ffdd2"
+    }
+  ],
+  "checks": [
+    "processed3_success2_failed1",
+    "last_failure_retry_visible",
+    "failure_excluded_from_comparison",
+    "before_export_failure_not_empty",
+    "only_failed_subject_requeried",
+    "successful_items_unchanged",
+    "baseline_history_unchanged",
+    "after_export_preserves_records",
+    "history_reopens_completed_task",
+    "no_overflow_at_7_widths"
+  ],
+  "snapshots": {
+    "before": {
+      "id": "53dda7697bd9428dbee6d4c69f08bb9b",
+      "status": "completed_with_failures",
+      "created_at": "2026-10-10T06:07:59.077+00:00",
+      "updated_at": "2026-10-10T06:07:59.106+00:00",
+      "items": [
+        {
+          "id": "b9524c7983584342aa71fdfc50d65af2",
+          "task_id": "53dda7697bd9428dbee6d4c69f08bb9b",
+          "position": 1,
+          "subject": {
+            "name": "合成示例甲公司",
+            "identity": null
+          },
+          "status": "completed_with_records",
+          "record_count": 1,
+          "detail_count": 1,
+          "error_code": null,
+          "error_message": null,
+          "completed_at": "2026-10-10T06:07:59.090+00:00",
+          "records": [
+            {
+              "ref": "synthetic-0",
+              "name": "合成示例甲公司",
+              "filing_date": "2026-10-01",
+              "case_number": "合成案号-1",
+              "detail": {
+                "执行标的": "10000",
+                "执行法院": "合成示例法院"
+              },
+              "detail_error": null
+            }
+          ]
+        },
+        {
+          "id": "c364e81582284b099a703031693936f1",
+          "task_id": "53dda7697bd9428dbee6d4c69f08bb9b",
+          "position": 2,
+          "subject": {
+            "name": "合成示例乙公司",
+            "identity": null
+          },
+          "status": "completed_no_records",
+          "record_count": 0,
+          "detail_count": 0,
+          "error_code": null,
+          "error_message": null,
+          "completed_at": "2026-10-10T06:07:59.098+00:00",
+          "records": []
+        },
+        {
+          "id": "95c8e67647e84806a1c632b073965386",
+          "task_id": "53dda7697bd9428dbee6d4c69f08bb9b",
+          "position": 3,
+          "subject": {
+            "name": "合成示例丙公司",
+            "identity": null
+          },
+          "status": "verification_timeout",
+          "record_count": 0,
+          "detail_count": 0,
+          "error_code": "verification_timeout",
+          "error_message": "等待安全验证超时",
+          "completed_at": "2026-10-10T06:07:59.106+00:00",
+          "records": []
+        }
+      ]
+    },
+    "comparisonBefore": {
+      "task_id": "53dda7697bd9428dbee6d4c69f08bb9b",
+      "baseline_count": 1,
+      "new_count": 0,
+      "unchanged_count": 0,
+      "missing_count": 0,
+      "subjects": [
+        {
+          "item_id": "b9524c7983584342aa71fdfc50d65af2",
+          "subject": {
+            "name": "合成示例甲公司",
+            "identity": null
+          },
+          "current_status": "completed_with_records",
+          "comparable": true,
+          "previous_task_id": null,
+          "previous_completed_at": null,
+          "records": [
+            {
+              "status": "baseline",
+              "record": {
+                "ref": "synthetic-0",
+                "name": "合成示例甲公司",
+                "filing_date": "2026-10-01",
+                "case_number": "合成案号-1",
+                "detail": {
+                  "执行标的": "10000",
+                  "执行法院": "合成示例法院"
+                },
+                "detail_error": null
+              }
+            }
+          ]
+        },
+        {
+          "item_id": "c364e81582284b099a703031693936f1",
+          "subject": {
+            "name": "合成示例乙公司",
+            "identity": null
+          },
+          "current_status": "completed_no_records",
+          "comparable": true,
+          "previous_task_id": null,
+          "previous_completed_at": null,
+          "records": []
+        },
+        {
+          "item_id": "95c8e67647e84806a1c632b073965386",
+          "subject": {
+            "name": "合成示例丙公司",
+            "identity": null
+          },
+          "current_status": "verification_timeout",
+          "comparable": false,
+          "previous_task_id": null,
+          "previous_completed_at": null,
+          "records": []
+        }
+      ]
+    },
+    "beforeExport": {
+      "查询汇总": [
+        [
+          "序号",
+          "查询主体",
+          "身份或机构代码",
+          "状态",
+          "记录数",
+          "已读详情",
+          "完成时间",
+          "未完成原因"
+        ],
+        [
+          1,
+          "合成示例甲公司",
+          null,
+          "已完成，有记录",
+          1,
+          1,
+          "2026-10-10 14:07:59.090000",
+          null
+        ],
+        [
+          2,
+          "合成示例乙公司",
+          null,
+          "已完成，无记录",
+          0,
+          0,
+          "2026-10-10 14:07:59.098000",
+          null
+        ],
+        [
+          3,
+          "合成示例丙公司",
+          null,
+          "等待验证超时",
+          0,
+          0,
+          "2026-10-10 14:07:59.106000",
+          "等待安全验证超时"
+        ]
+      ],
+      "案件明细": [
+        [
+          "查询主体",
+          "身份或机构代码",
+          "变化",
+          "立案日期",
+          "案号",
+          "详情状态",
+          "执行标的",
+          "执行法院"
+        ],
+        [
+          "合成示例甲公司",
+          null,
+          "首次记录",
+          "2026-10-01",
+          "合成案号-1",
+          "已读取",
+          "10000",
+          "合成示例法院"
+        ]
+      ],
+      "未完成": [
+        [
+          "序号",
+          "查询主体",
+          "身份或机构代码",
+          "状态",
+          "原因代码",
+          "原因"
+        ],
+        [
+          3,
+          "合成示例丙公司",
+          null,
+          "等待验证超时",
+          "verification_timeout",
+          "等待安全验证超时"
+        ]
+      ]
+    },
+    "after": {
+      "id": "53dda7697bd9428dbee6d4c69f08bb9b",
+      "status": "completed",
+      "created_at": "2026-10-10T06:07:59.077+00:00",
+      "updated_at": "2026-10-10T06:08:00.983+00:00",
+      "items": [
+        {
+          "id": "b9524c7983584342aa71fdfc50d65af2",
+          "task_id": "53dda7697bd9428dbee6d4c69f08bb9b",
+          "position": 1,
+          "subject": {
+            "name": "合成示例甲公司",
+            "identity": null
+          },
+          "status": "completed_with_records",
+          "record_count": 1,
+          "detail_count": 1,
+          "error_code": null,
+          "error_message": null,
+          "completed_at": "2026-10-10T06:07:59.090+00:00",
+          "records": [
+            {
+              "ref": "synthetic-0",
+              "name": "合成示例甲公司",
+              "filing_date": "2026-10-01",
+              "case_number": "合成案号-1",
+              "detail": {
+                "执行标的": "10000",
+                "执行法院": "合成示例法院"
+              },
+              "detail_error": null
+            }
+          ]
+        },
+        {
+          "id": "c364e81582284b099a703031693936f1",
+          "task_id": "53dda7697bd9428dbee6d4c69f08bb9b",
+          "position": 2,
+          "subject": {
+            "name": "合成示例乙公司",
+            "identity": null
+          },
+          "status": "completed_no_records",
+          "record_count": 0,
+          "detail_count": 0,
+          "error_code": null,
+          "error_message": null,
+          "completed_at": "2026-10-10T06:07:59.098+00:00",
+          "records": []
+        },
+        {
+          "id": "95c8e67647e84806a1c632b073965386",
+          "task_id": "53dda7697bd9428dbee6d4c69f08bb9b",
+          "position": 3,
+          "subject": {
+            "name": "合成示例丙公司",
+            "identity": null
+          },
+          "status": "completed_with_records",
+          "record_count": 1,
+          "detail_count": 1,
+          "error_code": null,
+          "error_message": null,
+          "completed_at": "2026-10-10T06:08:00.983+00:00",
+          "records": [
+            {
+              "ref": "synthetic-2",
+              "name": "合成示例丙公司",
+              "filing_date": "2026-10-01",
+              "case_number": "合成案号-3",
+              "detail": {
+                "执行标的": "10000",
+                "执行法院": "合成示例法院"
+              },
+              "detail_error": null
+            }
+          ]
+        }
+      ]
+    },
+    "comparisonAfter": {
+      "task_id": "53dda7697bd9428dbee6d4c69f08bb9b",
+      "baseline_count": 1,
+      "new_count": 0,
+      "unchanged_count": 1,
+      "missing_count": 0,
+      "subjects": [
+        {
+          "item_id": "b9524c7983584342aa71fdfc50d65af2",
+          "subject": {
+            "name": "合成示例甲公司",
+            "identity": null
+          },
+          "current_status": "completed_with_records",
+          "comparable": true,
+          "previous_task_id": null,
+          "previous_completed_at": null,
+          "records": [
+            {
+              "status": "baseline",
+              "record": {
+                "ref": "synthetic-0",
+                "name": "合成示例甲公司",
+                "filing_date": "2026-10-01",
+                "case_number": "合成案号-1",
+                "detail": {
+                  "执行标的": "10000",
+                  "执行法院": "合成示例法院"
+                },
+                "detail_error": null
+              }
+            }
+          ]
+        },
+        {
+          "item_id": "c364e81582284b099a703031693936f1",
+          "subject": {
+            "name": "合成示例乙公司",
+            "identity": null
+          },
+          "current_status": "completed_no_records",
+          "comparable": true,
+          "previous_task_id": null,
+          "previous_completed_at": null,
+          "records": []
+        },
+        {
+          "item_id": "95c8e67647e84806a1c632b073965386",
+          "subject": {
+            "name": "合成示例丙公司",
+            "identity": null
+          },
+          "current_status": "completed_with_records",
+          "comparable": true,
+          "previous_task_id": "f72a745d84cb45c7baa1b3100a3ffdd2",
+          "previous_completed_at": "2026-10-10T06:07:58.106+00:00",
+          "records": [
+            {
+              "status": "unchanged",
+              "record": {
+                "ref": "synthetic-2",
+                "name": "合成示例丙公司",
+                "filing_date": "2026-10-01",
+                "case_number": "合成案号-3",
+                "detail": {
+                  "执行标的": "10000",
+                  "执行法院": "合成示例法院"
+                },
+                "detail_error": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "afterExport": {
+      "查询汇总": [
+        [
+          "序号",
+          "查询主体",
+          "身份或机构代码",
+          "状态",
+          "记录数",
+          "已读详情",
+          "完成时间",
+          "未完成原因"
+        ],
+        [
+          1,
+          "合成示例甲公司",
+          null,
+          "已完成，有记录",
+          1,
+          1,
+          "2026-10-10 14:07:59.090000",
+          null
+        ],
+        [
+          2,
+          "合成示例乙公司",
+          null,
+          "已完成，无记录",
+          0,
+          0,
+          "2026-10-10 14:07:59.098000",
+          null
+        ],
+        [
+          3,
+          "合成示例丙公司",
+          null,
+          "已完成，有记录",
+          1,
+          1,
+          "2026-10-10 14:08:00.983000",
+          null
+        ]
+      ],
+      "案件明细": [
+        [
+          "查询主体",
+          "身份或机构代码",
+          "变化",
+          "立案日期",
+          "案号",
+          "详情状态",
+          "执行标的",
+          "执行法院"
+        ],
+        [
+          "合成示例甲公司",
+          null,
+          "首次记录",
+          "2026-10-01",
+          "合成案号-1",
+          "已读取",
+          "10000",
+          "合成示例法院"
+        ],
+        [
+          "合成示例丙公司",
+          null,
+          "存续",
+          "2026-10-01",
+          "合成案号-3",
+          "已读取",
+          "10000",
+          "合成示例法院"
+        ]
+      ],
+      "未完成": [
+        [
+          "序号",
+          "查询主体",
+          "身份或机构代码",
+          "状态",
+          "原因代码",
+          "原因"
+        ]
+      ]
+    }
+  },
+  "sourceHashes": {
+    "tools/capture-execution-query.mjs": "a781e95d67fd926bb1a8a67b782a9844df23ce2fedb9a7b24198fe7cfa6c73f3",
+    "execution-query-tool/src/execution_query/web/assets/dashboard.js": "45fe07fa0b2ae0a594040dc204ee2d6c90f205d7b027da20ac1e04e791d3974e",
+    "execution-query-tool/src/execution_query/web/index.html": "d0e6df678d0389a69918be08a824107ae854f267d018b66c13e5b89b85e064cd",
+    "execution-query-tool/extension/src/service-worker.mjs": "f5aea5826b108528be4ceacdc3d96c6e47f21e022234749f018667731c907ed3",
+    "execution-query-tool/src/execution_query/task_repository.py": "18bdc89d9f69c39e4a39f6af332481132b7beb034dc6cb93597530f03a3492bb",
+    "execution-query-tool/src/execution_query/api.py": "1de09cb58ec7aaceb0a123828fdd4f7552585d5da35af9bceb229c548c108a8a",
+    "execution-query-tool/src/execution_query/exporter.py": "21f6e486fe969e3309774684b74c69fd70e1570310416df30cc42331b6c4611f"
+  }
+}

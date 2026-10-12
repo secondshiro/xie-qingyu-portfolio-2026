@@ -1,11 +1,19 @@
 # 文档索引
 
-更新于 2026-10-08。接手先读根目录 README.md、TASK_STATUS.md、DESIGN.md 与 AGENTS.md；涉及定位和事实再读 PRODUCT.md。
+更新于 2026-10-12。接手先读根目录 README.md、TASK_STATUS.md、DESIGN.md 与 AGENTS.md；涉及定位和事实再读 PRODUCT.md。
 
 ## 当前结构与维护
 
 | 入口 | 用途 |
 | --- | --- |
+| [2026-10-12 Git 交付](history/delivery-2026-10-12.md) | 本轮纳入范围、保留材料和提交前验证 |
+| [整理前完整状态](history/status-before-delivery-2026-10-12.md) | 历次过程及当时状态，保留追溯 |
+| [GIS 校验反馈修订](briefs/gis-prototype-feedback-2026-10-12/REVIEW.md) | 校验结果、失败明细、可见场景切换、户室转办与阻断规则 |
+| [阅读精简计划与执行](superpowers/plans/2026-10-10-portfolio-design-evidence.md) | 依据实际阅读评审修订并执行；逐篇合并、证据局部、手机入口与验收 |
+| [本轮阅读修订复核](briefs/design-evidence-revision-2026-10-10/REVIEW.md) | 最终页面、写作与工程验证；同目录保留 EDITORIAL-MAP.md 和 EVIDENCE.md |
+| [品牌 VI 的 Figma 原件](briefs/design-evidence-revision-2026-10-10/BRAND-FIGMA.md) | 24 页规范的来源入口、四张已查看原图及海报主例的使用安排 |
+| [整体叙述与证据修订](briefs/overall-revision-2026-10-10/REVIEW.md) | 首页与四案例的整体调整、规则历史原件与验证 |
+| [Edgecase 本轮补充评审](briefs/edgecase-review-2026-10-09/DECISIONS.md) | 真实 Figma、业务答复、待审阅提案与验证边界 |
 | [当前状态](../TASK_STATUS.md) | 实现、验证、发布边界和待办的唯一汇总 |
 | [2026-10-08 接手记录](history/context-cleanup-2026-10-08.md) | 首页悬停与跳转、GIS 修订、四页收尾、验证和 Git 交付范围 |
 | [全站页面转场](guides/page-transitions.md) | 五页转场范围、点击与加载时序、首页状态恢复 |

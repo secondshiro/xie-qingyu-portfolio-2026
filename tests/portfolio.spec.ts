@@ -172,6 +172,7 @@ test('Arco 独立评审展示操作结果并链接原页面', async ({ page }) =
 
 test('分页示意展示历史选择丢失', async ({ page }) => {
   await page.goto('/work/edgecase-planner/');
+  await page.getByText('查看下载任务中的三个问题', { exact: true }).click();
   for (const [section, count] of [['origin', '已选 0 项']]) {
     const demo = page.locator(`#${section} [data-demo="selection"]`);
     await demo.getByLabel('全选').check();
@@ -189,7 +190,7 @@ test('AI 评审案例按经验、方法和验证连续展开', async ({ page }) 
     sections.map((section) => section.id),
   );
   expect(ids).toEqual([
-    'origin', 'direction', 'method', 'flight', 'evolution', 'arco', 'boundary',
+    'origin', 'evolution', 'change-review', 'arco',
   ]);
   await expect(page.getByRole('link', { name: '↑ 返回开头，继续阅读' })).toHaveCount(0);
 });

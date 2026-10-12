@@ -35,6 +35,29 @@ const { title, description, current } = Astro.props;
     <slot />
     <SiteFooter current={current} />
     <script>
+      // Keep links to sections moved into optional reading usable.
+      const revealLinkedDetails = () => {
+        let id: string;
+        try { id = decodeURIComponent(location.hash.slice(1)); } catch { return; }
+        const target = document.getElementById(id);
+        if (!target) return;
+        let ancestor: Element | null = target;
+        let opened = false;
+        while (ancestor) {
+          if (ancestor instanceof HTMLDetailsElement && !ancestor.open) {
+            ancestor.open = true;
+            opened = true;
+          }
+          ancestor = ancestor.parentElement;
+        }
+        if (opened) requestAnimationFrame(() => target.scrollIntoView());
+      };
+      revealLinkedDetails();
+      window.addEventListener('hashchange', revealLinkedDetails);
+      document.addEventListener('click', event => {
+        const link = event.target instanceof Element ? event.target.closest('a') : null;
+        if (link?.getAttribute('href') === location.hash) revealLinkedDetails();
+      });
       const protectedMedia = '[data-protected-media] img, [data-protected-media] video';
 
       document.addEventListener('contextmenu', (event) => {

@@ -72,14 +72,30 @@
     .upload-zone b { color: var(--text-1); }
 
     /* —— 校验列表（步骤2） —— */
-    .check-list { display: flex; flex-direction: column; gap: 10px; max-width: 720px; }
-    .check-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid var(--border-1); border-radius: 8px; background: var(--bg-surface); font-size: 14px; }
-    .check-item__icon { width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0; }
-    .check-item--pass .check-item__icon { background: var(--color-success); }
-    .check-item--warn .check-item__icon { background: var(--color-warning); }
-    .check-item--fail .check-item__icon { background: var(--color-danger); }
-    .check-item__txt { flex: 1; color: var(--text-1); }
-    .check-item__sub { font-size: 12px; color: var(--text-3); }
+    .validation-tools { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; font-size: 13px; color: var(--text-2); }
+    .validation-tools select { font: inherit; color: var(--text-1); padding: 7px 10px; border: 1px solid var(--border-2); border-radius: 5px; background: var(--bg-white); }
+    .validation-tools select:focus-visible { outline: 2px solid var(--primary-6); outline-offset: 2px; }
+    .check-summary { margin: 0 0 20px; color: var(--text-2); font-size: 14px; }
+    .check-table-wrap { overflow-x: auto; border: 1px solid var(--border-1); border-radius: 6px; }
+    .check-table { width: 100%; border-collapse: collapse; font-size: 14px; table-layout: fixed; min-width: 760px; }
+    .check-object { text-align: left; padding: 12px 16px; background: var(--bg-subtle); font-size: 13px; color: var(--text-2); }
+    .check-table th, .check-table td { text-align: left; vertical-align: top; padding: 16px; border-top: 1px solid var(--border-1); line-height: 1.7; overflow-wrap: anywhere; }
+    .check-table th { background: var(--bg-subtle); color: var(--text-2); font-weight: 500; }
+    .check-table th:first-child { width: 110px; }
+    .check-table th:nth-child(2) { width: 180px; }
+    .check-table th:nth-child(3) { width: 30%; }
+    .check-state { display: inline-flex; gap: 6px; align-items: center; font-weight: 500; white-space: nowrap; }
+    .check-item--pass .check-state { color: #157a50; }
+    .check-item--fail .check-state { color: #c22d38; }
+    .check-item--fail { background: #fff7f7; }
+    .check-detail { margin-top: 10px; }
+    .check-detail > summary { cursor: pointer; color: var(--primary-6); font-weight: 500; padding: 4px 0; }
+    .check-detail > summary:focus-visible, .check-errors:focus-visible { outline: 2px solid var(--primary-6); outline-offset: 3px; border-radius: 2px; }
+    .check-errors { max-height: 220px; overflow-y: auto; overscroll-behavior: contain; margin: 8px 0 0; padding: 0 8px 0 20px; }
+    .check-errors li + li { margin-top: 10px; }
+    .check-error-object { display: block; font-weight: 500; color: var(--text-1); }
+    .check-error-reason { display: block; color: var(--text-2); }
+    .check-guidance { margin: 16px 0 0; font-size: 13px; color: var(--text-2); }
 
     /* —— 阻断条（结构性变更锁定） —— */
     .block-bar { display: none; align-items: center; gap: 14px; margin-bottom: 14px; padding: 12px 16px; border: 1px solid var(--color-warning); background: var(--color-warning-bg); border-radius: 10px; }
@@ -293,6 +309,15 @@
     .cmp-section__title { font-size: var(--type-meta); color: var(--text-3); font-weight: 600; margin: 14px 0 8px; }
     /* 抽屉第二层（内容区）不再额外描边：内部两个对照表已各自带边框，避免双重框线 */
     .drawer__body { border: none; }
+    #routePanel[hidden], #routeStatus[hidden], #drawerCmp[hidden], #drawerCodes[hidden] { display: none; }
+    .route-status { padding: 12px; margin-bottom: 16px; background: var(--bg-subtle); border: 1px solid var(--border-2); border-radius: 6px; white-space: pre-line; overflow-wrap: anywhere; line-height: 1.7; }
+    .route-panel h3 { margin: 0 0 12px; font-size: 18px; }
+    .route-panel p, .route-panel li { line-height: 1.7; }
+    .route-panel label { display: block; font-weight: 500; margin-top: 20px; }
+    .route-panel textarea { display: block; box-sizing: border-box; width: 100%; margin-top: 8px; padding: 10px; border: 1px solid var(--border-2); border-radius: 6px; font: inherit; line-height: 1.6; resize: vertical; }
+    .route-panel textarea:focus-visible { outline: 2px solid var(--primary-6); outline-offset: 2px; }
+    .route-error { color: var(--color-danger); }
+    .route-badge { color: var(--primary-6); font-size: 12px; margin-left: 8px; white-space: nowrap; }
 
     .link-candidate { display: flex; flex-direction: column; gap: 8px; }
     .link-candidate__row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border: 1px solid var(--border-1); border-radius: 6px; background: var(--bg-surface); cursor: pointer; transition: border-color 150ms ease, background 150ms ease; }
@@ -436,6 +461,7 @@
     }
   </style>
 <script src="../demo-data.js"></script>
+<link rel="stylesheet" href="../prototype-note.css">
 </head>
 <body>
   <div class="layout workspace-shell" data-wk-legacy="true">
@@ -443,7 +469,7 @@
       <div class="nav-logo"><span class="mark">住</span><span>数字住房一体化平台 <span class="nav-logo-sub">空间工作台</span></span></div>
       <div class="nav-right">
         <div class="search-box"><svg class="search-icon" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.5"/><path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><input class="search-input" type="text" placeholder="搜索楼盘 / 地址 / 幢 / 户室，回车定位"></div>
-        <button class="task-nav-link">消息</button><button class="task-nav-link">帮助</button>
+        <button class="task-nav-link">消息</button><details class="prototype-note"><summary>示例数据 · 原型说明</summary><div class="prototype-note__body"><p>此交互原型使用示例数据，不连接业务系统。查询、校验和确认用于体验流程，不会修改真实房屋记录。转办记录仅保留在当前页面，刷新后清除。</p></div></details>
         <div class="avatar">管</div>
       </div>
     </header>
@@ -456,9 +482,9 @@
           <div class="task-object-identity"><b class="task-object-title" id="taskObjectTitle">宇济一号 · 17幢</b><span class="task-object-view">实测替换预测</span></div>
           <div class="task-object-actions">
             <span class="submit-wrap" id="submitWrap">
-              <button class="btn btn--primary" id="submitBtn" disabled>演示提交确认</button>
+              <button class="btn btn--primary" id="submitBtn" disabled>提交替换入库</button>
             </span>
-            <button class="btn btn--sm" id="draftBtn">演示存草稿</button>
+            <button class="btn btn--sm" id="draftBtn">存草稿</button>
             <span class="gate-hint" id="gateHint"></span>
           </div>
         </div>
@@ -476,10 +502,10 @@
           <div class="step-panel is-active" id="step1">
             <div class="card" style="padding:20px;">
               <div class="card__title" style="margin-bottom:16px;">查找替换数据</div>
-              <span class="task-demo-meta">27 层演示数据 · 不连接真实业务</span>
+              <span class="task-demo-meta">27 层 · 整幢测绘数据</span>
               <div class="field-row">
                 <div class="field" style="flex:2 1 260px;">
-                  <label>实测测绘幢（演示数据）</label>
+                  <label for="targetBuildingInput">实测测绘幢</label>
                   <div class="ui-select" data-select data-search>
                     <input id="targetBuildingInput" type="text" class="ui-select__trigger" data-trigger value="BD-2024-001 金桂苑 1-6 幢" placeholder="搜索幢 ID 或名称…">
                     <span class="ui-select__caret"></span>
@@ -502,7 +528,7 @@
                   </div>
                 </div>
               </div>
-              <div class="upload-zone">已选择中间库测绘数据 · <b id="surveyBuildingName">宇济一号 · 17幢（实测）</b><br><span style="font-size:12px">下一步展示关联幢和重复替换的演示反馈，不执行真实业务校验</span></div>
+              <div class="upload-zone">已选择中间库测绘数据 · <b id="surveyBuildingName">宇济一号 · 17幢（实测）</b><br><span style="font-size:12px">下一步检查关联幢、替换记录和户室分层数据，全部通过后设置入库模式</span></div>
               <div style="margin-top:18px;display:flex;gap:10px;">
                 <button class="btn btn--primary btn--sm" id="toStep2">下一步 · 校验</button>
               </div>
@@ -512,8 +538,11 @@
           <!-- 步骤2 -->
           <div class="step-panel" id="step2">
             <div class="card" style="padding:20px;">
-              <div class="card__title" style="margin-bottom:16px;">校验反馈演示</div>
-              <div class="check-list" id="checkList"></div>
+              <h2 class="card__title" style="margin:0 0 8px;">校验结果</h2>
+              <div class="validation-tools"><label for="validationScenario">切换校验场景</label><select id="validationScenario"><option value="normal">全部通过</option><option value="association">关联幢缺失</option><option value="duplicate">已完成替换入库</option><option value="rooms">户室分层数据缺失</option><option value="multiple">多项未通过 · 多户明细</option></select><span>可切换示例，查看不同校验结果</span></div>
+              <p class="check-summary" id="checkSummary" role="status" aria-live="polite"></p>
+              <div class="check-table-wrap"><table class="check-table"><caption class="check-object" id="checkObject"></caption><thead><tr><th scope="col">结果</th><th scope="col">检查项目</th><th scope="col">检查对象</th><th scope="col">结果说明</th></tr></thead><tbody id="checkList"></tbody></table></div>
+              <p class="check-guidance" id="checkGuidance"></p>
               <div style="margin-top:18px;display:flex;gap:10px;">
                 <button class="btn btn--sm" id="backTo1">上一步</button>
                 <button class="btn btn--primary btn--sm" id="toStep3">下一步 · 设入库模式</button>
@@ -526,7 +555,7 @@
             <!-- 结构变化提示：处理方式待业务确认 -->
             <div class="block-bar" id="blockBar">
               <svg class="block-bar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l8 4v5c0 4.5-3 7.5-8 9-5-1.5-8-4.5-8-9V7l8-4z" stroke-linejoin="round"/><path d="M12 9v4M12 16v.5" stroke-linecap="round"/></svg>
-              <div class="block-bar__body"><span class="status-tag status-tag--warning block-bar__evidence"><span class="dot"></span>待业务确认</span><span class="block-bar__message">演示含 <b id="blockCount">0</b> 项结构关系（拆分、合并、新增或删除），处置规则待确认，暂不演示提交。</span></div>
+              <div class="block-bar__body"><span class="status-tag status-tag--warning block-bar__evidence"><span class="dot"></span>待业务确认</span><span class="block-bar__message">发现 <b id="blockCount">0</b> 项结构变化（拆分、合并、新增或删除），请先核对处理方式，完成前不能提交。</span></div>
             </div>
 
             <!-- 漏斗看板 + 密度开关 -->
@@ -583,7 +612,7 @@
                 <span class="compare-footer__info">已关联 <b id="footLinked">0</b> 组 · 待核对 <b id="footReview" class="danger">0</b> 组 · 未关联 <b id="footUnlinked">0</b> 组</span>
               </div>
               <div class="compare-footer__actions">
-                <button class="btn btn--sm" id="draftBtn2">演示存草稿</button>
+                <button class="btn btn--sm" id="draftBtn2">存草稿</button>
               </div>
             </div>
           </div>
@@ -601,6 +630,12 @@
       </div>
       <div class="drawer__body">
         <div class="drawer__hint" id="drawerHint"></div>
+        <div class="route-status" id="routeStatus" role="status" hidden></div>
+        <section class="route-panel" id="routePanel" aria-labelledby="routeTitle" hidden>
+          <h3 id="routeTitle"></h3><p id="routeScope"></p><ul id="routeObjects"></ul>
+          <label for="routeReason">转办原因</label><textarea id="routeReason" rows="3" maxlength="300" required aria-describedby="routeError"></textarea>
+          <p class="route-error" id="routeError" role="alert"></p>
+        </section>
         <div class="cmp-codes" id="drawerCodes"></div>
         <div class="cmp" id="drawerCmp"></div>
       </div>
@@ -631,7 +666,7 @@
     <div class="modal" style="max-width:460px;">
       <div class="modal__head" id="auditModalTitle">提交实测替换 · 确认</div>
       <div class="modal__body">
-        <div class="irreversible">此处只演示核对后的确认摘要。不会替换真实预测数据，也不会提交入库或审核。</div>
+        <div class="irreversible">请确认目标幢、户室对应关系和面积差异，核对无误后提交替换方案。</div>
         <div class="audit-meta">
           <div class="audit-meta__item"><span class="audit-meta__k">目标幢</span><span class="audit-meta__v" id="auditBuilding">金桂苑 1-6 幢</span></div>
           <div class="audit-meta__item"><span class="audit-meta__k">已关联户室</span><span class="audit-meta__v" id="auditLinked">0</span></div>
@@ -641,7 +676,7 @@
           <div class="audit-meta__item"><span class="audit-meta__k">操作人</span><span class="audit-meta__v">演示经办人</span></div>
           <div class="audit-meta__item"><span class="audit-meta__k">操作时间</span><span class="audit-meta__v" id="auditTime">待选择</span></div>
         </div>
-        <p class="tiny" style="color:var(--text-3);">实际提交、入库和审核须在业务系统完成，当前页面只演示交互反馈。</p>
+        <p class="tiny" style="color:var(--text-3);">提交后将进入替换入库流程，请确认本次处理范围。</p>
       </div>
       <div class="modal__foot">
         <button class="btn btn--sm" type="button" id="auditCancel">取消</button>
@@ -658,6 +693,8 @@
   const taskCode = taskParams.get('code') || '17幢';
   const taskCodeNumber = taskCode.replace(/\D/g,'') || '17';
   const taskObjectLabel = taskBuilding + ' · ' + taskCode;
+  const scenarioKeys = ['normal', 'association', 'duplicate', 'rooms', 'multiple'];
+  let validationScenario = scenarioKeys.includes(taskParams.get('check')) ? taskParams.get('check') : 'normal';
   const fmt = m => m.toFixed(2) + ' m²';
   const floorOf = fh => (fh == null ? null : parseInt(String(fh).slice(0, 2), 10));
 
@@ -665,7 +702,7 @@
   function buildDemoRelations(){
     const predict = [], measure = [], links = [];
     const r2 = n => Math.round(n * 100) / 100;
-    const P = r => ({id:'p'+r.id, code:taskCodeNumber+'-'+r.unit+'-'+r.number, name:taskBuilding+' '+taskCode+' '+r.unit+'单元 '+r.number+'室', dy:r.floor, unit:r.unit, number:r.number, my:r.nominal, fh:String(r.floor), yt:'住宅', biz:'预测记录（演示）', mj:r.area, tn:r2(r.area*0.8), ft:r2(r.area*0.2), sdeGraphId:'G-'+r.id, sdeHouseId:'H-'+r.id, sdeVHouseId:'V-'+r.id, entityId:'EP-'+r.id});
+    const P = r => ({id:'p'+r.id, code:taskCodeNumber+'-'+r.unit+'-'+r.number, name:taskBuilding+' '+taskCode+' '+r.unit+'单元 '+r.number+'室', dy:r.floor, unit:r.unit, number:r.number, my:r.nominal, fh:String(r.floor), yt:'住宅', biz:'预测记录', mj:r.area, tn:r2(r.area*0.8), ft:r2(r.area*0.2), sdeGraphId:'G-'+r.id, sdeHouseId:'H-'+r.id, sdeVHouseId:'V-'+r.id, entityId:'EP-'+r.id});
     const M = (r, ext='', scale=1.012) => {const p=P(r),mj=r.id==='15_1_1'?95.90:r2(r.area*scale);return {...p,id:'m'+r.id+ext, suffix:ext, name:p.name+(ext?' '+ext:''), code:p.code+ext, biz:undefined,mj,tn:r2(mj*0.8),ft:r2(mj*0.2),sdeGraphId:undefined,sdeHouseId:undefined,sdeVHouseId:undefined,bmfHouseId:'B-'+r.id+ext,mergeRightId:'WQ-'+r.id+ext,entityId:'EM-'+r.id+ext}};
     const link=(r,m,kind='match',confirmed=true)=>links.push({id:'L'+r.id+'_'+m.id,pred:'p'+r.id,meas:m.id,kind,confirmed});
     GIS_DEMO.rooms.forEach(r=>predict.push(P(r)));
@@ -820,7 +857,27 @@
   let density = 'standard';            // standard（默认关系卡片）/ compact（高密度辅助表格）
   let flashEl = null;                  // 最近一次 Tab 定位的异常卡（供 Space 开抽屉）
 
+  function relatedLinks(id, side){
+    const preds = new Set(side === CARD_SIDE.PRED ? [id] : []);
+    const measures = new Set(side === CARD_SIDE.MEAS ? [id] : []);
+    const found = new Set();
+    let changed = true;
+    while (changed){
+      changed = false;
+      LINKS.forEach(link => {
+        if (!found.has(link) && ((link.pred && preds.has(link.pred)) || (link.meas && measures.has(link.meas)))){
+          found.add(link); if(link.pred) preds.add(link.pred); if(link.meas) measures.add(link.meas); changed = true;
+        }
+      });
+    }
+    return [...found];
+  }
+  function routeLabel(links){
+    const route = links.find(link => link.reviewRoute)?.reviewRoute;
+    return route === 'manual' ? '待人工核对' : route === 'change' ? '待楼盘变更' : '';
+  }
   function reviewState(card, state){
+    if (routeLabel(card.links)) return 'review';
     if (card.orphan) return 'unlinked';
     if (card.links.some(link => isStructural(link))) return 'review';
     if (state.st === 'over' || state.st === 'pending') return 'review';
@@ -906,7 +963,7 @@
       const uiLabel = uiState === 'linked' ? '已关联' : (uiState === 'review' ? '待核对' : '未关联');
       const action = uiState === 'linked' ? '查看' : (uiState === 'review' ? '核对' : '建立关联');
       return '<tr data-card tabindex="-1" data-card-id="' + c.anchorId + '" data-card-side="' + c.anchorType + '" data-card-anomaly="' + (anomaly?1:0) + '" data-card-orphan="' + (c.orphan?1:0) + '">'
-        + '<td><span class="status-tag ' + (uiState==='linked'?'status-tag--success':uiState==='review'?'status-tag--warning':'status-tag--unmatched') + '"><span class="dot"></span>' + uiLabel + '</span></td>'
+        + '<td><span class="status-tag ' + (uiState==='linked'?'status-tag--success':uiState==='review'?'status-tag--warning':'status-tag--unmatched') + '"><span class="dot"></span>' + uiLabel + '</span>' + (routeLabel(c.links) ? '<span class="route-badge">' + routeLabel(c.links) + '</span>' : '') + '</td>'
         + '<td class="num">' + predCode + '</td>'
         + '<td class="num">' + actualFloor + '</td>'
         + '<td class="num">' + nominalFloor + '</td>'
@@ -960,6 +1017,7 @@
     const head = '<div class="rg__head" data-id="' + card.anchorId + '" data-side="' + (isPred?CARD_SIDE.PRED:CARD_SIDE.MEAS) + '">'
       + headLeft
       + '<span class="rg__status">' + statusCell(st.st) + '</span>'
+      + (routeLabel(card.links) ? '<span class="route-badge">' + routeLabel(card.links) + '</span>' : '')
       + '<span class="rg__code">' + code + '</span>'
       + '<span class="rg__yt">' + yt + '</span>'
       + '<span class="rg__floor">' + floorContext + '</span>'
@@ -1009,7 +1067,7 @@
     } else {
       const l = card.links[0], p = preds[0], m = meas[0], df = linkDiff(l), dc = diffCellContent(st.st, df);
       let deltaHtml;
-      if (typeof dc === 'object') deltaHtml = deltaPill((dc.over?'is-over':(st.st==='pending'?'is-warn':'is-ok')), dc.d + ' m²', dc.d==='未提供'?'无差异':`演示差异 ${dc.pct}`);
+      if (typeof dc === 'object') deltaHtml = deltaPill((dc.over?'is-over':(st.st==='pending'?'is-warn':'is-ok')), dc.d + ' m²', dc.d==='未提供'?'无差异':`面积差异 ${dc.pct}`);
       else deltaHtml = deltaPill('is-struct-pill', dc, '结构性变更');
       main = '<div class="rg__axis">' + metric('现有户室', shortRoom(p), p?fmt(p.mj):'未提供', 'm²')
         + deltaHtml
@@ -1176,14 +1234,21 @@
     const wrap = $('submitWrap');
     bar.classList.toggle('is-on', struct > 0);
     if (struct > 0) $('blockCount').textContent = struct;
-    if (struct > 0){
+    if (getChecks().some(check => !check.pass)){
       btn.disabled = true;
-      wrap.setAttribute('data-tip', '结构关系的业务处置待确认，暂不演示提交。');
+      wrap.setAttribute('data-tip', '校验未通过，请先处理检测项。');
+      $('gateHint').textContent = '校验未通过';
+      $('gateHint').className = 'gate-hint is-warn';
+    } else if (struct > 0){
+      btn.disabled = true;
+      wrap.setAttribute('data-tip', '存在未处理的结构变化，请先核对处理方式。');
       $('gateHint').textContent = '结构关系待业务确认';
       $('gateHint').className = 'gate-hint is-warn';
+    } else if (LINKS.some(link => link.reviewRoute)){
+      btn.disabled = true; wrap.setAttribute('data-tip', '转办事项尚未处理完成。'); $('gateHint').textContent = '转办事项待处理'; $('gateHint').className = 'gate-hint is-warn';
     } else if (unmatched > 0){
       btn.disabled = true;
-      wrap.setAttribute('data-tip', `存在 ${unmatched} 项未关联户室，演示中需先核对对应或明确处置。`);
+      wrap.setAttribute('data-tip', `存在 ${unmatched} 项未关联户室，请先核对对应或明确处置。`);
       $('gateHint').textContent = unmatched + ' 项未关联';
       $('gateHint').className = 'gate-hint is-warn';
     } else if (areaUnconfirmed > 0){
@@ -1194,7 +1259,7 @@
     } else {
       btn.disabled = false;
       wrap.removeAttribute('data-tip');
-      $('gateHint').textContent = '演示核对完成，可查看确认摘要';
+      $('gateHint').textContent = '核对完成，可提交替换方案';
       $('gateHint').className = 'gate-hint';
     }
   }
@@ -1220,7 +1285,7 @@
     if (!normalizedSide) return;
     const isPredSide = normalizedSide === CARD_SIDE.PRED;
     const s = isPredSide ? predictState(id) : measureState(id);
-    const structural = ['split','merge','add','del'].includes(s.st);
+    const structural = (s.links || []).some(isStructural);
     const ls = s.links || [];
     const pr = isPredSide ? P(id) : (ls[0] && ls[0].pred ? P(ls[0].pred) : null);
     const mr = !isPredSide ? M(id) : (ls[0] && ls[0].meas ? M(ls[0].meas) : null);
@@ -1229,14 +1294,19 @@
     else if (s.st === 'pending') hint = '系统按同幢、同层和房号相近提供建议关联；关键信息存在差异，请核对后再关联。';
     else if (s.st === 'over') hint = '测绘与现有建筑面积存在差异，建议进入人工核对。';
     else if (s.st === 'over-done') hint = '该面积差异已被记录为人工核对项，具体规则仍待业务验证。';
-    else if (structural) hint = '该户室涉及结构变化，请结合楼盘变更业务核对处理。具体处理方式待业务确认。';
+    else if (structural) hint = '该组户室涉及结构变化，处理完成后才能继续替换。';
     else hint = '请核对两侧数据。';
+    $('routePanel').hidden = true; $('drawerCmp').hidden = false; $('drawerCodes').hidden = false;
+    const groupLinks = relatedLinks(id, normalizedSide);
+    const routed = routeLabel(groupLinks);
+    $('routeStatus').hidden = !routed;
+    $('routeStatus').textContent = routed ? routed + '，本组仍需处理。\n' + (groupLinks.find(link => link.reviewRoute)?.reviewNote || '') : '';
     $('drawerHint').textContent = hint;
     $('drawerCodes').innerHTML = '<span>现有 <b>' + (pr ? pr.name : '<span class="none">无对应</span>') + '</b></span><span>测绘 <b>' + (mr ? mr.name : '<span class="none">无对应</span>') + '</b></span>';
     const primaryFields = [
-      ['幢', pr && pr.dy, mr && mr.dy],
-      ['层', pr && floorOf(pr.fh), mr && floorOf(mr.fh)],
-      ['户', pr && pr.fh, mr && mr.fh],
+      ['幢', pr && taskCode, mr && taskCode],
+      ['层', pr && pr.dy, mr && mr.dy],
+      ['户', pr && (pr.unit + '单元 ' + pr.number + '室'), mr && (mr.unit + '单元 ' + mr.number + '室' + (mr.suffix || ''))],
       ['用途', pr && pr.yt, mr && mr.yt],
       ['建筑面积', pr && fmt(pr.mj), mr && fmt(mr.mj)],
       ['套内', pr && fmt(pr.tn), mr && fmt(mr.tn)],
@@ -1261,7 +1331,16 @@
     const confirmAll = (msg) => { ls.forEach(l => l.confirmed = true); renderAll(); closeDrawer(); showToast(msg); };
     // 取消匹配：解除该户室所有关联链接的确认态，回退为待核对，可重新关联
     const cancelMatch = (msg) => { ls.forEach(l => l.confirmed = false); renderAll(); closeDrawer(); showToast(msg); };
-    if (structural){
+    if (routed){
+      acts.appendChild(mkBtn('撤回转办', 'secondary', () => {
+        groupLinks.forEach(link => { delete link.reviewRoute; delete link.reviewNote; });
+        renderAll(); openDrawerFor(id, normalizedSide, trigger);
+        $('drawerActions').querySelector('button')?.focus(); showToast('已撤回转办，原有核对状态已保留');
+      }));
+      acts.appendChild(mkBtn('关闭', 'secondary', closeDrawer));
+    } else if (structural){
+      acts.appendChild(mkBtn('转人工核对', 'secondary', () => openRouteForm(id, normalizedSide, 'manual', trigger)));
+      acts.appendChild(mkBtn('转入楼盘变更', 'primary', () => openRouteForm(id, normalizedSide, 'change', trigger)));
       acts.appendChild(mkBtn('关闭', 'secondary', closeDrawer));
     } else if (s.st === 'linked'){
       acts.appendChild(mkBtn('取消匹配', 'primary', () => cancelMatch('已取消匹配')));
@@ -1277,8 +1356,34 @@
     } else {
       acts.appendChild(mkBtn('关闭', 'secondary', closeDrawer));
     }
+    if (!routed && ['pending','over'].includes(s.st)) acts.appendChild(mkBtn('转人工核对', 'secondary', () => openRouteForm(id, normalizedSide, 'manual', trigger)));
     rememberDialogOrigin('drawerMask', trigger);
-    $('drawerMask').classList.add('is-open');
+    if (!$('drawerMask').classList.contains('is-open')) $('drawerMask').classList.add('is-open');
+  }
+  function openRouteForm(id, side, route, trigger){
+    const links = relatedLinks(id, side);
+    const preds = [...new Set(links.map(link => link.pred).filter(Boolean))].map(P);
+    const measures = [...new Set(links.map(link => link.meas).filter(Boolean))].map(M);
+    $('routePanel').hidden = false; $('drawerCmp').hidden = true; $('drawerCodes').hidden = true;
+    $('routeTitle').textContent = route === 'manual' ? '转人工核对' : '转入楼盘变更';
+    $('routeScope').textContent = '本组包含 ' + preds.length + ' 户现有记录、' + measures.length + ' 户测绘记录，将一起转办。处理完成前不能提交替换。';
+    $('routeObjects').replaceChildren();
+    [...preds.map(room => '现有户室 · ' + room.name), ...measures.map(room => '测绘户室 · ' + room.name)].forEach(name => {
+      const item = document.createElement('li'); item.textContent = name; $('routeObjects').append(item);
+    });
+    $('routeReason').value = route === 'change' ? '现有与测绘户室涉及结构变化，需要通过楼盘变更核对处理。' : '现有与测绘户室的对应关系或面积存在差异，需要人工核对。';
+    $('routeError').textContent = ''; $('routeReason').removeAttribute('aria-invalid');
+    const actions = $('drawerActions'); actions.replaceChildren();
+    actions.append(mkBtn('取消转办', 'secondary', () => {openDrawerFor(id, side, trigger); $('drawerActions').querySelector('button')?.focus();}));
+    actions.append(mkBtn(route === 'manual' ? '确认转人工' : '确认转入楼盘变更', 'primary', () => {
+      const reason = $('routeReason').value.trim();
+      if (!reason){ $('routeError').textContent = '请填写转办原因。'; $('routeReason').setAttribute('aria-invalid', 'true'); $('routeReason').focus(); return; }
+      links.forEach(link => {link.reviewRoute = route; link.reviewNote = reason;});
+      renderAll(); openDrawerFor(id, side, trigger); $('drawerActions').querySelector('button')?.focus();
+      showToast(route === 'manual' ? '已转人工，等待核对' : '已转入楼盘变更，等待处理');
+    }));
+    $('drawer').querySelector('.drawer__body').scrollTop = 0;
+    $('routeReason').focus();
   }
   function mkBtn(label, variant, fn, disabled){
     const b = document.createElement('button');
@@ -1367,6 +1472,7 @@
 
   /* ============ 步骤导航 ============ */
   function goStep(n){
+    if (n === 3 && getChecks().some(check => !check.pass)) { renderChecks(); n = 2; }
     [1,2,3].forEach(i => {
       $('step'+i).classList.toggle('is-active', i === n);
       const it = document.querySelector('.stepper__item[data-step="'+i+'"]');
@@ -1374,13 +1480,72 @@
       it.classList.toggle('is-done', i < n);
     });
   }
-  const CHECKS = [
-    { t:'关联幢检查', s:'warn', sub:taskObjectLabel + ' 的预设演示结果，未检查真实关联' },
-    { t:'重复替换检查', s:'warn', sub:'演示检查位置，未查询历史替换记录' },
-    { t:'分层分户图数据', s:'warn', sub:'已载入合成户室样例，未读取真实测绘图形' }
-  ];
+  // These fixtures represent business outcomes inside the labeled prototype.
+  // They do not query the production association, replacement or survey services.
+  function getChecks(){
+    const associatedBuilding = ['association', 'multiple'].includes(validationScenario) ? null : taskObjectLabel;
+    const alreadyReplaced = validationScenario === 'duplicate';
+    const surveyRooms = MEASURES.map((room, index) => {
+      if (validationScenario === 'rooms' && index === 0) return {...room, dy:null};
+      if (validationScenario === 'multiple' && index < 8) return index < 4 ? {...room, dy:null} : {...room, unit:null};
+      return room;
+    });
+    const roomErrors = surveyRooms.flatMap(room => {
+      const missing = [];
+      if (!Number.isInteger(room.dy)) missing.push('楼层');
+      if (!room.unit) missing.push('单元');
+      if (!room.number) missing.push('房号');
+      return missing.length ? [{object:room.name, reason:'缺少' + missing.join('、') + '信息，请补齐后重新校验。'}] : [];
+    });
+    const floors = new Set(surveyRooms.map(room => room.dy).filter(Number.isInteger));
+    return [
+      {title:'关联幢检查', pass:!!associatedBuilding, object:taskObjectLabel + '（实测）',
+        detail:associatedBuilding ? '已关联到 ' + associatedBuilding + '（预测），可继续核对户室。' : '1 幢未设置对应的预测幢。请返回选择已关联的实测测绘幢。',
+        errors:associatedBuilding ? [] : [{object:taskObjectLabel + '（实测）', reason:'未设置对应的预测幢，无法确定本次替换对象。'}]},
+      {title:'重复替换检查', pass:!alreadyReplaced, object:taskObjectLabel + '（实测）',
+        detail:alreadyReplaced ? '该实测幢已有替换入库记录，不能重复替换。请返回选择其他测绘数据。' : '未发现替换入库记录，可以继续办理本次替换。',
+        errors:alreadyReplaced ? [{object:taskObjectLabel + '（实测）', reason:'已有替换入库记录，本次替换已被阻止。'}] : []},
+      {title:'分层分户图数据', pass:surveyRooms.length > 0 && roomErrors.length === 0,
+        object:taskObjectLabel + ' · ' + (roomErrors.length ? roomErrors.length + ' 户数据不完整' : '全部测绘户室'),
+        detail:roomErrors.length ? roomErrors.length + ' 户的分层分户信息不完整。请按明细补齐测绘数据后重新校验。' : surveyRooms.length ? '已读取 ' + floors.size + ' 层、' + surveyRooms.length + ' 户，楼层、单元和房号齐全。' : '未读取到测绘户室，请检查数据后重新校验。',
+        errors:surveyRooms.length ? roomErrors : [{object:taskObjectLabel, reason:'测绘户室为空，无法继续核对。'}]}
+    ];
+  }
   function renderChecks(){
-    $('checkList').innerHTML = CHECKS.map((c,i) => '<div class="check-item check-item--'+c.s+' is-enter" style="--d:'+(i*70)+'ms"><span class="check-item__icon">' + (c.s==='pass'?'通过':c.s==='warn'?'提示':'失败') + '</span><div><div class="check-item__txt">'+c.t+'</div><div class="check-item__sub">'+c.sub+'</div></div></div>').join('');
+    const checks = getChecks().sort((a,b) => Number(a.pass) - Number(b.pass));
+    const failed = checks.filter(check => !check.pass).length;
+    let firstFailure = true;
+    $('checkList').replaceChildren();
+    checks.forEach(check => {
+      const row = document.createElement('tr');
+      row.className = 'check-item check-item--' + (check.pass ? 'pass' : 'fail');
+      const status = document.createElement('td'), state = document.createElement('span');
+      state.className = 'check-state';
+      const icon = document.createElement('span'); icon.setAttribute('aria-hidden','true'); icon.textContent = check.pass ? '✓' : '×';
+      state.append(icon, document.createTextNode(check.pass ? '通过' : '未通过')); status.append(state); row.append(status);
+      [check.title, check.object].forEach(value => {const cell=document.createElement('td');cell.textContent=value;row.append(cell);});
+      const description = document.createElement('td'); description.textContent = check.detail;
+      if (!check.pass) {
+        const details = document.createElement('details'); details.className = 'check-detail';
+        details.open = firstFailure; firstFailure = false;
+        const summary = document.createElement('summary'); summary.textContent = check.errors.length + ' 条失败明细';
+        const list = document.createElement('ul'); list.className = 'check-errors';
+        list.tabIndex = 0; list.setAttribute('aria-label', check.title + '失败对象与原因');
+        check.errors.forEach(error => {
+          const item = document.createElement('li'), object = document.createElement('span'), reason = document.createElement('span');
+          object.className = 'check-error-object'; object.textContent = error.object;
+          reason.className = 'check-error-reason'; reason.textContent = error.reason;
+          item.append(object, reason); list.append(item);
+        });
+        details.append(summary, list); description.append(details);
+      }
+      row.append(description); $('checkList').append(row);
+    });
+    $('checkSummary').textContent = '共检查 ' + checks.length + ' 项，通过 ' + (checks.length - failed) + ' 项，未通过 ' + failed + ' 项';
+    $('checkObject').textContent = '当前测绘幢 · ' + taskObjectLabel + '（实测）';
+    $('checkGuidance').textContent = failed ? '请先处理未通过项，再重新校验。当前不能进入下一步。' : '全部检查通过，可以继续设置入库模式。';
+    $('toStep3').disabled = failed > 0;
+    $('backTo1').textContent = failed ? '返回修改' : '上一步';
   }
 
   /* ============ 事件绑定 ============ */
@@ -1405,7 +1570,7 @@
   $('linkModal').addEventListener('click', e => { if (e.target.id === 'linkModal') closeLinkModal(); });
 
   $('auditCancel').addEventListener('click', closeAudit);
-  $('auditConfirm').addEventListener('click', () => { updateGate(); if ($('submitBtn').disabled) { closeAudit(); showToast('存在待核对项，未完成提交演示'); return; } closeAudit(); showToast('提交确认演示完成，未实际提交入库'); $('submitBtn').disabled = true; $('submitWrap').removeAttribute('data-tip'); $('gateHint').textContent = '演示完成'; $('gateHint').className='gate-hint'; });
+  $('auditConfirm').addEventListener('click', () => { updateGate(); if ($('submitBtn').disabled) { closeAudit(); showToast('仍有待核对项，请处理后再提交'); return; } closeAudit(); showToast('已确认本次替换方案'); $('submitBtn').disabled = true; $('submitWrap').removeAttribute('data-tip'); $('gateHint').textContent = '已确认'; $('gateHint').className='gate-hint'; });
   $('auditModal').addEventListener('click', e => { if (e.target.id === 'auditModal') closeAudit(); });
 
   function topOpenDialog(){
@@ -1473,16 +1638,24 @@
     statusFilter = n.dataset.filter; renderFunnel(); renderCards(true);
   }));
 
+  $('validationScenario').value = validationScenario;
+  $('validationScenario').addEventListener('change', event => {
+    validationScenario = event.target.value;
+    renderChecks(); updateGate();
+    if ($('step3').classList.contains('is-active')) goStep(2);
+    const url = new URL(location.href); url.searchParams.set('check', validationScenario); url.searchParams.set('step', '2'); history.replaceState(null, '', url);
+  });
+
   $('toStep2').addEventListener('click', () => { renderChecks(); goStep(2); });
-  $('backTo1').addEventListener('click', () => goStep(1));
+  $('backTo1').addEventListener('click', () => {goStep(1); $('targetBuildingInput').focus();});
   $('toStep3').addEventListener('click', () => goStep(3));
   $('backBtn').addEventListener('click', () => {
     const params = new URLSearchParams({ restore:'1', building:taskBuilding, code:taskCode });
     window.location.href = '../map/index.html?' + params.toString();
   });
   $('submitBtn').addEventListener('click', () => { if (!$('submitBtn').disabled) openAudit(); });
-  $('draftBtn').addEventListener('click', () => showToast('演示存草稿反馈，未保存真实业务数据'));
-  $('draftBtn2').addEventListener('click', () => showToast('演示存草稿反馈，未保存真实业务数据'));
+  $('draftBtn').addEventListener('click', () => showToast('此原型未接入草稿保存'));
+  $('draftBtn2').addEventListener('click', () => showToast('此原型未接入草稿保存'));
 
   // 自定义下拉（替代原生 select，展开面板符合 TDesign 规范）
   // 可搜索下拉采用 TDesign SelectInput 模式：触发器本身即输入框，键入即时过滤，面板内不再单独放搜索框
@@ -1643,6 +1816,10 @@
         const target=returnFocus;returnFocus=null;
         requestAnimationFrame(()=>{
           if(target?.isConnected) target.focus?.();
+          else {
+            const card = target?.closest?.('[data-card]');
+            if(card) document.querySelector('[data-card-id="' + CSS.escape(card.dataset.cardId) + '"][data-card-side="' + CSS.escape(card.dataset.cardSide) + '"]')?.focus();
+          }
         });
       }
     }

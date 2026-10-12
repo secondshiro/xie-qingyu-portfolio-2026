@@ -9,7 +9,7 @@
 - `/`：个人定位、代表作品与联系入口。
 - 首页定位文案下方提供 JD 定向简历下载：`public/resume/xie-qingyu-resume.pdf`（两页 A4）。离线排版源为 `tools/build-resume.py`，使用含 ReportLab 的 Python 环境生成，不参与网站构建。
 - `/work/real-estate-gis/`：房产 GIS 体验重构完整案例。
-- `/work/edgecase-planner/` 展示从真实设计评审中整理 AI 检查规则的工具实践。
+- `/work/edgecase-planner/` 展示从真实设计评审中整理 AI 检查规则的工具实践，含变化检测评审、调用指令修订的历史验证，以及输入校验规则扩展。
 - `/work/brand-system/`：新禾智飞品牌系统提案（提案案例；旧触点真实投产，物料未投产）。
 - `/work/execution-query/`：执行网查询助手，从四代旧工具到人工验证、批量查询与本地导出的重构。
 - `public/projects/real-estate-gis/prototypes/`：总图、整幢、实测替换预测三个桌面原型。
@@ -39,14 +39,14 @@ npm run build
 ```
 
 - `npm test` 检查公开内容边界、素材和原型入口。
-- `npm run test:e2e` 检查整站响应式、键盘访问、减弱动效和深链，以及首页换片中断、持续旋转、无脚本入口与 16∶9 构图，并检查四个案例的转场时序与返回状态。
+- `npm run test:e2e` 检查五页阅读与响应式布局、首页交互、转场、媒体和键盘访问，同时覆盖 Edgecase 确认提案，以及 GIS 多项校验失败和户室转办。
 - `npm run build` 同时执行 Astro 检查与静态构建，产物位于 `dist/`。
 
 浏览器测试使用本机 Google Chrome，并在 `127.0.0.1:4331` 启动临时静态服务。
 
 ## 发布状态
 
-用户于 2026-09-15 确认网站已公开发布。唱机首页与旧版备份已随 `71fed90` 推送 Git。2026-09-29 用户授权将导航精简、全站文案润色、新版 GIS 截图与页面转场提交并推送，提交与远端状态以 Git 记录为准。仓库没有记录线上地址或自动部署命令，Git 推送与线上部署分别核验。2026-10-08 用户授权将正式首页交互、GIS 修订与素材、简历同步、四篇案例收尾及上下文记录提交并推送。当前验证与交付结果见 TASK_STATUS.md。
+用户于 2026-09-15 确认网站已公开发布。2026-10-12 授权整理当前网站修改与维护文档并上传 Git，交付分支为 `codex/portfolio-design-evidence`。范围与验证见 [本次交付记录](docs/history/delivery-2026-10-12.md)，当前实现见 [TASK_STATUS.md](TASK_STATUS.md)。Git 上传与线上部署分别核验，本轮未执行部署。此前记录保存在 [历史状态](docs/history/status-before-delivery-2026-10-12.md)。
 
 ## 项目结构
 

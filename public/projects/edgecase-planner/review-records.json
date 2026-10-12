@@ -1,0 +1,977 @@
+{
+  "title": "上传与预审的历史检查记录",
+  "date": "2026-09-04",
+  "context": "真实设计稿的观察记录与固定合成答复分组保存。此处是历史文件的原值摘录，按原始文件名对应。",
+  "instruction": {
+    "revision": "1 → 2",
+    "source": "candidate-skill/references/review-input.md",
+    "text": "Before normalizing R4/R5 input, identify operations whose timing, completion, cancellation, or retry behavior may be answered independently. For example, uploading a file and validating it are separate operations; processing, failed, and successful screens for the same validation are states of one operation, not three operations.\n\nThe v0.1 engine does not scope async candidates by `uiFeatures.id`. Without confirmed transitions, multiple `async_action` features can collapse into one R4 candidate; shared prerequisite timing can also mix operations. Candidate-specific answers alone cannot recover distinctions already lost during normalization. Use one `ReviewRunInput` per independently answerable async operation:\n\n1. Assign a stable operation-specific `analysisId`, such as `review-material-upload` and `review-material-validation`, and an explicit `labels.actionLabel`.\n2. Include that operation's attributable features and evidence. Keep its related states together; reuse a frame across inputs when it contains different operations. Do not duplicate other operations' features or unconfirmed runtime facts into the scope.\n3. Keep unverified transitions absent. Frame order, adjacent placement, and similar names do not establish a transition. Splitting analysis scope does not require inventing one.\n4. Run each input, then attach only that operation's actual designer answers to the returned candidate IDs. Preserve a scope-to-source map outside the engine input; do not add unsupported schema fields.\n5. Combine the readable results with operation labels and all analysis/candidate IDs. Two R4.Q1 questions for different operations are not equivalent facts: ask each operation's timing explicitly, even if presented in one sentence. Never copy one operation's timing to another.\n\nThis is an R4/R5 normalization boundary, not an instruction to split every screen. Keep the shared-view/state evidence needed by R2/R6 in its own coherent review scope. If a large selection is sampled, state exactly which operations/screens were analyzed and which remain unreviewed.\n\nExample: a selected design shows upload controls plus a separate validation progress screen. With no runtime answers, run two inputs and expect two pending R4.Q1 questions, one per operation. Visible progress or result screens remain design evidence and do not supply designer timing answers. If multiple independent operations remain in an input, narrow the scope before interpreting or answering its combined candidate.\n"
+  },
+  "records": [
+    {
+      "source": "real-case/combined-input.json",
+      "sha256": "a961ccf7b667c5a7d1ff3dcd0d6f3501a57c7ba7a0cc612d75a4a3d741bd12ee",
+      "record": {
+        "mode": "review",
+        "analysisId": "mobile-materials-combined",
+        "labels": {
+          "actionLabel": "材料上传与AI预审"
+        },
+        "flowEvidence": {
+          "analysisId": "mobile-materials-combined",
+          "entityLabel": "申报材料",
+          "frames": [
+            {
+              "id": "12103:5960",
+              "name": "材料上传",
+              "order": 0
+            },
+            {
+              "id": "12103:6767",
+              "name": "AI预审",
+              "order": 1
+            },
+            {
+              "id": "12103:6890",
+              "name": "审核不通过",
+              "order": 2
+            },
+            {
+              "id": "12103:7030",
+              "name": "预审通过",
+              "order": 3
+            },
+            {
+              "id": "12103:6340",
+              "name": "材料上传-AI预审不通过返回修改",
+              "order": 4
+            }
+          ],
+          "uiFeatures": [
+            {
+              "id": "upload",
+              "type": "async_action",
+              "frameId": "12103:5960",
+              "label": "上传材料"
+            },
+            {
+              "id": "ai-check",
+              "type": "async_action",
+              "frameId": "12103:6767",
+              "label": "AI预审等待操作候选"
+            }
+          ],
+          "views": [],
+          "activeStates": [],
+          "transitions": [],
+          "evidenceRefs": [
+            {
+              "id": "upload-screen",
+              "frameId": "12103:5960",
+              "kind": "ui_feature",
+              "sourceType": "observed_screen",
+              "description": "上传入口、文件卡片、保存和下一步；未确认上传时序。 仅为已观察设计表达，非运行时事实。"
+            },
+            {
+              "id": "ai-screen",
+              "frameId": "12103:6767",
+              "kind": "ui_feature",
+              "sourceType": "observed_screen",
+              "description": "正在AI预审，请稍候；进度条、逐项图标、取消按钮。 仅为已观察设计表达，非运行时事实。"
+            },
+            {
+              "id": "failure-screen",
+              "frameId": "12103:6890",
+              "kind": "ui_feature",
+              "sourceType": "observed_screen",
+              "description": "3个材料审核未通过，原因说明，修改材料和下一步。 仅为已观察设计表达，非运行时事实。"
+            },
+            {
+              "id": "pass-screen",
+              "frameId": "12103:7030",
+              "kind": "ui_feature",
+              "sourceType": "observed_screen",
+              "description": "全部材料审核通过；3s后自动为您跳转下一步。 仅为已观察设计表达，非运行时事实。"
+            },
+            {
+              "id": "return-screen",
+              "frameId": "12103:6340",
+              "kind": "ui_feature",
+              "sourceType": "observed_screen",
+              "description": "材料卡片同时显示预审通过、查看原因和上传入口。 仅为已观察设计表达，非运行时事实。"
+            }
+          ]
+        },
+        "answerFacts": {},
+        "ruleAnswers": []
+      }
+    },
+    {
+      "source": "real-case/combined-output.json",
+      "sha256": "f53ba0915bffae6d688a99384f090ad397de7c478a12f2986303f31a892a370a",
+      "record": {
+        "schemaVersion": "0.1.0",
+        "skillVersion": "0.1.0",
+        "mode": "review",
+        "analysisId": "mobile-materials-combined",
+        "flowEvidence": {
+          "analysisId": "mobile-materials-combined",
+          "entityLabel": "申报材料",
+          "frames": [
+            {
+              "id": "12103:5960",
+              "name": "材料上传",
+              "order": 0
+            },
+            {
+              "id": "12103:6767",
+              "name": "AI预审",
+              "order": 1
+            },
+            {
+              "id": "12103:6890",
+              "name": "审核不通过",
+              "order": 2
+            },
+            {
+              "id": "12103:7030",
+              "name": "预审通过",
+              "order": 3
+            },
+            {
+              "id": "12103:6340",
+              "name": "材料上传-AI预审不通过返回修改",
+              "order": 4
+            }
+          ],
+          "uiFeatures": [
+            {
+              "id": "upload",
+              "type": "async_action",
+              "frameId": "12103:5960",
+              "label": "上传材料"
+            },
+            {
+              "id": "ai-check",
+              "type": "async_action",
+              "frameId": "12103:6767",
+              "label": "AI预审等待操作候选"
+            }
+          ],
+          "views": [],
+          "activeStates": [],
+          "transitions": [],
+          "evidenceRefs": [
+            {
+              "id": "upload-screen",
+              "frameId": "12103:5960",
+              "kind": "ui_feature",
+              "sourceType": "observed_screen",
+              "description": "上传入口、文件卡片、保存和下一步；未确认上传时序。 仅为已观察设计表达，非运行时事实。"
+            },
+            {
+              "id": "ai-screen",
+              "frameId": "12103:6767",
+              "kind": "ui_feature",
+              "sourceType": "observed_screen",
+              "description": "正在AI预审，请稍候；进度条、逐项图标、取消按钮。 仅为已观察设计表达，非运行时事实。"
+            },
+            {
+              "id": "failure-screen",
+              "frameId": "12103:6890",
+              "kind": "ui_feature",
+              "sourceType": "observed_screen",
+              "description": "3个材料审核未通过，原因说明，修改材料和下一步。 仅为已观察设计表达，非运行时事实。"
+            },
+            {
+              "id": "pass-screen",
+              "frameId": "12103:7030",
+              "kind": "ui_feature",
+              "sourceType": "observed_screen",
+              "description": "全部材料审核通过；3s后自动为您跳转下一步。 仅为已观察设计表达，非运行时事实。"
+            },
+            {
+              "id": "return-screen",
+              "frameId": "12103:6340",
+              "kind": "ui_feature",
+              "sourceType": "observed_screen",
+              "description": "材料卡片同时显示预审通过、查看原因和上传入口。 仅为已观察设计表达，非运行时事实。"
+            }
+          ]
+        },
+        "candidates": [
+          {
+            "id": "candidate-mobile-materials-combined-r4",
+            "analysisId": "mobile-materials-combined",
+            "ruleId": "R4",
+            "family": "async_recovery",
+            "scope": {
+              "viewIds": [],
+              "stateIds": []
+            },
+            "triggerEvidenceIds": [
+              "upload-screen",
+              "ai-screen",
+              "failure-screen",
+              "pass-screen",
+              "return-screen"
+            ],
+            "missingQuestionIds": [
+              "R4.Q1"
+            ],
+            "missingEvidence": [],
+            "status": "awaiting_evidence"
+          }
+        ],
+        "ruleAnswers": [],
+        "answerFacts": {},
+        "causalEvidence": [],
+        "findings": [],
+        "resultGroups": {
+          "covered": [],
+          "potentialRisk": [],
+          "pendingConfirmation": [
+            "candidate-mobile-materials-combined-r4"
+          ]
+        }
+      }
+    },
+    {
+      "source": "real-case/upload-input.json",
+      "sha256": "6a905aa5e5fc9803314acea52efb67c124ad684e2302e75cd8a4a008978cc9f3",
+      "record": {
+        "mode": "review",
+        "analysisId": "mobile-materials-upload",
+        "labels": {
+          "actionLabel": "材料上传"
+        },
+        "flowEvidence": {
+          "analysisId": "mobile-materials-upload",
+          "entityLabel": "申报材料",
+          "frames": [
+            {
+              "id": "12103:5960",
+              "name": "材料上传",
+              "order": 0
+            }
+          ],
+          "uiFeatures": [
+            {
+              "id": "upload",
+              "type": "async_action",
+              "frameId": "12103:5960",
+              "label": "上传材料"
+            }
+          ],
+          "views": [],
+          "activeStates": [],
+          "transitions": [],
+          "evidenceRefs": [
+            {
+              "id": "upload-screen",
+              "frameId": "12103:5960",
+              "kind": "ui_feature",
+              "sourceType": "observed_screen",
+              "description": "上传入口、文件卡片、保存和下一步；未确认上传时序。 仅为已观察设计表达，非运行时事实。"
+            }
+          ]
+        },
+        "answerFacts": {},
+        "ruleAnswers": []
+      }
+    },
+    {
+      "source": "real-case/upload-output.json",
+      "sha256": "915eb2c5bedae7e543c712eb1830a6d344c9168f4e4983309123f1abd1fb2190",
+      "record": {
+        "schemaVersion": "0.1.0",
+        "skillVersion": "0.1.0",
+        "mode": "review",
+        "analysisId": "mobile-materials-upload",
+        "flowEvidence": {
+          "analysisId": "mobile-materials-upload",
+          "entityLabel": "申报材料",
+          "frames": [
+            {
+              "id": "12103:5960",
+              "name": "材料上传",
+              "order": 0
+            }
+          ],
+          "uiFeatures": [
+            {
+              "id": "upload",
+              "type": "async_action",
+              "frameId": "12103:5960",
+              "label": "上传材料"
+            }
+          ],
+          "views": [],
+          "activeStates": [],
+          "transitions": [],
+          "evidenceRefs": [
+            {
+              "id": "upload-screen",
+              "frameId": "12103:5960",
+              "kind": "ui_feature",
+              "sourceType": "observed_screen",
+              "description": "上传入口、文件卡片、保存和下一步；未确认上传时序。 仅为已观察设计表达，非运行时事实。"
+            }
+          ]
+        },
+        "candidates": [
+          {
+            "id": "candidate-mobile-materials-upload-r4",
+            "analysisId": "mobile-materials-upload",
+            "ruleId": "R4",
+            "family": "async_recovery",
+            "scope": {
+              "viewIds": [],
+              "stateIds": []
+            },
+            "triggerEvidenceIds": [
+              "upload-screen"
+            ],
+            "missingQuestionIds": [
+              "R4.Q1"
+            ],
+            "missingEvidence": [],
+            "status": "awaiting_evidence"
+          }
+        ],
+        "ruleAnswers": [],
+        "answerFacts": {},
+        "causalEvidence": [],
+        "findings": [],
+        "resultGroups": {
+          "covered": [],
+          "potentialRisk": [],
+          "pendingConfirmation": [
+            "candidate-mobile-materials-upload-r4"
+          ]
+        }
+      }
+    },
+    {
+      "source": "real-case/ai-validation-input.json",
+      "sha256": "10a3ea961207d31aaacf6bc180704fb2eadb16f2d5262b4f09906ddc4bc57353",
+      "record": {
+        "mode": "review",
+        "analysisId": "mobile-materials-ai-validation",
+        "labels": {
+          "actionLabel": "AI预审"
+        },
+        "flowEvidence": {
+          "analysisId": "mobile-materials-ai-validation",
+          "entityLabel": "申报材料",
+          "frames": [
+            {
+              "id": "12103:6767",
+              "name": "AI预审",
+              "order": 1
+            },
+            {
+              "id": "12103:6890",
+              "name": "审核不通过",
+              "order": 2
+            },
+            {
+              "id": "12103:7030",
+              "name": "预审通过",
+              "order": 3
+            },
+            {
+              "id": "12103:6340",
+              "name": "材料上传-AI预审不通过返回修改",
+              "order": 4
+            }
+          ],
+          "uiFeatures": [
+            {
+              "id": "ai-check",
+              "type": "async_action",
+              "frameId": "12103:6767",
+              "label": "AI预审等待操作候选"
+            }
+          ],
+          "views": [],
+          "activeStates": [],
+          "transitions": [],
+          "evidenceRefs": [
+            {
+              "id": "ai-screen",
+              "frameId": "12103:6767",
+              "kind": "ui_feature",
+              "sourceType": "observed_screen",
+              "description": "正在AI预审，请稍候；进度条、逐项图标、取消按钮。 仅为已观察设计表达，非运行时事实。"
+            },
+            {
+              "id": "failure-screen",
+              "frameId": "12103:6890",
+              "kind": "ui_feature",
+              "sourceType": "observed_screen",
+              "description": "3个材料审核未通过，原因说明，修改材料和下一步。 仅为已观察设计表达，非运行时事实。"
+            },
+            {
+              "id": "pass-screen",
+              "frameId": "12103:7030",
+              "kind": "ui_feature",
+              "sourceType": "observed_screen",
+              "description": "全部材料审核通过；3s后自动为您跳转下一步。 仅为已观察设计表达，非运行时事实。"
+            },
+            {
+              "id": "return-screen",
+              "frameId": "12103:6340",
+              "kind": "ui_feature",
+              "sourceType": "observed_screen",
+              "description": "材料卡片同时显示预审通过、查看原因和上传入口。 仅为已观察设计表达，非运行时事实。"
+            }
+          ]
+        },
+        "answerFacts": {},
+        "ruleAnswers": []
+      }
+    },
+    {
+      "source": "real-case/ai-validation-output.json",
+      "sha256": "72a3f5b721f27240983fa2466c6e945b642b305e59daaef1ae587dc745d9841d",
+      "record": {
+        "schemaVersion": "0.1.0",
+        "skillVersion": "0.1.0",
+        "mode": "review",
+        "analysisId": "mobile-materials-ai-validation",
+        "flowEvidence": {
+          "analysisId": "mobile-materials-ai-validation",
+          "entityLabel": "申报材料",
+          "frames": [
+            {
+              "id": "12103:6767",
+              "name": "AI预审",
+              "order": 1
+            },
+            {
+              "id": "12103:6890",
+              "name": "审核不通过",
+              "order": 2
+            },
+            {
+              "id": "12103:7030",
+              "name": "预审通过",
+              "order": 3
+            },
+            {
+              "id": "12103:6340",
+              "name": "材料上传-AI预审不通过返回修改",
+              "order": 4
+            }
+          ],
+          "uiFeatures": [
+            {
+              "id": "ai-check",
+              "type": "async_action",
+              "frameId": "12103:6767",
+              "label": "AI预审等待操作候选"
+            }
+          ],
+          "views": [],
+          "activeStates": [],
+          "transitions": [],
+          "evidenceRefs": [
+            {
+              "id": "ai-screen",
+              "frameId": "12103:6767",
+              "kind": "ui_feature",
+              "sourceType": "observed_screen",
+              "description": "正在AI预审，请稍候；进度条、逐项图标、取消按钮。 仅为已观察设计表达，非运行时事实。"
+            },
+            {
+              "id": "failure-screen",
+              "frameId": "12103:6890",
+              "kind": "ui_feature",
+              "sourceType": "observed_screen",
+              "description": "3个材料审核未通过，原因说明，修改材料和下一步。 仅为已观察设计表达，非运行时事实。"
+            },
+            {
+              "id": "pass-screen",
+              "frameId": "12103:7030",
+              "kind": "ui_feature",
+              "sourceType": "observed_screen",
+              "description": "全部材料审核通过；3s后自动为您跳转下一步。 仅为已观察设计表达，非运行时事实。"
+            },
+            {
+              "id": "return-screen",
+              "frameId": "12103:6340",
+              "kind": "ui_feature",
+              "sourceType": "observed_screen",
+              "description": "材料卡片同时显示预审通过、查看原因和上传入口。 仅为已观察设计表达，非运行时事实。"
+            }
+          ]
+        },
+        "candidates": [
+          {
+            "id": "candidate-mobile-materials-ai-validation-r4",
+            "analysisId": "mobile-materials-ai-validation",
+            "ruleId": "R4",
+            "family": "async_recovery",
+            "scope": {
+              "viewIds": [],
+              "stateIds": []
+            },
+            "triggerEvidenceIds": [
+              "ai-screen",
+              "failure-screen",
+              "pass-screen",
+              "return-screen"
+            ],
+            "missingQuestionIds": [
+              "R4.Q1"
+            ],
+            "missingEvidence": [],
+            "status": "awaiting_evidence"
+          }
+        ],
+        "ruleAnswers": [],
+        "answerFacts": {},
+        "causalEvidence": [],
+        "findings": [],
+        "resultGroups": {
+          "covered": [],
+          "potentialRisk": [],
+          "pendingConfirmation": [
+            "candidate-mobile-materials-ai-validation-r4"
+          ]
+        }
+      }
+    },
+    {
+      "source": "verification/upload-answered.input.json",
+      "sha256": "5647d02ef29e9f0bd0e98ed0343c4c87578c1fe9b0c75762fcbbc3f7c3d7c1b9",
+      "record": {
+        "mode": "review",
+        "analysisId": "probe-upload",
+        "labels": {
+          "actionLabel": "上传材料"
+        },
+        "flowEvidence": {
+          "analysisId": "probe-upload",
+          "entityLabel": "申请材料",
+          "frames": [
+            {
+              "id": "described-surface",
+              "name": "合成设计描述，未观察画面",
+              "order": 0
+            }
+          ],
+          "uiFeatures": [
+            {
+              "id": "upload",
+              "type": "async_action",
+              "frameId": "described-surface",
+              "label": "上传材料"
+            }
+          ],
+          "views": [],
+          "activeStates": [],
+          "transitions": [],
+          "evidenceRefs": [
+            {
+              "id": "desc-upload",
+              "frameId": "described-surface",
+              "kind": "ui_feature",
+              "sourceType": "designer_description",
+              "description": "合成测试描述：申请页具有“上传材料”独立入口。没有给出转场或运行时事实。"
+            }
+          ]
+        },
+        "answerFacts": {},
+        "ruleAnswers": [
+          {
+            "id": "upload-timing",
+            "candidateId": "candidate-probe-upload-r4",
+            "questionId": "R4.Q1",
+            "answerState": "answered",
+            "value": "immediate",
+            "source": "designer",
+            "note": "合成测试回答，非用户事实",
+            "answeredAt": "2026-09-04T02:49:38.943Z"
+          }
+        ]
+      }
+    },
+    {
+      "source": "verification/upload-answered.engine.json",
+      "sha256": "5a95224e8818376e14bbdb020e1e234d7e2048d0609fd07bb813b6d4cd65edf1",
+      "record": {
+        "schemaVersion": "0.1.0",
+        "skillVersion": "0.1.0",
+        "mode": "review",
+        "analysisId": "probe-upload",
+        "flowEvidence": {
+          "analysisId": "probe-upload",
+          "entityLabel": "申请材料",
+          "frames": [
+            {
+              "id": "described-surface",
+              "name": "合成设计描述，未观察画面",
+              "order": 0
+            }
+          ],
+          "uiFeatures": [
+            {
+              "id": "upload",
+              "type": "async_action",
+              "frameId": "described-surface",
+              "label": "上传材料"
+            }
+          ],
+          "views": [],
+          "activeStates": [],
+          "transitions": [],
+          "evidenceRefs": [
+            {
+              "id": "desc-upload",
+              "frameId": "described-surface",
+              "kind": "ui_feature",
+              "sourceType": "designer_description",
+              "description": "合成测试描述：申请页具有“上传材料”独立入口。没有给出转场或运行时事实。"
+            }
+          ]
+        },
+        "candidates": [
+          {
+            "id": "candidate-probe-upload-r4",
+            "analysisId": "probe-upload",
+            "ruleId": "R4",
+            "family": "async_recovery",
+            "scope": {
+              "viewIds": [],
+              "stateIds": []
+            },
+            "triggerEvidenceIds": [
+              "desc-upload"
+            ],
+            "missingQuestionIds": [],
+            "missingEvidence": [],
+            "status": "ready"
+          }
+        ],
+        "ruleAnswers": [
+          {
+            "id": "upload-timing",
+            "candidateId": "candidate-probe-upload-r4",
+            "questionId": "R4.Q1",
+            "answerState": "answered",
+            "value": "immediate",
+            "source": "designer",
+            "note": "合成测试回答，非用户事实",
+            "answeredAt": "2026-09-04T02:49:38.943Z"
+          }
+        ],
+        "answerFacts": {
+          "async.timing": "immediate"
+        },
+        "causalEvidence": [],
+        "findings": [],
+        "resultGroups": {
+          "covered": [
+            "candidate-probe-upload-r4"
+          ],
+          "potentialRisk": [],
+          "pendingConfirmation": []
+        }
+      }
+    },
+    {
+      "source": "verification/precheck-answered.input.json",
+      "sha256": "40fe11f9bc28d1ee2fff36e6dcbb28b28520cd791b32ccaaa4f704da367582ec",
+      "record": {
+        "mode": "review",
+        "analysisId": "probe-precheck",
+        "labels": {
+          "actionLabel": "AI预审"
+        },
+        "flowEvidence": {
+          "analysisId": "probe-precheck",
+          "entityLabel": "申请材料",
+          "frames": [
+            {
+              "id": "described-surface",
+              "name": "合成设计描述，未观察画面",
+              "order": 0
+            }
+          ],
+          "uiFeatures": [
+            {
+              "id": "precheck",
+              "type": "async_action",
+              "frameId": "described-surface",
+              "label": "AI预审"
+            }
+          ],
+          "views": [],
+          "activeStates": [],
+          "transitions": [],
+          "evidenceRefs": [
+            {
+              "id": "desc-precheck",
+              "frameId": "described-surface",
+              "kind": "ui_feature",
+              "sourceType": "designer_description",
+              "description": "合成测试描述：申请页具有“AI预审”独立入口。没有给出转场或运行时事实。"
+            }
+          ]
+        },
+        "answerFacts": {},
+        "ruleAnswers": [
+          {
+            "id": "precheck-timing",
+            "candidateId": "candidate-probe-precheck-r4",
+            "questionId": "R4.Q1",
+            "answerState": "answered",
+            "value": "background",
+            "source": "designer",
+            "note": "合成测试回答，非用户事实",
+            "answeredAt": "2026-09-04T02:49:38.945Z"
+          }
+        ]
+      }
+    },
+    {
+      "source": "verification/precheck-answered.engine.json",
+      "sha256": "7f2922266cd29885010cf413e07ef02224f5e9418da94914aa9a6d4a95656fd2",
+      "record": {
+        "schemaVersion": "0.1.0",
+        "skillVersion": "0.1.0",
+        "mode": "review",
+        "analysisId": "probe-precheck",
+        "flowEvidence": {
+          "analysisId": "probe-precheck",
+          "entityLabel": "申请材料",
+          "frames": [
+            {
+              "id": "described-surface",
+              "name": "合成设计描述，未观察画面",
+              "order": 0
+            }
+          ],
+          "uiFeatures": [
+            {
+              "id": "precheck",
+              "type": "async_action",
+              "frameId": "described-surface",
+              "label": "AI预审"
+            }
+          ],
+          "views": [],
+          "activeStates": [],
+          "transitions": [],
+          "evidenceRefs": [
+            {
+              "id": "desc-precheck",
+              "frameId": "described-surface",
+              "kind": "ui_feature",
+              "sourceType": "designer_description",
+              "description": "合成测试描述：申请页具有“AI预审”独立入口。没有给出转场或运行时事实。"
+            }
+          ]
+        },
+        "candidates": [
+          {
+            "id": "candidate-probe-precheck-r4",
+            "analysisId": "probe-precheck",
+            "ruleId": "R4",
+            "family": "async_recovery",
+            "scope": {
+              "viewIds": [],
+              "stateIds": []
+            },
+            "triggerEvidenceIds": [
+              "desc-precheck"
+            ],
+            "missingQuestionIds": [
+              "R4.Q2",
+              "R4.Q3",
+              "R4.Q4",
+              "R4.Q5"
+            ],
+            "missingEvidence": [],
+            "status": "awaiting_evidence"
+          },
+          {
+            "id": "candidate-probe-precheck-r5",
+            "analysisId": "probe-precheck",
+            "ruleId": "R5",
+            "family": "async_recovery",
+            "scope": {
+              "viewIds": [],
+              "stateIds": []
+            },
+            "triggerEvidenceIds": [
+              "desc-precheck"
+            ],
+            "missingQuestionIds": [
+              "R5.Q1"
+            ],
+            "missingEvidence": [],
+            "status": "awaiting_evidence"
+          }
+        ],
+        "ruleAnswers": [
+          {
+            "id": "precheck-timing",
+            "candidateId": "candidate-probe-precheck-r4",
+            "questionId": "R4.Q1",
+            "answerState": "answered",
+            "value": "background",
+            "source": "designer",
+            "note": "合成测试回答，非用户事实",
+            "answeredAt": "2026-09-04T02:49:38.945Z"
+          }
+        ],
+        "answerFacts": {
+          "async.timing": "background"
+        },
+        "causalEvidence": [],
+        "findings": [],
+        "resultGroups": {
+          "covered": [],
+          "potentialRisk": [],
+          "pendingConfirmation": [
+            "candidate-probe-precheck-r4",
+            "candidate-probe-precheck-r5"
+          ]
+        }
+      }
+    },
+    {
+      "source": "verification/invalid-combined-control.engine.json",
+      "sha256": "b78f38b557a4737b1462781c61a2727126e300ce62ea8b919c6e2bd9174aca04",
+      "record": {
+        "schemaVersion": "0.1.0",
+        "skillVersion": "0.1.0",
+        "mode": "review",
+        "analysisId": "mobile-materials-combined",
+        "flowEvidence": {
+          "analysisId": "mobile-materials-combined",
+          "entityLabel": "申报材料",
+          "frames": [
+            {
+              "id": "12103:5960",
+              "name": "材料上传",
+              "order": 0
+            },
+            {
+              "id": "12103:6767",
+              "name": "AI预审",
+              "order": 1
+            },
+            {
+              "id": "12103:6890",
+              "name": "审核不通过",
+              "order": 2
+            },
+            {
+              "id": "12103:7030",
+              "name": "预审通过",
+              "order": 3
+            },
+            {
+              "id": "12103:6340",
+              "name": "材料上传-AI预审不通过返回修改",
+              "order": 4
+            }
+          ],
+          "uiFeatures": [
+            {
+              "id": "upload",
+              "type": "async_action",
+              "frameId": "12103:5960",
+              "label": "上传材料"
+            },
+            {
+              "id": "ai-check",
+              "type": "async_action",
+              "frameId": "12103:6767",
+              "label": "AI预审等待操作候选"
+            }
+          ],
+          "views": [],
+          "activeStates": [],
+          "transitions": [],
+          "evidenceRefs": [
+            {
+              "id": "upload-screen",
+              "frameId": "12103:5960",
+              "kind": "ui_feature",
+              "sourceType": "observed_screen",
+              "description": "上传入口、文件卡片、保存和下一步；未确认上传时序。 仅为已观察设计表达，非运行时事实。"
+            },
+            {
+              "id": "ai-screen",
+              "frameId": "12103:6767",
+              "kind": "ui_feature",
+              "sourceType": "observed_screen",
+              "description": "正在AI预审，请稍候；进度条、逐项图标、取消按钮。 仅为已观察设计表达，非运行时事实。"
+            },
+            {
+              "id": "failure-screen",
+              "frameId": "12103:6890",
+              "kind": "ui_feature",
+              "sourceType": "observed_screen",
+              "description": "3个材料审核未通过，原因说明，修改材料和下一步。 仅为已观察设计表达，非运行时事实。"
+            },
+            {
+              "id": "pass-screen",
+              "frameId": "12103:7030",
+              "kind": "ui_feature",
+              "sourceType": "observed_screen",
+              "description": "全部材料审核通过；3s后自动为您跳转下一步。 仅为已观察设计表达，非运行时事实。"
+            },
+            {
+              "id": "return-screen",
+              "frameId": "12103:6340",
+              "kind": "ui_feature",
+              "sourceType": "observed_screen",
+              "description": "材料卡片同时显示预审通过、查看原因和上传入口。 仅为已观察设计表达，非运行时事实。"
+            }
+          ]
+        },
+        "candidates": [
+          {
+            "id": "candidate-mobile-materials-combined-r4",
+            "analysisId": "mobile-materials-combined",
+            "ruleId": "R4",
+            "family": "async_recovery",
+            "scope": {
+              "viewIds": [],
+              "stateIds": []
+            },
+            "triggerEvidenceIds": [
+              "upload-screen",
+              "ai-screen",
+              "failure-screen",
+              "pass-screen",
+              "return-screen"
+            ],
+            "missingQuestionIds": [
+              "R4.Q1"
+            ],
+            "missingEvidence": [],
+            "status": "awaiting_evidence"
+          }
+        ],
+        "ruleAnswers": [],
+        "answerFacts": {},
+        "causalEvidence": [],
+        "findings": [],
+        "resultGroups": {
+          "covered": [],
+          "potentialRisk": [],
+          "pendingConfirmation": [
+            "candidate-mobile-materials-combined-r4"
+          ]
+        }
+      }
+    }
+  ]
+}

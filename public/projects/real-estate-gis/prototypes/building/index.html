@@ -21,6 +21,7 @@
 .building #quickDrop .wk-dropdown__menu{z-index:9999}
 </style>
 <script src="../demo-data.js"></script>
+<link rel="stylesheet" href="../prototype-note.css">
 </head>
 <style>
 .workspace-shell .room.selected,
@@ -35,21 +36,18 @@
   pointer-events: none;
   border: 3px solid #0052D9;
 }
-.workspace-shell .matrix.has-room-selection .room:not(.is-selected) {
-  opacity: .18;
-}
 </style>
 <body>
 <div class="workspace-shell building"><section style="height:100%;display:flex;flex-direction:column;position:relative;overflow:hidden"><header class="wk-header"><div class="wk-brand">
 <span class="wk-brand__mark">&#20303;</span><span>&#25968;&#23383;&#20303;&#25151;&#19968;&#20307;&#21270;&#24179;&#21488; <span class="wk-brand__sub">&#31354;&#38388;&#24037;&#20316;&#21488;</span></span>
 </div>
 <label class="wk-global-search"><svg viewbox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.5"></circle><path d="m10.5 10.5 3 3" stroke="currentColor" stroke-width="1.5"></path></svg><input id="globalSearch" placeholder="&#25628;&#32034;&#27004;&#30424; / &#22320;&#22336; / &#24162; / &#25143;&#23460;&#65292;&#22238;&#36710;&#23450;&#20301;"></label><div class="wk-header__actions">
-<button class="wk-btn wk-btn--ghost nav-text">&#28040;&#24687;</button><button class="wk-btn wk-btn--ghost nav-text">&#24110;&#21161;</button><span class="wk-brand__mark">&#31649;</span>
+<button class="wk-btn wk-btn--ghost nav-text">&#28040;&#24687;</button><details class="prototype-note"><summary>示例数据 · 原型说明</summary><div class="prototype-note__body"><p>此交互原型使用示例数据，不连接业务系统。查询、校验和确认用于体验流程，不会修改真实房屋记录。</p></div></details><span class="wk-brand__mark">&#31649;</span>
 </div></header><div class="wk-object-header">
 <button id="back" class="wk-object-header__back"><svg viewbox="0 0 16 16" fill="none"><path d="M10 3.5 5.5 8l4.5 4.5" stroke="currentColor" stroke-width="1.5"></path></svg>&#36820;&#22238;&#22320;&#22270;</button><span class="wk-object-header__divider"></span><div class="wk-object-header__identity">
 <b id="title" class="wk-object-header__title">&#23431;&#27982;&#19968;&#21495; &middot; 17&#24162;</b><span class="wk-object-header__view">&#20998;&#23618;&#20998;&#25143;&#22270;</span>
 </div>
-<span class="wk-object-header__context">27 层演示数据 · 属性与历史未完整展开</span>
+<span class="wk-object-header__context">27 层 · 322 户</span>
 </div>
 <div class="wk-toolbar">
 <div class="wk-toolbar__group">
@@ -58,7 +56,7 @@
 <button class="wk-dropdown__item is-active" data-q="all">&#20840;&#37096;&#25143;&#23460;</button><button class="wk-dropdown__item" data-q="multi">多状态户室</button>
 </div>
 </div>
-<input id="search" class="wk-input bar-search" placeholder="&#25628;&#32034;&#25151;&#21495;&#25110;&#26435;&#21033;&#20154;"><label class="wk-switch">&#26435;&#21033;&#20154;<input id="owner" type="checkbox"><i class="wk-switch__track"></i></label><label class="wk-switch">&#22270;&#20363;<input id="legendToggle" type="checkbox"><i class="wk-switch__track"></i></label>
+<input id="search" aria-label="搜索房号或权利人" class="wk-input bar-search" placeholder="&#25628;&#32034;&#25151;&#21495;&#25110;&#26435;&#21033;&#20154;"><button id="focusMatches" class="wk-btn">查看匹配户室</button><button id="clearFilters" class="wk-btn">清除筛选</button><label class="wk-switch">&#26435;&#21033;&#20154;<input id="owner" type="checkbox"><i class="wk-switch__track"></i></label><label class="wk-switch">&#22270;&#20363;<input id="legendToggle" type="checkbox"><i class="wk-switch__track"></i></label>
 </div>
 <span class="sep"></span><span class="wk-toolbar__spacer"></span><div class="wk-business-actions">
 <button class="wk-btn">&#21382;&#21490;&#35760;&#24405;</button><button class="wk-btn">&#19994;&#21153;&#32500;&#25252;</button>
@@ -97,11 +95,12 @@
 <dt>维护状态</dt>
 <dd>可发起业务维护</dd>
 <dt>数据说明</dt>
-<dd>作品集演示数据</dd>
+<dd>示例房屋档案</dd>
 </dl>
 <dl id="roomProps" class="props hidden">
 <dt>&#24403;&#21069;&#23545;&#35937;</dt>
 <dd id="roomName">&#26410;&#36873;&#25321;&#25143;&#23460;</dd>
+<dt>筛选状态</dt><dd id="selectionHint" role="status">在当前筛选内</dd>
 <dt>&#24314;&#31569;&#38754;&#31215;</dt>
 <dd id="roomArea">94.20 m&sup2;</dd>
 <dt>&#29992;&#36884;</dt>
@@ -125,7 +124,7 @@
 </div></div>
 </div>
 <div class="matrix-foot">
-<span>&#24403;&#21069;&#30697;&#38453; <b id="total">0</b>&#25143;</span><span>&#24403;&#21069;&#21487;&#35265; <b id="visible">0</b>&#25143;</span><span>&#24050;&#36873; <b id="selected">0</b></span>
+<span>&#24403;&#21069;&#30697;&#38453; <b id="total">0</b>&#25143;</span><span>匹配户室 <b id="visible">0</b>&#25143;</span><span>&#24050;&#36873; <b id="selected">0</b></span>
 </div></main>
 </div>
 <aside id="legend" class="wk-status-legend legend hidden"><div class="legend-head">
@@ -135,7 +134,42 @@
 <div class="legend-scroll">
 <div class="legend-group"><b>业务状态</b><label class="legend-item"><input type="checkbox" value="presale"><i class="swatch" style="--state:#ceff94"></i>已预售许可</label><label class="legend-item"><input type="checkbox" value="filing"><i class="swatch" style="--state:#cee7ff"></i>已备案</label><label class="legend-item"><input type="checkbox" value="prebuy"><i class="swatch" style="--state:#5acb73"></i>已预购预告</label><label class="legend-item"><input type="checkbox" value="premortgage"><i class="swatch" style="--state:#ff864a"></i>已预抵预告</label><label class="legend-item"><input type="checkbox" value="transferNotice"><i class="swatch" style="--state:#848284"></i>已转让预告</label><label class="legend-item"><input type="checkbox" value="mortgageNotice"><i class="swatch" style="--state:#efaa94"></i>已抵押预告</label><label class="legend-item"><input type="checkbox" value="objection"><i class="swatch" style="--state:#ffff00"></i>已异议</label><label class="legend-item"><input type="checkbox" value="ownership"><i class="swatch" style="--state:#c6cbe7"></i>已确权</label><label class="legend-item"><input type="checkbox" value="maxMortgage"><i class="swatch" style="--state:#f74d00"></i>已设立最高额抵押</label><label class="legend-item"><input type="checkbox" value="confirmedMaxMortgage"><i class="swatch" style="--state:#ff0084"></i>已确定最高额抵押数额</label><label class="legend-item"><input type="checkbox" value="mortgage"><i class="swatch" style="--state:#5255ad"></i>已抵押</label><label class="legend-item"><input type="checkbox" value="seizure"><i class="swatch" style="--state:#ce0000"></i>已查封</label><label class="legend-item"><input type="checkbox" value="preSeizure"><i class="swatch" style="--state:#de0000"></i>已预查封</label><label class="legend-item"><input type="checkbox" value="restricted"><i class="swatch" style="--state:#de006b"></i>已权利限制</label><label class="legend-item"><input type="checkbox" value="rented"><i class="swatch" style="--state:#ffff84"></i>已租赁</label><label class="legend-item"><input type="checkbox" value="constructionMortgage"><i class="swatch" style="--state:#ffc78c"></i>已在建工程抵押</label><label class="legend-item"><input type="checkbox" value="stock"><i class="swatch" style="--state:#ff96ff"></i>已存量房备案</label><label class="legend-item"><input type="checkbox" value="manualFreeze"><i class="swatch" style="--state:#ffff00"></i>已手动拆分冻结</label><label class="legend-item"><input type="checkbox" value="extinguished"><i class="swatch" style="--state:#420042"></i>已客体灭失</label><label class="legend-item"><input type="checkbox" value="unpaidFund"><i class="swatch" style="--state:#5a0000"></i>未缴纳维修基金</label></div><div class="legend-group"><b>房屋性质</b><p>★ 商品房　● 经济适用房<br>△ 拆迁安置房　□ 物业管理用房</p></div></div></aside><div id="toast" class="toast"></div></section></div>
 <script>
-const q=new URLSearchParams(location.search),building=q.get('building')||'&#23431;&#27982;&#19968;&#21495;',code=q.get('code')||'17&#24162;',num=code.replace(/\D/g,'')||'17';title.textContent=building+' &middot; '+code;bcode.textContent=code;bname.textContent=building;const COLORS=Object.fromEntries(GIS_DEMO.statuses.map(status=>[status.key,status.color]));let mode='all',selectedCell=null;function render(){let h='';for(let f=GIS_DEMO.floors;f>=1;f--){h+='<div class="row"><span class="floor actual">'+f+'</span><span class="floor nominal">'+(f===18?'17A层':f+'层')+'</span>';for(let u=1;u<=3;u++){const unitRooms=GIS_DEMO.rooms.filter(r=>r.floor===f&&r.unit===u);h+='<div class="unit-band" style="grid-template-columns:repeat('+unitRooms.length+',minmax(118px,1fr))">';for(const r of unitRooms){const ownerName=['张某等2人','湖北某置业有限…','李某','黄冈市某物业管理…'][(f+u+r.index)%4],bands=r.states.map(x=>'<i style="--state:'+COLORS[x]+'"></i>').join('');h+='<button class="room" data-room="'+r.number+'" data-owner="'+ownerName+'" data-states="'+r.states.join(',')+'" data-unit="'+u+'" data-nature="'+r.nature+'" data-area="'+r.area.toFixed(2)+'" title="'+u+'单元 '+r.number+'室"><span class="state-band">'+bands+'</span><span class="room__label">'+r.nature+r.number+'</span></button>'}h+='</div>'}h+='</div>'}rows.innerHTML=h;document.querySelectorAll('.room').forEach(x=>x.addEventListener('click',()=>pick(x)));total.textContent=document.querySelectorAll('.room').length;apply()}function pick(x){if(selectedCell)selectedCell.classList.remove('selected');selectedCell=selectedCell===x?null:x;if(selectedCell){selectedCell.classList.add('selected');roomProps.classList.remove('hidden');buildingProps.classList.add('hidden');roomName.textContent=x.dataset.unit+'单元 · '+x.dataset.room+'室';document.getElementById('roomArea').textContent=x.dataset.area+' m²'}else{roomProps.classList.add('hidden');buildingProps.classList.remove('hidden')}selected.textContent=selectedCell?'1':'0'}function apply(){let text=search.value.trim().toLowerCase(),chosen=[...document.querySelectorAll('#legend input:checked')].map(x=>x.value),count=0;document.querySelectorAll('.room').forEach(x=>{let states=x.dataset.states.split(','),quick=mode==='all'||states.includes(mode)||(mode==='multi'&&states.length>1),legend=!chosen.length||chosen.some(v=>states.includes(v)),find=!text||x.dataset.room.includes(text)||x.dataset.owner.toLowerCase().includes(text),hit=quick&&legend&&find;x.classList.toggle('dim',!hit);if(hit)count++});visible.textContent=count;empty.classList.toggle('show',count===0)}function menu(id,e){e.stopPropagation();let x=document.getElementById(id),open=!x.classList.contains('is-open');document.querySelectorAll('.wk-dropdown').forEach(y=>y.classList.remove('is-open'));x.classList.toggle('is-open',open)}function toastMsg(t){toast.textContent=t;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1600)}document.addEventListener('click',()=>document.querySelectorAll('.wk-dropdown').forEach(x=>x.classList.remove('is-open')));document.querySelectorAll('[data-q]').forEach(x=>x.addEventListener('click',()=>{mode=x.dataset.q;quick.textContent=x.textContent;document.querySelectorAll('[data-q]').forEach(y=>y.classList.toggle('is-active',y===x));apply()}));search.addEventListener('input',apply);owner.addEventListener('change',()=>document.querySelectorAll('.room').forEach(x=>x.querySelector('.room__label').textContent=owner.checked?x.dataset.owner:x.dataset.nature+x.dataset.room));legendToggle.addEventListener('change',()=>legend.classList.toggle('hidden',!legendToggle.checked));closeLegend.addEventListener('click',()=>{legendToggle.checked=false;legend.classList.add('hidden')});document.querySelectorAll('#legend input').forEach(x=>x.addEventListener('change',apply));basic.addEventListener('click',()=>{basic.classList.add('is-active');business.classList.remove('is-active');buildingProps.classList.toggle('hidden',!!selectedCell);roomProps.classList.toggle('hidden',!selectedCell)});business.addEventListener('click',()=>{business.classList.add('is-active');basic.classList.remove('is-active');roomProps.classList.add('hidden');buildingProps.classList.remove('hidden');toastMsg('&#19994;&#21153;&#23646;&#24615;&#20026;&#20316;&#21697;&#38598;&#28436;&#31034;&#25968;&#25454;')});globalSearch.addEventListener('keydown',e=>{if(e.key==='Enter'){let v=e.target.value.trim();if(/^\d{3,4}$/.test(v)){search.value=v;apply();toastMsg('&#24050;&#22312;&#24403;&#21069;&#24162;&#23450;&#20301; '+v+' &#23460;')}else toastMsg((building+code).includes(v)?'&#24403;&#21069;&#24050;&#20301;&#20110; '+building+' &middot; '+code:'&#35831;&#36820;&#22238;&#22320;&#22270;&#32487;&#32493;&#25628;&#32034;&#20854;&#20182;&#24162;')}});back.addEventListener('click',()=>location.href='../map/index.html?'+new URLSearchParams({restore:'1',building,code}));if(q.get('legend')==='1'){legendToggle.checked=true;legend.classList.remove('hidden')}render();if(q.get('owner')==='1')owner.click();if(q.get('room')){let x=[...document.querySelectorAll('.room')].find(x=>x.dataset.room===q.get('room'));if(x)pick(x)}
+const q=new URLSearchParams(location.search),building=q.get('building')||'&#23431;&#27982;&#19968;&#21495;',code=q.get('code')||'17&#24162;',num=code.replace(/\D/g,'')||'17';title.textContent=building+' &middot; '+code;bcode.textContent=code;bname.textContent=building;const COLORS=Object.fromEntries(GIS_DEMO.statuses.map(status=>[status.key,status.color]));let mode='all',selectedCell=null;function render(){let h='';for(let f=GIS_DEMO.floors;f>=1;f--){h+='<div class="row"><span class="floor actual">'+f+'</span><span class="floor nominal">'+(f===18?'17A层':f+'层')+'</span>';for(let u=1;u<=3;u++){const unitRooms=GIS_DEMO.rooms.filter(r=>r.floor===f&&r.unit===u);h+='<div class="unit-band" style="grid-template-columns:repeat('+unitRooms.length+',minmax(118px,1fr))">';for(const r of unitRooms){const ownerName=['张某等2人','湖北某置业有限…','李某','黄冈市某物业管理…'][(f+u+r.index)%4],bands=r.states.map(x=>'<i style="--state:'+COLORS[x]+'"></i>').join('');h+='<button class="room" data-room="'+r.number+'" data-owner="'+ownerName+'" data-states="'+r.states.join(',')+'" data-unit="'+u+'" data-nature="'+r.nature+'" data-area="'+r.area.toFixed(2)+'" title="'+u+'单元 '+r.number+'室"><span class="state-band">'+bands+'</span><span class="room__label">'+r.nature+r.number+'</span></button>'}h+='</div>'}h+='</div>'}rows.innerHTML=h;document.querySelectorAll('.room').forEach(x=>{x.addEventListener('click',()=>pick(x));x.setAttribute('aria-pressed','false');const names=x.dataset.states.split(',').map(key=>GIS_DEMO.statuses.find(state=>state.key===key)?.label||key);x.setAttribute('aria-label',x.dataset.unit+'单元 '+x.dataset.room+'室，'+x.dataset.area+'平方米，'+names.join('、'));});total.textContent=document.querySelectorAll('.room').length;apply()}function syncSelection(){
+  document.querySelectorAll('.room').forEach(room=>{
+    const active=room===selectedCell;
+    room.classList.toggle('selected',active);
+    room.classList.toggle('is-selected',active);
+    room.setAttribute('aria-pressed',String(active));
+  });
+  roomProps.classList.toggle('hidden',!selectedCell);
+  buildingProps.classList.toggle('hidden',!!selectedCell);
+  if(selectedCell){
+    basic.classList.add('is-active');business.classList.remove('is-active');
+    document.getElementById('businessProps').classList.add('hidden');
+    roomName.textContent=selectedCell.dataset.unit+'单元 · '+selectedCell.dataset.room+'室';
+    document.getElementById('roomArea').textContent=selectedCell.dataset.area+' m²';
+    document.getElementById('selectionHint').textContent=selectedCell.disabled?'不在当前筛选结果中':'在当前筛选内';
+  }
+  selected.textContent=selectedCell?'1':'0';
+}
+function pick(x){if(x.disabled)return;selectedCell=selectedCell===x?null:x;syncSelection();}
+function apply(){
+  const text=search.value.trim().toLowerCase(),chosen=[...document.querySelectorAll('#legend input:checked')].map(x=>x.value);let count=0;
+  document.querySelectorAll('.room').forEach(x=>{
+    const states=x.dataset.states.split(','),quick=mode==='all'||states.includes(mode)||(mode==='multi'&&states.length>1),legend=!chosen.length||chosen.some(v=>states.includes(v)),find=!text||x.dataset.room.includes(text)||x.dataset.owner.toLowerCase().includes(text),hit=quick&&legend&&find;
+    x.classList.toggle('dim',!hit);x.disabled=!hit;x.tabIndex=hit?0:-1;if(hit)count++;
+  });
+  visible.textContent=count;empty.classList.toggle('show',count===0);document.getElementById('focusMatches').disabled=count===0;syncSelection();
+}
+function focusMatch(){const match=document.querySelector('.room:not(:disabled)');if(match){match.focus();match.scrollIntoView({block:'nearest',inline:'nearest'});}}
+document.getElementById('focusMatches').addEventListener('click',focusMatch);
+search.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();focusMatch();}});
+document.getElementById('clearFilters').addEventListener('click',()=>{
+ search.value='';mode='all';quick.textContent='全部户室';
+ document.querySelectorAll('[data-q]').forEach(x=>x.classList.toggle('is-active',x.dataset.q==='all'));
+ document.querySelectorAll('#legend input').forEach(x=>x.checked=false);apply();search.focus();
+});
+function menu(id,e){e.stopPropagation();let x=document.getElementById(id),open=!x.classList.contains('is-open');document.querySelectorAll('.wk-dropdown').forEach(y=>y.classList.remove('is-open'));x.classList.toggle('is-open',open)}function toastMsg(t){toast.textContent=t;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1600)}document.addEventListener('click',()=>document.querySelectorAll('.wk-dropdown').forEach(x=>x.classList.remove('is-open')));document.querySelectorAll('[data-q]').forEach(x=>x.addEventListener('click',()=>{mode=x.dataset.q;quick.textContent=x.textContent;document.querySelectorAll('[data-q]').forEach(y=>y.classList.toggle('is-active',y===x));apply()}));search.addEventListener('input',apply);owner.addEventListener('change',()=>document.querySelectorAll('.room').forEach(x=>x.querySelector('.room__label').textContent=owner.checked?x.dataset.owner:x.dataset.nature+x.dataset.room));legendToggle.addEventListener('change',()=>legend.classList.toggle('hidden',!legendToggle.checked));closeLegend.addEventListener('click',()=>{legendToggle.checked=false;legend.classList.add('hidden')});document.querySelectorAll('#legend input').forEach(x=>x.addEventListener('change',apply));basic.addEventListener('click',()=>{basic.classList.add('is-active');business.classList.remove('is-active');buildingProps.classList.toggle('hidden',!!selectedCell);roomProps.classList.toggle('hidden',!selectedCell)});business.addEventListener('click',()=>{business.classList.add('is-active');basic.classList.remove('is-active');roomProps.classList.add('hidden');buildingProps.classList.remove('hidden');toastMsg('当前显示幢属性，完整业务档案尚未接入')});globalSearch.addEventListener('keydown',e=>{if(e.key==='Enter'){let v=e.target.value.trim();if(/^\d{3,4}$/.test(v)){search.value=v;apply();toastMsg('&#24050;&#22312;&#24403;&#21069;&#24162;&#23450;&#20301; '+v+' &#23460;')}else toastMsg((building+code).includes(v)?'&#24403;&#21069;&#24050;&#20301;&#20110; '+building+' &middot; '+code:'&#35831;&#36820;&#22238;&#22320;&#22270;&#32487;&#32493;&#25628;&#32034;&#20854;&#20182;&#24162;')}});back.addEventListener('click',()=>location.href='../map/index.html?'+new URLSearchParams({restore:'1',building,code}));if(q.get('legend')==='1'){legendToggle.checked=true;legend.classList.remove('hidden')}render();if(q.get('owner')==='1')owner.click();if(q.get('room')){let x=[...document.querySelectorAll('.room')].find(x=>x.dataset.room===q.get('room'));if(x)pick(x)}
 </script>
 <script>
   const pageParams=new URLSearchParams(location.search);
@@ -175,30 +209,8 @@ const q=new URLSearchParams(location.search),building=q.get('building')||'&#2343
     });
   });
 </script>
-<script>
-  document.querySelectorAll('.room').forEach(room => room.addEventListener('click', () => {
-    const matrix = room.closest('.matrix');
-    document.querySelectorAll('.room.is-selected').forEach(item => item.classList.remove('is-selected'));
-    matrix?.classList.remove('has-room-selection');
-    if (room.classList.contains('selected')) {
-      room.classList.add('is-selected');
-      matrix?.classList.add('has-room-selection');
-    }
-  }));
-</script>
-<script>
-  document.querySelectorAll('#legend input').forEach(input => input.addEventListener('change', () => {
-    selectedCell = null;
-    document.querySelectorAll('.room.selected, .room.is-selected').forEach(room => {
-      room.classList.remove('selected', 'is-selected');
-      room.style.removeProperty('box-shadow');
-    });
-    document.querySelector('.matrix')?.classList.remove('has-room-selection');
-    document.getElementById('selected').textContent = '0';
-    document.getElementById('roomProps').classList.add('hidden');
-    document.getElementById('buildingProps').classList.remove('hidden');
-  }));
-</script>
+
+
 <script>
   document.addEventListener('click', event => {
     const room = event.target.closest('.room');

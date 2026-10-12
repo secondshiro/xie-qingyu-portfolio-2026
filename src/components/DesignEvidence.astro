@@ -1,0 +1,79 @@
+---
+import MediaStage from './MediaStage.astro';
+
+interface Props {
+  id: string;
+  title: string;
+  src: string;
+  alt: string;
+  caption: string;
+  width: number;
+  height: number;
+  priority?: boolean;
+  label?: string;
+}
+
+const { id, title, src, alt, caption, width, height, priority = false, label = "交互与视觉设计稿" } = Astro.props;
+const dialogId = `evidence-${id}`;
+---
+
+<div class="design-evidence">
+  <MediaStage src={src} alt={alt} caption={caption} width={width} height={height} priority={priority} kind="observed" label={label} />
+  <button class="design-evidence__open" type="button" data-evidence-open={dialogId} aria-haspopup="dialog" aria-controls={dialogId}>放大查看 · {title} <span aria-hidden="true">↗</span></button>
+  <dialog class="evidence-viewer" id={dialogId} aria-labelledby={`${dialogId}-title`} data-protected-media data-size="fit">
+    <header class="evidence-viewer__head">
+      <h2 id={`${dialogId}-title`}>{title}</h2>
+      <div class="evidence-viewer__controls">
+        <button type="button" data-evidence-size="fit" aria-pressed="true">适应窗口</button>
+        <button type="button" data-evidence-size="original" aria-pressed="false">原尺寸</button>
+        <button type="button" data-evidence-close autofocus>关闭</button>
+      </div>
+    </header>
+    <p class="evidence-viewer__hint" id={`${dialogId}-hint`}>原尺寸下可横向、纵向滚动查看。按 Esc 关闭。</p>
+    <div class="evidence-viewer__viewport" tabindex="0" role="region" aria-label={`${title}画板`} aria-describedby={`${dialogId}-hint`}>
+      <img src={src} alt={alt} width={width} height={height} loading="lazy" draggable="false" />
+    </div>
+  </dialog>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-evidence-open]').forEach(button => {
+    const dialog = document.getElementById(button.dataset.evidenceOpen ?? '');
+    if (!(dialog instanceof HTMLDialogElement)) return;
+    button.addEventListener('click', () => dialog.showModal());
+    dialog.querySelector<HTMLButtonElement>('[data-evidence-close]')?.addEventListener('click', () => dialog.close());
+    dialog.querySelectorAll<HTMLButtonElement>('[data-evidence-size]').forEach(control => {
+      control.addEventListener('click', () => {
+        dialog.dataset.size = control.dataset.evidenceSize;
+        dialog.querySelectorAll<HTMLButtonElement>('[data-evidence-size]').forEach(item => {
+          item.setAttribute('aria-pressed', String(item === control));
+        });
+      });
+    });
+    dialog.addEventListener('click', event => {
+      if (event.target !== dialog) return;
+      const bounds = dialog.getBoundingClientRect();
+      if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close();
+    });
+    button.dataset.evidenceReady = '';
+  });
+</script>
+
+<style>
+  .design-evidence { display: grid; min-width: 0; gap: .5rem; }
+  .design-evidence__open { justify-self: start; display: none; align-items: center; gap: .75rem; padding: .5rem 0; border: 0; background: none; color: var(--color-accent); font: inherit; font-size: .8rem; cursor: pointer; }
+  .design-evidence__open[data-evidence-ready] { display: inline-flex; }
+  .evidence-viewer { width: min(96rem, calc(100% - 2rem)); max-width: calc(100% - 2rem); max-height: calc(100dvh - 2rem); padding: 1rem; border: 1px solid var(--color-line); border-radius: var(--radius-media); background: var(--color-paper); color: var(--color-ink); }
+  .evidence-viewer::backdrop { background: rgb(26 25 21 / 75%); }
+  .evidence-viewer__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem 1rem; }
+  .evidence-viewer__head h2 { font-size: 1.125rem; font-weight: 500; line-height: 1.4; }
+  .evidence-viewer__controls { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .evidence-viewer__controls button { min-height: 2.75rem; padding: .5rem .75rem; border: 1px solid var(--color-line); border-radius: var(--radius-control); background: var(--color-paper); color: inherit; font: inherit; font-size: .8rem; cursor: pointer; }
+  .evidence-viewer__controls button[aria-pressed='true'] { background: var(--color-stone); }
+  .evidence-viewer__hint { margin-block: .5rem 1rem; color: var(--color-muted); font-size: .76rem; }
+  .evidence-viewer__viewport { max-height: calc(100dvh - 12rem); overflow: auto; border-radius: var(--radius-control); }
+  .evidence-viewer__viewport:focus-visible { outline: 2px solid var(--color-accent); outline-offset: -2px; }
+  .evidence-viewer__viewport img { width: 100%; height: auto; }
+  .evidence-viewer[data-size='original'] .evidence-viewer__viewport img { width: auto; max-width: none; }
+  :global(html:has(.evidence-viewer[open])) { overflow: hidden; }
+</style>

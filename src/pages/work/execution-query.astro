@@ -2,6 +2,7 @@
 import CaseHero from '../../components/CaseHero.astro';
 import CaseSection from '../../components/CaseSection.astro';
 import CaseToc from '../../components/CaseToc.astro';
+import MediaStage from '../../components/MediaStage.astro';
 import SiteLayout from '../../layouts/SiteLayout.astro';
 import '../../styles/case-study.css';
 import '../../styles/execution-query.css';
@@ -9,7 +10,7 @@ import '../../styles/execution-query.css';
 const facts = [
   { label: '角色', value: '独立完成产品判断、交互设计与工具实现' },
   { label: '交付', value: '本地查询工具、任务历史、Excel 导出与维护说明' },
-  { label: '阶段', value: '本地重构完成，已用两项合成任务进行浏览器试用' },
+  { label: '阶段', value: '可运行本地工具，合成任务验证' },
 ];
 
 const tocSections = [
@@ -72,12 +73,12 @@ const tocSections = [
     <CaseHero
       eyebrow="工具实践 · 查询与结果整理"
       title="执行网查询助手"
-      summary="律师需要持续核查同一批关联公司有没有新增被执行案件，每次都要逐项输入、查看详情，再整理结果。我从单次查询做起，逐步做成一个本地工具；官网改变验证方式后，又重新安排人工验证与任务接续，让使用者能从已有名单和结果继续复核。"
+      summary="律师需要反复核查同一批公司有没有新增被执行案件。我把逐项查询做成本地批量工具，让名单、进度和前后变化留在同一个工作区。设计的重点是让人看清哪些结果可用，哪些仍需补查，并在中断后保留已经取得的记录。"
       facts={facts}
     />
     <CaseToc title="执行网查询助手" sections={tocSections} />
 
-    <CaseSection id="origin" label="01 / 需求起点" title="同一批公司，需要一次次重新查询" intro="这项需求来自法律从业者对关联公司的持续复核。上次查过，并不意味着这次可以省略；使用者需要知道有没有新增被执行案件，也要打开详情核对具体情况。">
+    <CaseSection id="origin" label="01 / 需求起点" title="同一批公司，需要一次次重新查询" intro="查询名单会重复使用，案件记录却可能变化。工具需要留下每次的结果，让律师下次查完后能找出变化，再打开详情复核。">
       <div class="case-copy">
         <p>我先让输入一个名称后读取列表和详情的过程跑通。单次查询能用以后，一批名单还需要排队处理，结果也要留下来供下次比较。后续几代围绕这些需要逐步补齐功能。</p>
       </div>
@@ -88,10 +89,9 @@ const tocSections = [
         <li><span>V4</span><div><strong>详情与导出</strong><p>补齐详情、截图和 Excel 导出，增加变化比较面板，供查询后核对与留档。</p></div></li>
       </ol>
       <div class="case-copy">
-        <p>查询量从一项变成一批后，使用者需要同时看名单和每项进度。结果区再保留变化比较，就可以查完后接着核对，不必另找上次的记录。</p>
-        <p>功能逐步加在旧工具上，读取网站的代码与展示界面也越来越难分开。官网更新验证流程后，我需要重新梳理两者怎样配合。</p>
+        <p>官网随后更新了验证流程，旧工具读取结果的方式难以继续使用，我开始重构查询与界面的配合。</p>
       </div>
-      <p class="evidence-note">下面五张截图来自工具的真实界面，公司名称、案号和金额使用固定合成数据。工具在本机处理真实查询，公开页面只展示合成示例。</p>
+      <p class="evidence-note">工具界面使用合成公司、案号和金额展示。</p>
       <div class="product-pair" data-protected-media>
         <figure class="product-evidence" data-evidence-kind="real-product-synthetic-data">
           <p class="product-pair__label">V1 · 旧工具</p>
@@ -105,7 +105,7 @@ const tocSections = [
             />
           </div>
           <figcaption class="artifact-caption">
-            <span>真实产品·合成数据</span>
+            <span>工具界面 · 合成数据</span>
             旧版在输入框下方显示结果，一次查询一个名称。
           </figcaption>
         </figure>
@@ -114,47 +114,27 @@ const tocSections = [
           <div class="product-evidence__frame">
             <img
               src="/projects/execution-query/console-synthetic.webp"
-              width="1440"
-              height="960"
-              alt="当前控制台界面，左右双区域布局，左侧批量名单，右侧任务进度与变化比较"
+              width="1234"
+              height="943"
+              alt="当前控制台本地故障模拟，已处理3项，成功2项，未完成1项，右侧提供重试未完成项"
               draggable="false"
             />
           </div>
           <figcaption class="artifact-caption">
-            <span>真实产品·合成数据</span>
-            当前控制台左侧保留整批名单，右侧显示进度和变化比较。
+            <span>工具界面 · 合成数据</span>
+            当前控制台把名单和进度并排放置，超时项保留重试入口。
           </figcaption>
         </figure>
       </div>
     </CaseSection>
 
     <CaseSection id="breakage" label="02 / 网站变化" title="官网变了，原来的查询方式难以继续" intro="官网把字符图片验证换成随机滑块和文字点选。变化还影响了后续查询，列表、翻页与详情都需要在完成验证的浏览器里继续，旧工具无法按原来的方式读取结果。" tone="panel">
-      <div class="breakage-sequence">
-        <article>
-          <span>旧验证方式</span>
-          <h3>字符图片验证码</h3>
-          <p>提交名称后识别图片中的字符，验证和查询在同一个请求中完成。</p>
-        </article>
-        <article>
-          <span>新验证方式</span>
-          <h3>随机滑块与文字点选</h3>
-          <p>题型包含旋转字形，还会校验操作行为，旧字符识别方式难以接着使用。</p>
-        </article>
-        <article>
-          <span>状态依赖</span>
-          <h3>后续操作要留在同一浏览器</h3>
-          <p>网站将验证结果与当前浏览器会话关联，也就是同一次访问保留的状态。后续读取结果需要接着使用它。</p>
-        </article>
-      </div>
-      <div class="case-copy">
-        <p>我尝试过本地图像识别，也检查了可复用的开源项目。当时的尝试仍不足以稳定处理新题型，继续投入还需要模型、图像处理和反复调参。</p>
-        <p>同时，读取结果也需要跟着官网页面操作。下一版工具需要考虑怎样在浏览器里接续整批查询，单独修补识别已经不够。</p>
-      </div>
+      <div class="case-copy"><p>我尝试过本地图像识别，也检查了可复用的开源项目。当时仍不足以稳定处理新题型，继续投入需要反复调参。查询又依赖完成验证的浏览器，我决定把人工接管放进新的流程。</p></div>
     </CaseSection>
 
     <CaseSection id="decision" label="03 / 方案取舍" title="把人工验证留在官网，工具接着做重复工作" intro="保留人工验证意味着使用者要在中途接管页面。我接受这一步操作，把设计重点放在验证后怎样继续，避免使用者回来重新开始整批任务。">
       <div class="case-copy">
-        <p>逐项查询和整理结果是这项需求里反复发生的工作。我停止了验证码识别尝试，让人按官网要求完成验证，工具负责名单排队和后续整理。也没有采用第三方打码服务，以免增加费用、外部依赖与隐私问题。</p>
+        <p>逐项查询和整理结果是这项需求里反复发生的工作。我让人按官网要求完成验证，工具负责名单排队和后续整理。第三方打码会增加费用、外部依赖与隐私问题，我也没有采用。</p>
         <p>我让控制台保留当前查询项和剩余名单，浏览器负责接着读取官网结果。人完成验证后，这两部分仍对应同一批任务，已经提交的名单不必再填一次。</p>
       </div>
       <div class="responsibility-split">
@@ -171,7 +151,7 @@ const tocSections = [
       </div>
     </CaseSection>
 
-    <CaseSection id="result" label="04 / 查询过程" title="提交名单后，只在需要验证时转到官网" intro="使用者从本地控制台开始，不必提前打开执行网。工具会自动打开或复用查询页，遇到验证时请人接管，完成后继续当前项和剩余名单。" tone="stone">
+    <CaseSection id="result" label="04 / 查询过程" title="等待时，仍能看见当前项和剩余名单" intro="查询在两个页面之间切换，控制台需要持续回答当前停在哪里。名单保持在左侧，右侧用提示条说明下一步操作，并逐项显示处理状态。" tone="stone">
       <ol class="handoff-flow" aria-label="查询助手工作流">
         <li><span>01</span><strong>提交名单</strong><p>每行填写姓名或机构名称，先处理空行和重复项。</p></li>
         <li class="handoff-flow__human"><span>02</span><strong>完成验证</strong><p>安全验证由人完成，操作留在执行网页面。</p></li>
@@ -193,13 +173,10 @@ const tocSections = [
         />
       </div>
       <figcaption class="artifact-caption">
-        <span>真实产品·合成数据</span>
-        等待验证时，橙色提示条说明需要去官网操作，当前任务和 0 / 2 进度仍保留。画面使用固定合成数据。
+        <span>工具界面 · 合成数据</span>
+        等待验证状态示例。橙色提示条说明下一步操作，当前任务和 0 / 2 进度仍保留。
       </figcaption>
     </figure>
-      <div class="case-copy">
-        <p>如果中途暂停，之后可以从当前任务继续。需要重新处理未完成项时，已经取得的结果会保留，使用者不用为了补查几项再跑一遍整批名单。</p>
-      </div>
     </CaseSection>
 
     <CaseSection id="system" label="05 / 结果与交付" title="没查到记录，和没查完，要分开告诉使用者" intro="一批查询结束后，使用者首先要判断哪些结果可以核对。官网明确返回空结果，才能算无记录；验证超时、连接失败或页面变化，都只能说明这次还没查完。">
@@ -209,8 +186,8 @@ const tocSections = [
         <div><span class="result-ledger__dot result-ledger__dot--failed"></span><strong>未完成</strong><p>查看中断原因，之后重新查询。</p></div>
       </div>
       <div class="case-copy">
-        <p>这个区别也用于前后两次的变化比较。如果将失败记成空结果，上次查到的案件就可能被误认为已经消失。工具只比较成功查询留下的记录，区分首次记录、新增、存续和本次未见；未完成项留待重查。本次未见只说明这次没有取得上次的记录，案件的实际情况仍需核对。</p>
-        <p>导出把核对工作分在三张表里。查询汇总供查看每个对象的结果，案件明细供逐条复核，未完成项用于安排重查。字段固定后，使用者可以直接筛选与查看详情，结果怎样用于后续工作仍由律师判断。</p>
+        <p>失败如果被记为空结果，上次查到的案件就可能被误认为已经消失。因此，变化比较只使用成功查询的记录，未完成项单独留下重试入口。“本次未见”也只描述两次查询的差异，案件实际情况仍需核对。</p>
+        <p>导出把核对工作分在三张表里。查询汇总供查看每个对象的结果，案件明细供逐条复核，未完成项用于安排重查。</p>
       </div>
       <figure
         class="product-evidence"
@@ -227,17 +204,33 @@ const tocSections = [
           />
         </div>
         <figcaption class="artifact-caption">
-          <span>真实产品·合成数据</span>
-          Excel 分为查询汇总、案件明细和未完成三张工作表，供分别查看与筛选。画面使用固定合成数据。
+          <span>工具界面 · 合成数据</span>
+          Excel 分为查询汇总、案件明细和未完成三张工作表。
         </figcaption>
       </figure>
+      <div class="case-copy"><h3>第三项超时，只补查第三项</h3><p>原进度把成功与失败一起计数，3 / 3 容易让人以为全部查完。我把它改为“已处理”，旁边分别显示成功与未完成数量，并为超时项保留重试入口。</p><p>在这次本地故障模拟中，前两项已经取得结果，第三项超时。重试后，工具只查询第三项，前两项结果继续保留。</p></div>
+      <div class="evidence-grid">
+        <MediaStage src="/projects/execution-query/console-synthetic.webp" width={1234} height={943} alt="本地模拟中第三项超时，成功2项，未完成1项，保留重试入口" kind="observed" label="中断时 · 本地模拟" caption="一轮处理结束，第三项仍需补查。" />
+      <MediaStage
+        src="/projects/execution-query/recovery-completed-synthetic.webp"
+        width={1234}
+        height={943}
+        alt="本地故障模拟恢复后，三项均成功，前两项结果保留，第三项有记录并与此前历史比较为存续"
+        kind="observed"
+        label="本地故障模拟 · 合成数据"
+        caption="补查后第三项取得结果，前两项记录保留。"
+      />
+      </div>
+      <details class="case-supplement"><summary>查看这次恢复检查的记录</summary><div class="case-copy"><p>三项合成任务分别返回有记录、明确空结果和验证超时。控制台显示已处理 3 / 3、成功 2、未完成 1。重试只查询第三项，此前任务历史保持原样。超时项没有进入变化比较，导出仍把它列为未完成。</p><p>恢复后成功查询为 3 项，未完成归零。详细输入、状态和导出检查保存在<a href="/projects/execution-query/recovery-evidence.json" target="_blank" rel="noopener">本地故障模拟记录</a>中。</p></div></details>
     </CaseSection>
 
     <CaseSection id="evidence" label="06 / 试用与维护" title="从提交名单到导出，实际走了一遍" intro="2026 年 9 月 12 日，我用两项合成任务在真实浏览器中检查了这条流程。" tone="stone">
+      <details class="case-supplement"><summary>查看两项任务的试用过程</summary>
       <div class="case-copy" data-field-trial>
         <p>名单从控制台提交后，工具准备好官网查询页。使用者通过文字点选完成一次人工验证，第一项取得案件列表和 1 / 1 详情，第二项接着使用同一页面，确认无记录。最终 2 / 2 项完成、0 项失败，导出的三张工作表也检查了结构、公式错误和显示情况。</p>
-        <p>这次试用覆盖两项任务，验证了当时从查询到导出的流程。样本只代表这次小范围检查，后续批次仍需观察；官网改变页面或验证流程后，也要重新核对。</p>
+        <p>这两项任务检查正常查询，上面的本地模拟检查中断恢复。官网改变页面或验证流程后，仍需重新核对。</p>
       </div>
+      </details>
     <figure
       class="product-evidence"
       data-evidence-kind="real-product-synthetic-data"
@@ -253,8 +246,8 @@ const tocSections = [
         />
       </div>
       <figcaption class="artifact-caption">
-        <span>真实产品·合成数据</span>
-        完成状态显示 2 / 2 项完成、0 项失败，一项有记录、一项无记录，旁边保留变化比较。画面使用固定合成数据。
+        <span>工具界面 · 合成数据</span>
+        历史试用完成状态复现。一项有记录、一项无记录，2 / 2 项完成，0 项失败。
       </figcaption>
     </figure>
       <div class="case-copy">

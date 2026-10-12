@@ -31,12 +31,12 @@ test('执行网案例公开人工验证边界且不包含敏感查询证据', as
   assert.match(text, /名单排队/);
   assert.match(text, /本地控制台/);
   assert.match(text, /浏览器负责接着读取官网结果/);
-  assert.match(text, /自动打开或复用查询页/);
+  assert.match(text, /工具准备好官网查询页/);
   assert.match(text, /Excel/);
   assert.match(text, /变化比较/);
   assert.match(text, /本次未见/);
   assert.match(text, /真实浏览器中检查/);
-  assert.match(text, /这次试用覆盖两项任务/);
+  assert.match(text, /我用两项合成任务在真实浏览器中检查/);
   assert.match(text, /2026 年 9 月 12 日/);
   assert.match(text, /有记录/);
   assert.match(text, /无记录/);

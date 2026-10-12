@@ -24,7 +24,7 @@
     running: "正在查询",
     paused: "已暂停",
     completed: "已完成",
-    completed_with_failures: "完成，有未处理项",
+    completed_with_failures: "处理结束，有未完成项",
     cancelled: "已取消",
     awaiting_verification: "等待验证",
     searching: "正在查询",
@@ -35,6 +35,12 @@
     site_changed: "页面已变化",
     network_failed: "连接失败",
   };
+
+  function taskErrorCopy(error) {
+    const message = String(error?.message ?? error);
+    if (message.includes("manual verification timed out")) return "等待安全验证超时，请重试未完成项。";
+    return message;
+  }
 
   function requestId() {
     return globalThis.crypto?.randomUUID?.()
@@ -110,12 +116,17 @@
     elements["metric-records"].textContent = String(withRecords.length);
     elements["metric-empty"].textContent = String(empty.length);
     elements["metric-failed"].textContent = String(failed.length);
-    elements["progress-value"].textContent = `${successes.length + failed.length} / ${items.length}`;
+    elements["progress-value"].textContent = `已处理 ${successes.length + failed.length} / ${items.length}`;
     elements["progress-fill"].style.width = `${percent}%`;
     elements["task-progress"].setAttribute("aria-valuenow", String(percent));
-    elements["task-stage"].textContent = latestStage;
+    elements["task-progress"].setAttribute("aria-valuetext", `已处理 ${successes.length + failed.length} 项，共 ${items.length} 项；成功 ${successes.length} 项，未完成 ${failed.length} 项`);
+    elements["task-stage"].textContent = task.status === "completed" ? "查询已完成"
+      : ["paused", "completed_with_failures"].includes(task.status) ? "查询中断，成功结果已保留"
+      : latestStage;
     elements["cancel-query"].disabled = !["queued", "running"].includes(task.status);
-    elements["resume-task"].hidden = task.status !== "paused";
+    const retryable = items.some((item) => ["verification_timeout", "network_failed"].includes(item.status));
+    elements["resume-task"].hidden = task.status !== "paused" && !(task.status === "completed_with_failures" && retryable);
+    elements["resume-task"].textContent = task.status === "completed_with_failures" ? "重试未完成项" : "继续未完成项";
     const siteChanged = items.some((item) => item.status === "site_changed");
     elements["resume-task"].disabled = siteChanged;
     elements["resume-task"].title = siteChanged ? "执行网页面变化后需要先更新适配器" : "";
@@ -225,7 +236,7 @@
       const date = new Date(task.created_at).toLocaleString("zh-CN", {
         month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit",
       });
-      button.innerHTML = `<span class="history-date">${date}</span><span class="history-meta">${task.subject_count} 项</span><span class="history-meta">完成 ${task.completed_count}</span><span class="history-meta">${statusCopy[task.status] ?? task.status}</span>`;
+      button.innerHTML = `<span class="history-date">${date}</span><span class="history-meta">${task.subject_count} 项</span><span class="history-meta">成功 ${task.completed_count} · 未完成 ${task.failure_count ?? 0}</span><span class="history-meta">${statusCopy[task.status] ?? task.status}</span>`;
       row.append(button);
       return row;
     }));
@@ -275,7 +286,7 @@
       subjects = parseSubjects(elements.subjects.value);
       elements["form-error"].hidden = true;
     } catch (error) {
-      elements["form-error"].textContent = error.message;
+      elements["form-error"].textContent = taskErrorCopy(error);
       elements["form-error"].hidden = false;
       elements.subjects.focus();
       return;
@@ -289,7 +300,7 @@
       if (!response?.ok) throw new Error(response?.error || "查询未能开始");
       if (response.result?.taskId) await loadTask(response.result.taskId);
     } catch (error) {
-      elements["form-error"].textContent = error.message;
+      elements["form-error"].textContent = taskErrorCopy(error);
       elements["form-error"].hidden = false;
     } finally {
       elements["start-query"].disabled = false;
@@ -304,6 +315,7 @@
   elements["resume-task"].addEventListener("click", async () => {
     if (!currentTaskId) return;
     latestStage = "正在继续任务";
+    elements["form-error"].hidden = true;
     elements["resume-task"].disabled = true;
     startPolling();
     try {
@@ -311,7 +323,7 @@
       if (!response?.ok) throw new Error(response?.error || "任务未能继续");
       await loadTask(currentTaskId);
     } catch (error) {
-      elements["form-error"].textContent = error.message;
+      elements["form-error"].textContent = taskErrorCopy(error);
       elements["form-error"].hidden = false;
     }
   });

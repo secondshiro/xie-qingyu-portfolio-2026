@@ -260,7 +260,7 @@ for (const [width, height] of [[1440,810],[1920,1080]]) {
       ratio:document.querySelector('.deck').getBoundingClientRect().width / document.querySelector('.sleeve__cover').getBoundingClientRect().width,
       controls:document.querySelector('.panel__head').getBoundingClientRect().height,
       deckWidth:document.querySelector('.deck').getBoundingClientRect().width,
-      bottomDelta:Math.abs(document.querySelector('.deck').getBoundingClientRect().bottom-document.querySelector('.sleeve__caption').getBoundingClientRect().bottom)
+      bottomDelta:Math.abs(document.querySelector('.deck').getBoundingClientRect().bottom-document.querySelector('.sleeve__stage').getBoundingClientRect().bottom)
     }));
     expect(bounds.bottom).toBeLessThanOrEqual(height);
     expect(bounds.ratio).toBeGreaterThan(3);

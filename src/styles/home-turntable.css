@@ -39,7 +39,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid transparent; box-shad
 .stage { width: min(100%, calc(var(--container) + 2 * var(--gutter))); margin-inline: auto; padding-inline: var(--gutter); }
 .showcase { display: grid; gap: 2.5rem; padding-top: 3.5rem; }
 .hero { display: block; }
-.workstation { display: grid; gap: 3rem; min-width: 0; }
+.workstation { display: grid; grid-template-columns: minmax(0, 1fr); gap: 3rem; min-width: 0; }
 .listening { min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr) var(--player-width); gap: 6rem; align-items: end; }
 .intro { display: grid; justify-items: start; gap: 1.5rem; }
 .intro h1 { font-size: 2.75rem; font-weight: 400; line-height: 1.2; letter-spacing: -0.035em; }
@@ -310,6 +310,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid transparent; box-shad
 .sleeve__arrow svg { display: block; width: 100%; height: 100%; }
 .sleeve:hover .sleeve__arrow, .sleeve:focus-visible .sleeve__arrow { color: var(--color-link); }
 .sleeve__caption { position: relative; margin-top: 12px; width: 100%; display: grid; grid-template-columns: auto 1fr; gap: 6px; align-items: baseline; }
+.sleeve__stage { display: block; margin-top: 4px; font-size: 11px; line-height: 1.5; color: var(--color-muted); }
 .sleeve__number { font-size: 10px; color: var(--color-muted); font-variant-numeric: tabular-nums; }
 .sleeve__title { display: block; font-size: 12px; line-height: 1.5; white-space: nowrap; font-weight: 400; letter-spacing: -0.015em; color: var(--color-muted); }
 .record, .sleeve__record { --vinyl-surface: linear-gradient(135deg, transparent 27%, rgb(255 255 255 / 32%) 41%, rgb(255 255 255 / 32%) 49%, transparent 63%), var(--disc); }
@@ -322,7 +323,8 @@ a:focus-visible, button:focus-visible { outline: 2px solid transparent; box-shad
 .sleeve:hover .sleeve__cover, .sleeve:focus-visible .sleeve__cover { background: color-mix(in srgb, var(--disc) 11%, #eeede8); }
 .sleeve[aria-current='true'] .sleeve__cover { background: color-mix(in srgb, var(--disc) 5%, var(--color-paper)); box-shadow: 0 4px 8px rgb(38 37 30 / 9%); }
 .sleeve[aria-current='true'] .sleeve__title { font-weight: 500; color: var(--color-ink); }
-.sleeve[aria-current='true'] .sleeve__number { color: var(--color-link); }
+.sleeve[aria-current='true'] .sleeve__stage { display: block; margin-top: 4px; font-size: 11px; line-height: 1.5; color: var(--color-muted); }
+.sleeve__number { color: var(--color-link); }
 
 .panel { padding-top: 0; display: grid; gap: 1.5rem; min-width: 0; }
 .panel__head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
@@ -393,7 +395,10 @@ a:focus-visible, button:focus-visible { outline: 2px solid transparent; box-shad
   .intro { grid-template-columns: 1fr; gap: 1.25rem; }
   .intro h1 { font-size: 2.5rem; }
   .intro__lead { max-width: 34rem; }
-  .player { width: 35rem; max-width: 100%; justify-self: start; }
+  .listening { display: contents; }
+  .collection { grid-row: 1; padding-top: 1.25rem; }
+  .panel { grid-row: 2; }
+  .player { grid-row: 3; width: 35rem; max-width: 100%; justify-self: start; }
   .crate { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; }
   .sleeve__title { white-space: normal; }
   .panel__keys { display: none; }

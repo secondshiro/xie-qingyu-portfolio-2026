@@ -1,92 +1,91 @@
 ---
 import EdgecaseDemo from '../../components/EdgecaseDemo.astro';
+import DesignEvidence from '../../components/DesignEvidence.astro';
+import RedetectionDemo from '../../components/RedetectionDemo.astro';
 import CaseHero from '../../components/CaseHero.astro';
 import CaseSection from '../../components/CaseSection.astro';
 import CaseToc from '../../components/CaseToc.astro';
-import MediaStage from '../../components/MediaStage.astro';
 import SiteLayout from '../../layouts/SiteLayout.astro';
 import '../../styles/case-study.css';
 import '../../styles/edgecase-examples.css';
 const media = '/projects/edgecase-planner';
 const sections = [
   { id: 'origin', label: '01 / 经验起点' },
-  { id: 'direction', label: '02 / 路线取舍' },
-  { id: 'method', label: '03 / 工作流设计' },
-  { id: 'flight', label: '04 / 真实评审' },
-  { id: 'evolution', label: '05 / 迭代与验证' },
-  { id: 'arco', label: '06 / 独立评审' },
-  { id: 'boundary', label: '07 / 我的贡献' },
+  { id: 'evolution', label: '02 / 分开检查两项操作' },
+  { id: 'change-review', label: '03 / 确认重新检测的后果' },
+  { id: 'arco', label: '04 / 补上输入检查' },
 ];
 const facts = [
-  { label: '角色', value: '整理检查问题、设计评审流程、确认业务要求与回查规则' },
+  { label: '角色', value: '提炼检查规则，组织评审流程，确认业务要求与修改范围' },
   { label: '工具', value: 'Edgecase Planner · 给 AI 使用的设计检查规则' },
-  { label: '材料', value: '设计稿、流程说明、业务答复与可操作页面' },
-  { label: '产出', value: '评审问题及依据、业务确认结果与规则改进记录' },
+  { label: '产出', value: 'Plan / Review 规则、评审记录与版本对照' },
   { label: '阶段', value: '个人工具实践 · 持续迭代' },
 ];
 ---
-<SiteLayout title="把设计经验整理成可复用的 AI 工作流｜谢擎宇" description="从跨页选择、下载等待和取消后的问题出发，整理 AI 评审规则，再用飞行计划与表单操作检查规则中的遗漏。" current="work">
+<SiteLayout title="把设计经验整理成可复用的 AI 工作流｜谢擎宇" description="从实际设计问题整理检查规则，展示上传与预审的输入拆分、变化检测中的人工判断，以及输入校验规则的补充。" current="work">
   <main class="case-page edgecase-page" id="main" tabindex="-1">
-    <CaseHero eyebrow="AI 工作流 · 设计检查规则" title="把设计经验整理成可复用的 AI 工作流" summary="做复杂流程设计时，顺着主流程看一遍，常常发现不了翻页、等待或取消之后的问题。我在项目里遇到过这些遗漏，便把检查经验写成一套给 AI 使用的规则，希望下一次评审能更早把问题问清楚。" facts={facts} />
+    <CaseHero eyebrow="AI 工作流 · 设计检查规则" title="把设计经验整理成可复用的 AI 工作流" summary="我写了一套给 AI 使用的设计检查规则。评审上传与预审流程时，它把两项操作混在一起追问。我修改了检查指令和材料组织方式，再用保留的输入核对答复是否分开。" facts={facts} />
     <CaseToc title="Edgecase Planner" sections={sections} />
-    <CaseSection id="origin" label="01 / 经验起点" title="一次下载任务留下了三类检查问题" intro="在无人机巡查成果后台中，选择范围、打包等待和取消后恢复先后暴露出来。它们后来成为这套方法最早的一组规则。">
-      <div class="case-copy"><p>下面用交互示意说明当时的问题。分页示意简化为 6 项，实际后台每页显示 10 条。</p></div>
+    <CaseSection id="origin" label="01 / 经验起点" title="从下载任务里的遗漏开始" intro="在无人机巡查后台，表头全选只覆盖当前页，打包时没有反馈，取消保存后又无法重新下载。我把这些遇到过的问题写成检查规则，交给 AI 对照设计稿继续查。">
+      <details class="review-source-note"><summary>查看下载任务中的三个问题</summary>
       <div class="origin-examples">
         <article><div class="example-copy"><span class="proof-label">01 / 范围</span><h3>选了“全部”，却只包含当前页</h3><p>用户想下载整轮巡查成果，表头全选却只覆盖当前页的 10 条。翻页后，之前的选择也没有保留。</p></div><EdgecaseDemo mode="selection" resetOnPage /></article>
         <article><div class="example-copy"><span class="proof-label">02 / 反馈</span><h3>点击下载后，不知道是否已经开始</h3><p>文件需要先打包，点击后却没有反馈，用户难以判断该继续等还是重新操作。当时增加了数量和百分比提示，让处理进度变得可见。</p></div><EdgecaseDemo mode="download" /></article>
         <article><div class="example-copy"><span class="proof-label">03 / 恢复</span><h3>取消保存后，无法重新下载</h3><p>多次点击下载再取消保存，系统却提示“已下载”。文件没有拿到，任务也无法继续。</p></div><EdgecaseDemo mode="recovery" /></article>
-      </div>
-      <div class="case-copy"><p>这几件事让我开始在设计时多问一步。用户选中的内容能否保留，等待时怎样判断进度，都需要在方案里有明确答案；取消后的任务也要能接着处理。我把这些问题整理下来，作为下一次评审的起点。</p></div>
+      </div></details>
     </CaseSection>
-    <CaseSection id="direction" label="02 / 路线取舍" title="先试用检查规则，再决定是否开发插件" intro="有了检查问题，接下来要决定怎样在工作中使用。最初我考虑过 Figma 插件，后来先把方法写成 Skill，也就是一份指导 AI 助手检查材料的规则。" tone="stone">
-      <div class="boundary-grid">
-        <article class="boundary-card"><h3>直接在画布里检查</h3><p>Figma 插件可以省去来回准备材料的操作，但要先处理节点读取、组件识别和插件界面。当时我想先弄清楚，这组问题能否帮助设计师发现遗漏，再决定是否投入这些开发工作。</p></article>
-        <article class="boundary-card"><h3>先让检查方法用起来</h3><p>Skill 可以直接使用 AI 助手已有的读图和页面操作能力。我只需先写清检查什么、何时追问、怎样记录结果。使用时仍要提供设计稿和业务说明，但每次评审后都能继续修改规则。</p></article>
-      </div>
-    </CaseSection>
-    <CaseSection id="method" label="03 / 工作流设计" title="AI 负责追问，设计师负责确认" intro="方法开始使用后，最需要约束的是 AI 下结论的时机。一张图里出现分页和复选框，只能提示它检查选择范围；翻页后是否应该保留选择，还得先问清业务要求。">
-      <div class="case-copy"><p>我让 AI 先记录画面里能看见的内容，再问影响判断的业务要求。设计师补充事实后，建议才有依据。设计前后都能用这组问题，分别用于安排流程和核对方案的表现。</p></div>
-      <div class="question-compare method-stages">
-        <article><span class="proof-label">设计前 / Plan</span><h3>把容易遗漏的问题带进方案</h3><p>Plan 用于设计前梳理情况。以批量下载为例，先确认下载范围和等待反馈，再问取消后能否重新开始，带着答案安排流程。</p></article>
-        <article><span class="proof-label">设计后 / Review</span><h3>带着同一组问题检查实际表现</h3><p>Review 用于设计后检查表现。对照设计稿或操作页面，确认预期是否得到回应；缺少的业务信息先补齐，再判断要改哪里。</p></article>
-      </div>
-      <ol class="review-flow">
-        <li><span>01</span><h3>观察</h3><p>记录操作前后画面和反馈的变化。</p></li>
-        <li><span>02</span><h3>追问</h3><p>只补影响当前判断的业务事实。</p></li>
-        <li><span>03</span><h3>确认</h3><p>设计师确认业务要求，再决定修改范围。</p></li>
-        <li><span>04</span><h3>验证</h3><p>实际操作，检查修改是否生效。</p></li>
-      </ol>
-    </CaseSection>
-    <CaseSection id="flight" label="04 / 真实评审" title="一条追问确认了单航线规则" intro="在一次飞行计划评审中，AI 发现航线弹窗可以勾选多条，确认后的区域却只显示一条。它先问我，一个计划究竟允许选择几条航线。" tone="stone">
-      <div class="flight-evidence">
-        <MediaStage src={`${media}/flight-picker.png`} alt="航线选择弹窗使用复选框，同时勾选多条航线及文件夹" caption="原设计使用复选框，表达可以同时选择多条航线。" kind="observed" width={784} height={1784} />
-        <div class="flight-evidence__detail">
-          <MediaStage src={`${media}/flight-summary.png`} alt="选中后执行航线区域只展示一条航线" caption="确认区域只展示一条航线，与弹窗允许多选的表达不同。" kind="observed" width={760} height={540} />
-          <div class="case-copy"><h3>先确认一个计划能选几条航线</h3><p>仅凭两处显示的数量不同，还不能确定该改哪里。如果一个计划允许多条航线，就需要检查确认区域是否漏了结果；如果只允许一条，就要修改弹窗的选择方式。</p><p>业务答复确认了一个计划只允许一条航线。我据此建议把航线改为互斥单选，文件夹只用于展开和折叠，让用户在选择时就能理解数量限制。这里保留的是原设计稿，单选建议尚未实现。</p></div>
-        </div>
-      </div>
-    </CaseSection>
-    <CaseSection id="evolution" label="05 / 迭代与验证" title="“上传完成”之后，预审可能才开始" intro="追问也会问错范围。在另一次材料提交评审中，AI 把上传和预审合成了一个问题，然而文件传完之后，内容检查可能才刚开始。" tone="panel">
-      <div class="method-example"><EdgecaseDemo mode="upload" /><div class="example-copy"><h3>同一个流程里，有两段不同的等待</h3><p>上传关注文件有没有传成功；预审关注材料有没有通过检查。它们需要各自的进度、结果和失败处理。</p><p>如果只问一次“操作如何完成”，就可能拿上传的答案去判断预审，漏掉后一段等待。</p></div></div>
+    <CaseSection id="evolution" label="02 / 分开检查两项操作" title="“上传完成”之后，预审可能才开始" intro="材料提交包含上传文件和检查材料两项操作。我最初把它们放在同一份材料里，AI 只问一次“如何完成”。这一次修改针对检查方法，下面用流程示意说明它混淆了什么。" tone="panel">
+      <div class="method-example"><EdgecaseDemo mode="upload" /><div class="example-copy"><h3>文件传完与材料通过，是两件事</h3><p>上传需要告诉用户文件有没有传成功；预审需要说明检查到了哪一步、材料是否需要修改。</p><p>即使它们出现在同一个流程里，等待方式和失败处理也可能不同。我按能否独立回答这些问题来划分检查范围。</p></div></div>
       <div class="question-compare">
-        <article><span class="proof-label">修改前 / 合在一起问</span><h3>“材料提交后，如何完成？”</h3><p>上传与预审共用一组追问，无法分清回答针对哪一步。</p></article>
-        <article><span class="proof-label">修改后 / 按操作分别问</span><h3>“上传成功后，有什么反馈？”<br />“预审还没结束时，用户看到什么？”</h3><p>每个操作单独确认。同一步的成功、失败画面仍放在一起检查。</p></article>
+        <article><span class="proof-label">原输入与输出</span><h3>五张画面，共用一组追问</h3><p>上传与预审放进同一份输入，实际输出只有一个待确认项。上传入口和四张预审状态画面都归到这一项里。</p></article>
+        <article><span class="proof-label">拆分后的实际输出</span><h3>两项操作，分别保留答复</h3><p>上传独立检查；预审的等待、通过、失败与返回修改仍放在一起。两项分别询问完成方式，使用各自的检查编号。</p></article>
       </div>
-      <div class="case-copy"><h3>按每一步操作补充检查规则</h3><p>我让 Skill 先分清独立操作，再分别检查进度和结果。用上传与预审、导入与导出等场景回查后，两步的回答不再混用；同一步的成功与失败画面仍放在一起核对。</p></div>
-      <div class="evolution-list">
-        <article><span>结论表达</span><div><h3>看不到失败提示，先问有没有</h3><p>如果材料里只有成功画面，我要求 AI 先问失败时会显示什么。补全这一步的信息后，再判断反馈是否需要修改。</p></div></article>
-        <article><span>提问终点</span><div><h3>问到后端规则，把问题留给能回答的人</h3><p>飞行案例问到重复计划如何处理时，我无法确认后端规则。于是要求 Skill 先交付已明确的设计问题，将这类疑问交给产品或研发继续确认。</p></div></article>
-      </div>
-    </CaseSection>
-    <CaseSection id="arco" label="06 / 独立评审" title="写在提示里的限制，真的生效了吗？" intro="前面的例子主要涉及选择与等待，我又用 Arco 的分步表单检查这套方法能否覆盖输入问题。从填写基础信息到渠道配置，再返回修改，我逐步核对提示和实际表现。">
-      <figure class="arco-gallery" data-protected-media>
-        <div class="arco-gallery__images">
-          <img src={`${media}/arco-workplace.webp`} alt="Arco Design Pro 工作台演示页面" width="640" height="427" loading="lazy" draggable="false" />
-          <img src={`${media}/arco-list.webp`} alt="Arco Design Pro 搜索列表演示页面" width="640" height="427" loading="lazy" draggable="false" />
-          <img src={`${media}/arco-form.webp`} alt="Arco Design Pro 分步表单演示页面" width="640" height="427" loading="lazy" draggable="false" />
+      <div class="case-copy"><h3>改指令时，先约束输入怎样整理</h3><p>工具原本就支持分别检查两项操作。我先修改了交给 AI 的指令，要求上传和预审各自保存材料与答复。同一次预审的等待、通过和失败画面仍放在一起。</p></div>
+      <section class="rule-verification" aria-labelledby="rule-verification-title">
+        <header><span class="proof-label">2026 年 9 月 · 固定合成答复检查</span><h3 id="rule-verification-title">给两步不同的答案，检查它们会不会串答</h3><p>我另外设定上传即时完成、预审在后台处理，检查两种答复各自进入了哪些规则。</p></header>
+        <dl>
+          <div><dt>上传 · 即时完成</dt><dd>收到即时完成的答复后，AI 结束了上传这一步的等待追问。</dd></div>
+          <div><dt>预审 · 后台处理</dt><dd>AI 继续追问预审进度怎样显示，结束后如何通知，以及失败或重复提交时怎样处理。</dd></div>
+          <div><dt>同一预审的四张状态画面</dt><dd>保持在一项操作里检查；静态文案样本则没有触发等待与恢复规则。</dd></div>
+        </dl>
+        <p>控制检查把两项操作重新合并，仍只得到一组追问。因此，分别整理操作必须成为每次调用前的一步。</p>
+        <div class="record-links"><a href={`${media}/review-records.json`} target="_blank" rel="noopener">查看原始输入、输出与指令节选 ↗</a><a href={`${media}/rule-revision-notes.txt`} target="_blank" rel="noopener">阅读中文验证摘要 ↗</a></div>
+      </section>
+      <details id="method" class="review-source-note"><summary>查看检查方法与航线选择例子</summary>
+      <div id="direction" class="case-copy"><p>最初我考虑开发 Figma 插件，后来先把检查方法写成 Skill，借用 AI 助手读图和操作页面。这样可以先检查问题是否问得对；每次仍需准备设计稿与业务说明。</p><p>设计前用 Plan 梳理需要考虑的情况，设计后用 Review 对照画面和操作检查。输入除了设计材料，还包括已确认的业务要求；缺少答复的地方先留下问题。</p></div>
+      <ol class="review-flow">
+        <li><span>01</span><h3>观察</h3><p>保留具体画面和操作，找到需要核对的位置。</p></li>
+        <li><span>02</span><h3>追问</h3><p>把材料无法回答的业务问题交给设计师。</p></li>
+        <li><span>03</span><h3>确认</h3><p>根据答复判断问题是否成立，再提出建议。</p></li>
+        <li><span>04</span><h3>回查</h3><p>改过规则以后，用保留的输入核对输出。</p></li>
+      </ol>
+      <details id="flight" class="review-source-note">
+        <summary>一条业务答复怎样改变建议 · 航线选择</summary>
+        <div class="case-copy"><p>航线弹窗能勾选多条，确认区域却只显示一条。AI 先问一个计划允许几条航线；我确认只允许一条后，建议把航线改为互斥单选，文件夹只负责展开和折叠。</p></div>
+        <div class="evidence-grid">
+          <DesignEvidence id="flight-picker" title="航线选择原稿" src={`${media}/flight-picker.png`} alt="航线选择弹窗使用复选框" caption="弹窗中的复选框允许同时勾选多条航线。" width={784} height={1784} />
+          <DesignEvidence id="flight-summary" title="航线确认区域" src={`${media}/flight-summary.png`} alt="确认区域展示一条航线" caption="确认区域只展示一条，评审据此追问允许的数量。" width={760} height={540} />
         </div>
-        <figcaption>Arco Design Pro · 工作台 / 搜索列表 / 分步表单</figcaption>
-      </figure>
+      </details>
+      </details>
+    </CaseSection>
+    <CaseSection id="change-review" label="03 / 确认重新检测的后果" title="一次重新检测，会怎样影响人工修正？" intro="变化检测先由 AI 标出两次拍摄的差异，再由用户调整区域和标签。画面里同时有重新检测与人工编辑入口，AI 据此追问已有修改会怎样处理。">
+      <DesignEvidence id="change-result" title="变化检测结果原稿" src={`${media}/change-review/waypoint-result.png`} width={1920} height={952} alt="变化检测结果页，左侧有 AI 与手动统计及重新检测按钮，右侧可编辑区域和标签" caption="左下角可以重新检测，右侧可以修正区域和标签。这两处操作成为本次追问的线索。" />
+      <div class="review-supplement__trace">
+        <article><span class="proof-label">AI 追问</span><h3>重新检测后，人工修正还在吗？</h3><p>画面能看到这两类操作，却无法说明重新计算后如何处理已有标注。AI 先问清这条业务规则。</p></article>
+        <article><span class="proof-label">业务确认</span><h3>手动处理会被清空</h3><p>我确认用户可以删框、改框、补画和打标签，重新检测会清空此前的手动处理。</p></article>
+        <article><span class="proof-label">设计建议</span><h3>执行前说明后果，允许取消</h3><p>人工修正被清空，意味着已经做过的核查需要重做。AI 据此提出确认方案，在执行前说明影响，并留下取消入口。</p></article>
+      </div>
+      <RedetectionDemo />
+      <div class="case-copy review-verification"><p>这份建议稿把“清空”写进确认按钮，默认焦点放在取消上。交互检查中，取消保留当前处理，确认后才清空。</p></div>
+      <details class="review-source-note">
+        <summary>区分检测失败与源照片缺失</summary>
+        <div class="case-copy"><p>我确认缺图发生在查看历史结果时，原照片已被删除；成功、失败和偏差来自供应商检测服务。缺少原照片会影响人工对照，因此需要单独解释照片的状态。</p></div>
+        <DesignEvidence id="change-missing" title="历史结果照片缺失原稿" src={`${media}/change-review/photo-missing.png`} width={1920} height={952} alt="历史变化检测结果中，一侧原照片不存在，另一侧仍显示检测信息" caption="设计稿中的源照片缺失状态。" />
+      </details>
+    </CaseSection>
+    <CaseSection id="arco" label="04 / 补上输入检查" title="写在提示里的限制，真的生效了吗？" intro="前面的例子主要涉及选择与等待，我又用 Arco 的分步表单检查这套方法能否覆盖输入问题。从填写基础信息到渠道配置，再返回修改，我逐步核对提示和实际表现。">
+      <DesignEvidence id="arco-form" title="Arco 分步表单" src={`${media}/arco-form.webp`} alt="Arco 分步表单中的基础信息和链接填写区域" caption="分步表单中的链接字段是本次输入检查的对象。" width={640} height={427} label="操作页面" />
       <figure class="arco-trace">
         <figcaption><span class="proof-label">分步表单 / 实际操作记录</span><a href="https://react-pro.arco.design/form/step" target="_blank" rel="noreferrer">打开官方演示 ↗</a></figcaption>
         <ol>
@@ -97,35 +96,40 @@ const facts = [
       </figure>
       <div class="question-compare">
         <article><span class="proof-label">观察到的差异</span><h3>“必须以 http:// 或 https:// 开头”，却允许普通文本通过</h3><p>表单写出了明确要求，实际校验却没有在下一步前落实。用户可能到后续环节才发现链接不可用，需要返回修改。</p><p>建议在字段旁提示格式错误，并在进入下一步前完成校验；保留其他已填内容，让用户只修正出错字段。</p></article>
-        <article><span class="proof-label">规则补充与回查</span><h3>把漏掉的检查补成输入约束规则</h3><p>第一次运行时，Skill 漏掉了这项格式检查。我把“输入限制与纠错”加入规则，要求它逐个核对字段提示与实际校验。</p><p>再用原页面回查时，规则找到了这项问题。我还补入了纠错后能否继续、其他输入是否保留的检查。此次完成的是评审规则的修订与回查，Arco 原页面未由我修改。</p></article>
+        <article><span class="proof-label">规则补充与回查</span><h3>把漏掉的检查补成输入约束规则</h3><p>旧规则漏掉了格式检查。我补上“输入限制与纠错”，要求 AI 对照字段提示检查错误输入，继续核对修正后能否提交。</p><p>回查时，只给静态画面，结果先停在待确认；补入实际操作记录后，才确认这一项格式问题。版本和测试条件保留在<a href={`${media}/rule-revision-notes.txt`} target="_blank" rel="noopener">验证摘要</a>中。</p></article>
       </div>
-    </CaseSection>
-    <CaseSection id="boundary" label="07 / 我的贡献" title="把评审经验变成下次能用的规则" intro="经过这些评审，检查范围从批量任务扩展到了输入与纠错。我保留了问题依据和业务答复，后续评审可以从这些记录继续。">
-      <div class="boundary-grid">
-        <article class="boundary-card"><h3>怎样开始一次评审</h3><p>设计前用 Plan 梳理容易遗漏的情况，设计后用 Review 检查画面和实际操作。输出会保留具体问题、判断依据，以及需要补充的业务答复。</p></article>
-        <article class="boundary-card"><h3>评审之后怎样继续</h3><p>设计师根据确认的问题安排实现与复测。评审建议和规则改进记录分别保留，后续可以核对哪些问题已确认、哪些修正仍待完成。</p></article>
-      </div>
-      <div class="case-copy"><p>我负责从项目经历中提炼检查问题，选择 Skill 载体，制定规则并确认取舍。AI 协助读图、操作页面和整理证据。</p></div>
+      <div id="boundary" class="case-copy"><p>我负责检查问题的取舍与规则修订，AI 协助读图、执行检查和保存记录。这些输入与输出随版本保留，供下一次修改时对照。</p></div>
     </CaseSection>
     <section class="site-container case-closing" aria-labelledby="closing-title"><h2 id="closing-title">继续看看其他作品</h2><div class="case-closing__links"><a href="/#selected-work">返回作品索引</a></div></section>
   </main>
 </SiteLayout>
 <style>
 .proof-label{color:var(--color-accent);font-size:12px;}
+.review-supplement__trace{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2rem;}
+.review-supplement__trace article{border-top:1px solid var(--color-line);padding-top:1.25rem;}
+.review-supplement__trace h3{font-size:18px;font-weight:500;margin:.75rem 0;}
+.review-supplement__trace p{font-size:15px;color:var(--color-muted);}
+.review-source-note{display:grid;gap:1.5rem;}
+.review-source-note summary{min-height:44px;cursor:pointer;color:var(--color-accent);font-size:14px;}
+.review-source-note[open]>.case-copy{margin-block:1.5rem;}
+.review-source-note .evidence-grid{margin-top:1.5rem;}
+
+.rule-verification{display:grid;gap:1.5rem;padding:2rem;background:var(--color-paper);border-radius:var(--radius-media);}
+.rule-verification h3{font-size:18px;font-weight:500;margin:.75rem 0;}
+.rule-verification p{font-size:15px;color:var(--color-muted);margin:0;}
+.rule-verification dl{margin:0;display:grid;gap:1rem;}
+.rule-verification dl>div{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:1.5rem;border-top:1px solid var(--color-line);padding-top:1rem;}
+.rule-verification dt{font-size:15px;font-weight:500;}
+.rule-verification dd{font-size:15px;margin:0;color:var(--color-muted);}
+.record-links{display:flex;flex-wrap:wrap;gap:.75rem 2rem;}
+.question-compare code{font-size:12px;overflow-wrap:anywhere;color:var(--color-muted);}
+.rule-verification a{font-size:14px;color:var(--color-accent);}
 
 .review-flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));list-style:none;padding:0;margin:0;gap:2rem;}
 .review-flow li{border-top:1px solid var(--color-line);padding-top:1.25rem;}
 .review-flow span{font-size:12px;color:var(--color-accent);}
-.review-flow h3,.flight-evidence h3,.decision-note h3,.evolution-list h3{font-size:18px;font-weight:500;margin:.75rem 0;}
+.review-flow h3{font-size:18px;font-weight:500;margin:.75rem 0;}
 .review-flow p{font-size:15px;color:var(--color-muted);}
-.flight-evidence{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:2rem;align-items:start;}
-.flight-evidence__detail{display:grid;gap:2rem;}
-.decision-note{padding:2rem;background:var(--color-panel);display:grid;gap:1rem;border-radius:var(--radius-media);}
-.evolution-list{display:grid;gap:2rem;}
-.evolution-list article{display:grid;grid-template-columns:8rem minmax(0,1fr);gap:2rem;padding-bottom:2rem;border-bottom:1px solid var(--color-line);}
-.evolution-list article>span{font-size:13px;color:var(--color-accent);padding-top:.75rem;}
-.static-proof summary{cursor:pointer;min-height:44px;color:var(--color-accent);}
-.static-proof .evidence-grid{margin-top:1rem;}
 @media(max-width:63.125rem){.review-flow{grid-template-columns:repeat(2,minmax(0,1fr));}}
-@media(max-width:45rem){.flight-evidence{grid-template-columns:1fr;}.review-flow{gap:1.5rem;}.decision-note{padding:1.5rem;}.evolution-list article{grid-template-columns:1fr;gap:.25rem;}}
+@media(max-width:45rem){.rule-verification{padding:1.25rem;}.rule-verification dl>div{grid-template-columns:1fr;gap:.5rem;}.review-supplement__trace{grid-template-columns:1fr;}.review-flow{gap:1.5rem;}}
 </style>

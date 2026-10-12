@@ -1,0 +1,39 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  caption: string;
+  label: string;
+  width: number;
+  height: number;
+  region: [number, number, number, number];
+  aspect?: number;
+  minWidth?: number;
+}
+
+const { src, alt, caption, label, width, height, region, aspect = 16 / 9, minWidth = 0 } = Astro.props;
+const [x, y, cropWidth, cropHeight] = region;
+if (x < 0 || y < 0 || cropWidth <= 0 || cropHeight <= 0 || x + cropWidth > width || y + cropHeight > height) {
+  throw new Error(`Evidence region outside source image: ${src}`);
+}
+const windowWidth = Math.min(1, cropWidth / cropHeight / aspect) * 100;
+---
+
+<figure class:list={["evidence-detail", { "evidence-detail--scroll": minWidth > 0 }]} data-protected-media data-source-region={region.join(',')}>
+  <div class="evidence-detail__frame" style={minWidth ? undefined : `aspect-ratio:${aspect}`} tabindex={minWidth ? 0 : undefined} role={minWidth ? "region" : undefined} aria-label={minWidth ? `${alt}，可横向查看` : undefined}>
+    <div class="evidence-detail__window" style={`width:${windowWidth}%;min-width:${minWidth}px;aspect-ratio:${cropWidth}/${cropHeight}`}>
+      <img src={src} alt={alt} width={width} height={height} loading="lazy" draggable="false"
+        style={`width:${width / cropWidth * 100}%;left:${-x / cropWidth * 100}%;top:${-y / cropHeight * 100}%`} />
+    </div>
+  </div>
+  <figcaption class="media-stage__caption"><span class="evidence-label">{label}</span><span>{caption}</span></figcaption>
+</figure>
+
+<style>
+  .evidence-detail { display: grid; gap: 1rem; min-width: 0; margin: 0; }
+  .evidence-detail__frame { display: grid; place-items: center; overflow: hidden; background: var(--color-paper); border-radius: var(--radius-media); }
+  .evidence-detail--scroll .evidence-detail__frame { display: block; place-items: normal; overflow-x: auto; border-radius: 0; }
+  .evidence-detail__frame:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 4px; }
+  .evidence-detail__window { position: relative; overflow: clip; }
+  .evidence-detail__window img { position: absolute; max-width: none; height: auto; user-select: none; }
+</style>
