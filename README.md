@@ -39,14 +39,14 @@ npm run build
 ```
 
 - `npm test` 检查公开内容边界、素材和原型入口。
-- `npm run test:e2e` 检查五页阅读与响应式布局、首页交互、转场、媒体和键盘访问，同时覆盖 Edgecase 确认提案，以及 GIS 多项校验失败和户室转办。
+- `npm run test:e2e` 检查五页阅读与响应式布局、首页交互、转场、媒体和键盘访问，同时覆盖 Edgecase 确认提案，以及 GIS 多项校验警示、带警示继续核对和户室转办。
 - `npm run build` 同时执行 Astro 检查与静态构建，产物位于 `dist/`。
 
 浏览器测试使用本机 Google Chrome，并在 `127.0.0.1:4331` 启动临时静态服务。
 
 ## 发布状态
 
-用户于 2026-09-15 确认网站已公开发布。2026-10-12 授权整理当前网站修改与维护文档并上传 Git，交付分支为 `codex/portfolio-design-evidence`。范围与验证见 [本次交付记录](docs/history/delivery-2026-10-12.md)，当前实现见 [TASK_STATUS.md](TASK_STATUS.md)。Git 上传与线上部署分别核验，本轮未执行部署。此前记录保存在 [历史状态](docs/history/status-before-delivery-2026-10-12.md)。
+用户于 2026-09-15 确认网站已公开发布。2026-10-12 授权整理当前网站修改与维护文档并上传 Git，交付分支为 `codex/portfolio-design-evidence`。2026-10-13 继续交付原型警示流程及内嵌导航修订。范围与验证见 [最新交付记录](docs/history/delivery-2026-10-13.md)，当前实现见 [TASK_STATUS.md](TASK_STATUS.md)。Git 上传与线上部署分别核验，本轮未执行部署。此前记录保存在 [历史状态](docs/history/status-before-delivery-2026-10-12.md)。
 
 ## 项目结构
 

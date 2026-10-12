@@ -34,6 +34,8 @@
     .stepper__item.is-active .stepper__dot { background: var(--primary-6); color: #fff; border-color: var(--primary-6); }
     .stepper__item.is-done .stepper__dot { background: var(--color-success); color: #fff; border-color: var(--color-success); }
     .stepper__line { width: 56px; height: 1px; background: var(--border-2); margin: 0 12px; }
+    .stepper__back { margin-left: auto; }
+    .stepper__back[hidden] { display: none; }
     /* —— 二级对象栏：返回关系 / 当前幢 / 当前任务 / 任务操作 —— */
     .task-object-header { height: 52px; flex: 0 0 52px; min-width: 0; display: flex; align-items: center; gap: 14px; padding: 0 18px; background: var(--bg-white); border-bottom: 1px solid var(--border-1); }
     .task-object-back { height: 32px; flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px; padding: 0 8px; border: 0; border-radius: 6px; background: transparent; color: var(--text-2); cursor: pointer; font: inherit; white-space: nowrap; }
@@ -86,8 +88,9 @@
     .check-table th:nth-child(3) { width: 30%; }
     .check-state { display: inline-flex; gap: 6px; align-items: center; font-weight: 500; white-space: nowrap; }
     .check-item--pass .check-state { color: #157a50; }
-    .check-item--fail .check-state { color: #c22d38; }
-    .check-item--fail { background: #fff7f7; }
+    .check-item--warning .check-state { color: #995500; }
+    .check-item--warning { background: #fff8e8; }
+    .validation-notice { margin: 0 0 12px; padding: 12px 16px; color: #805000; background: #fff8e8; border: 1px solid #e8c88c; border-radius: 8px; }
     .check-detail { margin-top: 10px; }
     .check-detail > summary { cursor: pointer; color: var(--primary-6); font-weight: 500; padding: 4px 0; }
     .check-detail > summary:focus-visible, .check-errors:focus-visible { outline: 2px solid var(--primary-6); outline-offset: 3px; border-radius: 2px; }
@@ -494,6 +497,7 @@
           <div class="stepper__item" data-step="2"><span class="stepper__dot">2</span>校验</div>
           <span class="stepper__line"></span>
           <div class="stepper__item" data-step="3"><span class="stepper__dot">3</span>设入库模式</div>
+          <button type="button" class="btn btn--sm stepper__back" id="backTo2" hidden>返回校验</button>
         </div>
       </div>
 
@@ -528,7 +532,7 @@
                   </div>
                 </div>
               </div>
-              <div class="upload-zone">已选择中间库测绘数据 · <b id="surveyBuildingName">宇济一号 · 17幢（实测）</b><br><span style="font-size:12px">下一步检查关联幢、替换记录和户室分层数据，全部通过后设置入库模式</span></div>
+              <div class="upload-zone">已选择中间库测绘数据 · <b id="surveyBuildingName">宇济一号 · 17幢（实测）</b><br><span style="font-size:12px">下一步检查关联幢、替换记录和户室分层数据，查看结果后继续核对户室，警示项处理完成后才能提交</span></div>
               <div style="margin-top:18px;display:flex;gap:10px;">
                 <button class="btn btn--primary btn--sm" id="toStep2">下一步 · 校验</button>
               </div>
@@ -539,7 +543,7 @@
           <div class="step-panel" id="step2">
             <div class="card" style="padding:20px;">
               <h2 class="card__title" style="margin:0 0 8px;">校验结果</h2>
-              <div class="validation-tools"><label for="validationScenario">切换校验场景</label><select id="validationScenario"><option value="normal">全部通过</option><option value="association">关联幢缺失</option><option value="duplicate">已完成替换入库</option><option value="rooms">户室分层数据缺失</option><option value="multiple">多项未通过 · 多户明细</option></select><span>可切换示例，查看不同校验结果</span></div>
+              <div class="validation-tools"><label for="validationScenario">切换校验场景</label><select id="validationScenario"><option value="normal">全部通过</option><option value="association">关联幢缺失</option><option value="duplicate">已完成替换入库</option><option value="rooms">户室分层数据缺失</option><option value="multiple">多项警示 · 多户明细</option></select><span>可切换示例，查看不同校验结果</span></div>
               <p class="check-summary" id="checkSummary" role="status" aria-live="polite"></p>
               <div class="check-table-wrap"><table class="check-table"><caption class="check-object" id="checkObject"></caption><thead><tr><th scope="col">结果</th><th scope="col">检查项目</th><th scope="col">检查对象</th><th scope="col">结果说明</th></tr></thead><tbody id="checkList"></tbody></table></div>
               <p class="check-guidance" id="checkGuidance"></p>
@@ -552,6 +556,7 @@
 
           <!-- 步骤3 -->
           <div class="step-panel" id="step3">
+            <p class="validation-notice" id="validationNotice" role="status" hidden></p>
             <!-- 结构变化提示：处理方式待业务确认 -->
             <div class="block-bar" id="blockBar">
               <svg class="block-bar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l8 4v5c0 4.5-3 7.5-8 9-5-1.5-8-4.5-8-9V7l8-4z" stroke-linejoin="round"/><path d="M12 9v4M12 16v.5" stroke-linecap="round"/></svg>
@@ -1236,8 +1241,8 @@
     if (struct > 0) $('blockCount').textContent = struct;
     if (getChecks().some(check => !check.pass)){
       btn.disabled = true;
-      wrap.setAttribute('data-tip', '校验未通过，请先处理检测项。');
-      $('gateHint').textContent = '校验未通过';
+      wrap.setAttribute('data-tip', '校验警示尚未处理，请核实后再提交。');
+      $('gateHint').textContent = '校验警示待处理';
       $('gateHint').className = 'gate-hint is-warn';
     } else if (struct > 0){
       btn.disabled = true;
@@ -1472,13 +1477,18 @@
 
   /* ============ 步骤导航 ============ */
   function goStep(n){
-    if (n === 3 && getChecks().some(check => !check.pass)) { renderChecks(); n = 2; }
+    if (n === 2 || n === 3) renderChecks();
     [1,2,3].forEach(i => {
       $('step'+i).classList.toggle('is-active', i === n);
       const it = document.querySelector('.stepper__item[data-step="'+i+'"]');
       it.classList.toggle('is-active', i === n);
       it.classList.toggle('is-done', i < n);
     });
+    $('backTo2').hidden = n !== 3;
+    document.querySelector('.scroll-body').scrollTop = 0;
+    const url = new URL(location.href);
+    url.searchParams.set('step', String(n));
+    history.replaceState(null, '', url);
   }
   // These fixtures represent business outcomes inside the labeled prototype.
   // They do not query the production association, replacement or survey services.
@@ -1500,11 +1510,11 @@
     const floors = new Set(surveyRooms.map(room => room.dy).filter(Number.isInteger));
     return [
       {title:'关联幢检查', pass:!!associatedBuilding, object:taskObjectLabel + '（实测）',
-        detail:associatedBuilding ? '已关联到 ' + associatedBuilding + '（预测），可继续核对户室。' : '1 幢未设置对应的预测幢。请返回选择已关联的实测测绘幢。',
+        detail:associatedBuilding ? '已关联到 ' + associatedBuilding + '（预测），可继续核对户室。' : '1 幢未设置对应的预测幢。可继续核对户室，提交前需补齐幢关联。',
         errors:associatedBuilding ? [] : [{object:taskObjectLabel + '（实测）', reason:'未设置对应的预测幢，无法确定本次替换对象。'}]},
       {title:'重复替换检查', pass:!alreadyReplaced, object:taskObjectLabel + '（实测）',
-        detail:alreadyReplaced ? '该实测幢已有替换入库记录，不能重复替换。请返回选择其他测绘数据。' : '未发现替换入库记录，可以继续办理本次替换。',
-        errors:alreadyReplaced ? [{object:taskObjectLabel + '（实测）', reason:'已有替换入库记录，本次替换已被阻止。'}] : []},
+        detail:alreadyReplaced ? '该实测幢已有替换入库记录，不能重复替换。可继续查看户室关系，请核实记录后再决定处理方式。' : '未发现替换入库记录，可以继续办理本次替换。',
+        errors:alreadyReplaced ? [{object:taskObjectLabel + '（实测）', reason:'已有替换入库记录，核实记录前不能再次提交替换。'}] : []},
       {title:'分层分户图数据', pass:surveyRooms.length > 0 && roomErrors.length === 0,
         object:taskObjectLabel + ' · ' + (roomErrors.length ? roomErrors.length + ' 户数据不完整' : '全部测绘户室'),
         detail:roomErrors.length ? roomErrors.length + ' 户的分层分户信息不完整。请按明细补齐测绘数据后重新校验。' : surveyRooms.length ? '已读取 ' + floors.size + ' 层、' + surveyRooms.length + ' 户，楼层、单元和房号齐全。' : '未读取到测绘户室，请检查数据后重新校验。',
@@ -1518,19 +1528,19 @@
     $('checkList').replaceChildren();
     checks.forEach(check => {
       const row = document.createElement('tr');
-      row.className = 'check-item check-item--' + (check.pass ? 'pass' : 'fail');
+      row.className = 'check-item check-item--' + (check.pass ? 'pass' : 'warning');
       const status = document.createElement('td'), state = document.createElement('span');
       state.className = 'check-state';
-      const icon = document.createElement('span'); icon.setAttribute('aria-hidden','true'); icon.textContent = check.pass ? '✓' : '×';
-      state.append(icon, document.createTextNode(check.pass ? '通过' : '未通过')); status.append(state); row.append(status);
+      const icon = document.createElement('span'); icon.setAttribute('aria-hidden','true'); icon.textContent = check.pass ? '✓' : '!';
+      state.append(icon, document.createTextNode(check.pass ? '通过' : '警示')); status.append(state); row.append(status);
       [check.title, check.object].forEach(value => {const cell=document.createElement('td');cell.textContent=value;row.append(cell);});
       const description = document.createElement('td'); description.textContent = check.detail;
       if (!check.pass) {
         const details = document.createElement('details'); details.className = 'check-detail';
         details.open = firstFailure; firstFailure = false;
-        const summary = document.createElement('summary'); summary.textContent = check.errors.length + ' 条失败明细';
+        const summary = document.createElement('summary'); summary.textContent = check.errors.length + ' 条待核实明细';
         const list = document.createElement('ul'); list.className = 'check-errors';
-        list.tabIndex = 0; list.setAttribute('aria-label', check.title + '失败对象与原因');
+        list.tabIndex = 0; list.setAttribute('aria-label', check.title + '待核实对象与原因');
         check.errors.forEach(error => {
           const item = document.createElement('li'), object = document.createElement('span'), reason = document.createElement('span');
           object.className = 'check-error-object'; object.textContent = error.object;
@@ -1541,10 +1551,12 @@
       }
       row.append(description); $('checkList').append(row);
     });
-    $('checkSummary').textContent = '共检查 ' + checks.length + ' 项，通过 ' + (checks.length - failed) + ' 项，未通过 ' + failed + ' 项';
+    $('checkSummary').textContent = '共检查 ' + checks.length + ' 项，通过 ' + (checks.length - failed) + ' 项，警示 ' + failed + ' 项';
     $('checkObject').textContent = '当前测绘幢 · ' + taskObjectLabel + '（实测）';
-    $('checkGuidance').textContent = failed ? '请先处理未通过项，再重新校验。当前不能进入下一步。' : '全部检查通过，可以继续设置入库模式。';
-    $('toStep3').disabled = failed > 0;
+    $('checkGuidance').textContent = failed ? '可继续核对户室，必要时转人工处理。警示项处理完成前不能提交替换。' : '全部检查通过，可以继续设置入库模式。';
+    $('toStep3').disabled = false;
+    $('validationNotice').hidden = failed === 0;
+    $('validationNotice').textContent = failed ? '仍有 ' + failed + ' 项校验警示待处理（' + checks.filter(check => !check.pass).map(check => check.title).join('、') + '）。可继续核对或转人工，处理完成前不能提交替换。' : '';
     $('backTo1').textContent = failed ? '返回修改' : '上一步';
   }
 
@@ -1648,7 +1660,8 @@
 
   $('toStep2').addEventListener('click', () => { renderChecks(); goStep(2); });
   $('backTo1').addEventListener('click', () => {goStep(1); $('targetBuildingInput').focus();});
-  $('toStep3').addEventListener('click', () => goStep(3));
+  $('backTo2').addEventListener('click', () => { renderChecks(); goStep(2); $('validationScenario').focus(); });
+  $('toStep3').addEventListener('click', () => { goStep(3); $('backTo2').focus(); });
   $('backBtn').addEventListener('click', () => {
     const params = new URLSearchParams({ restore:'1', building:taskBuilding, code:taskCode });
     window.location.href = '../map/index.html?' + params.toString();
