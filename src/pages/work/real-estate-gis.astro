@@ -118,20 +118,18 @@ const facts = [
           <a class="workspace__prototype-link" href={`${prototypes}/map/index.html?restore=1&building=宇济一号&code=17幢`} target="_blank" rel="noopener noreferrer">打开 17 幢的总图原型 ↗</a>
         </article>
 
-        <article class="workspace">
+        <article class="workspace" id="survey-review">
           <header class="workspace__header">
             <span>03 / 测绘核对</span>
-            <div><h3>把户室对应和面积差异放在同一行</h3><p>“实测替换预测”需要核对新测绘记录与系统中现有房屋的对应。我把双列表中的对应关系组织成卡片，两侧展示户室，中间展示面积差异；查看完整字段时仍可切回表格。普通对应可逐项确认，拆分、合并等结构变化单独提示，保留业务人员进一步核对的位置。</p></div>
+            <div><h3>把户室对应和面积差异放在同一行</h3><p>“实测替换预测”需要先确认新测绘记录对应哪一户，再核对面积变化，以及拆分、合并等关系。</p></div>
           </header>
-          <div class="experience-diagram experience-diagram--task" aria-label="从对照户室和面积到人工确认的核对路径">
-            <div class="diagram-node diagram-node--relation"><span class="diagram-kicker">核对内容</span><b>现有户与实测户</b><div class="room-pair" aria-hidden="true"><span>1501室<br /><small>94.20㎡</small></span><em>?</em><span>1501室<br /><small>95.90㎡</small></span></div></div>
-            <span class="diagram-arrow" aria-hidden="true">→</span>
-            <div class="diagram-node diagram-node--cards"><span class="diagram-kicker">判断依据</span><b>关系卡</b><div class="relation-card" aria-hidden="true"><span>面积差异</span><strong>+1.70㎡</strong><small>需人工核对</small></div></div>
-            <span class="diagram-arrow" aria-hidden="true">→</span>
-            <div class="diagram-node diagram-node--decision"><span class="diagram-kicker">人工确认</span><b>核对状态</b><div class="decision-state" aria-hidden="true"><span></span>待核对</div><small>展示确认反馈，不实际入库</small></div>
+          <div class="evidence-grid" aria-label="测绘核对界面前后对比">
+            <DesignEvidence id="gis-task-before" title="旧系统测绘核对界面" src={`${media}/public/legacy-task-relations-observed.webp`} alt="旧系统把现有户室与测绘户室分列左右两张表，自动关联、手动关联和取消关联等操作位于中间" caption="两张表分别列出现有户室与测绘户室，关联操作集中在中间。" width={2060} height={1112} label="旧系统 · 留存材料" />
+            <DesignEvidence id="gis-task-after" title="重构后的测绘核对界面" src={`${media}/final/task-relations-current.webp`} alt="重构原型按关系卡排列现有户室和测绘户室，一组多合一关系中并列显示两户现有房屋与一户测绘结果" caption="每张卡片组织一组对应关系，拆分、合并涉及的户室放在一起核对。" width={1440} height={900} label="重构方案 · 原型截图" />
           </div>
+          <div class="case-copy"><p>旧界面需要在左右两张表之间查找对应户室。我把一组对应关系放进同一张卡片，将面积差异放在两侧户室之间，让核对对象和差异一起可见；完整字段仍可切回表格查看。</p></div>
           <DesignEvidence id="gis-relation" title="户室对应与面积差异" src={`${media}/final/16-decision-relation-card.png`} alt="关系卡把现有户室、测绘户室和面积差异放在同一行" caption="先核对两侧户室，再检查中间的面积差异，完整字段可切换到表格查看。" width={1190} height={117} label="重构方案" />
-          <PrototypeFrame src={`${prototypes}/task/index.html?building=宇济一号&code=17幢&from=gis&step=3&view=cards&filter=review`} title="实测替换预测交互原型" poster={`${media}/final/13-task-relations-focus.png`} posterAlt="测绘变更核对页面，以关系卡并列显示现有户室、测绘户室和面积差异" linkLabel="打开完整测绘变更核对原型" />
+          <PrototypeFrame src={`${prototypes}/task/index.html?building=宇济一号&code=17幢&from=gis&step=3&view=cards&filter=review`} title="实测替换预测交互原型" poster={`${media}/final/task-relations-current.webp`} posterAlt="测绘变更核对页面，以关系卡并列显示现有户室、测绘户室和面积差异" linkLabel="打开完整测绘变更核对原型" />
         </article>
       </div>
     </CaseSection>
