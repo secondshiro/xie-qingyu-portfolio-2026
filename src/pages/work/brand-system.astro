@@ -3,6 +3,7 @@ import CaseHero from '../../components/CaseHero.astro';
 import CaseSection from '../../components/CaseSection.astro';
 import CaseToc from '../../components/CaseToc.astro';
 import MediaStage from '../../components/MediaStage.astro';
+import BrandAuxiliary from '../../components/BrandAuxiliary.astro';
 import SiteLayout from '../../layouts/SiteLayout.astro';
 import '../../styles/case-study.css';
 
@@ -21,9 +22,10 @@ const tocSections = [
   { id: 'problem', label: '02 / 问题重定义' },
   { id: 'direction', label: '03 / 关键判断' },
   { id: 'language', label: '04 / 视觉语言' },
-  { id: 'crossmedia', label: '05 / 跨媒介扩展' },
-  { id: 'ai-collaboration', label: '06 / AI 协作' },
-  { id: 'boundary', label: '07 / 交付与边界' },
+  { id: 'auxiliary', label: '05 / 辅助图形' },
+  { id: 'crossmedia', label: '06 / 跨媒介扩展' },
+  { id: 'ai-collaboration', label: '07 / AI 协作' },
+  { id: 'boundary', label: '08 / 交付与边界' },
 ];
 ---
 
@@ -174,8 +176,17 @@ const tocSections = [
     </CaseSection>
 
     <CaseSection
+      id="auxiliary"
+      label="05 / 辅助图形"
+      title="把标志折角延伸成辅助图形"
+      intro="在原有规范基础上，我补充了“双折面”辅助图形提案。它提取标志中的斜向笔画和内折角，将两个折面相向排列，用于海报和封面的边缘构图。"
+    >
+      <BrandAuxiliary />
+    </CaseSection>
+
+    <CaseSection
       id="crossmedia"
-      label="05 / 跨媒介扩展"
+      label="06 / 跨媒介扩展"
       title="在不同物料提案里检查规则是否够用"
       intro="规范页写明规则，具体版面还要检查是否放得下。我把规则用在投放和社媒模板中，再做实体物料效果图，查看比例和信息量变化后怎样安排标识与内容。"
     >
@@ -214,7 +225,7 @@ const tocSections = [
 
     <CaseSection
       id="ai-collaboration"
-      label="06 / AI 协作"
+      label="07 / AI 协作"
       title="AI 协助探索画面，我负责选定规则"
       intro="生成工具帮助尝试概念和动态画面。我负责筛选结果、确定标识与色彩规则，再将选定方案整理为规范和模板。"
       tone="panel"
@@ -238,7 +249,7 @@ const tocSections = [
 
     <CaseSection
       id="boundary"
-      label="07 / 交付与边界"
+      label="08 / 交付与边界"
       title="把后续制作需要的规则交代清楚"
       intro="已交付的是 24 页规范与六个子系统提案。选用规则、模板和效果图都有对应材料，下一步仍需在打样和实际使用中核对。"
     >
