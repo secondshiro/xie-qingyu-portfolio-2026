@@ -379,11 +379,11 @@ a:focus-visible, button:focus-visible { outline: 2px solid transparent; box-shad
   .work__text { line-height: 1.7; }
 }
 @media (min-width: 75rem) {
-  /* 保留 810px 高的桌面构图，新增高度的 60% 留在作品介绍下方。 */
-  .showcase { min-height: calc(100svh - 10rem); grid-template-rows: auto 1fr; align-content: start; gap: 1.5rem; padding-block: 2rem calc(1rem + max(0px, (100svh - 50.625rem) * 0.6)); }
-  .hero { position: relative; z-index: 1; width: calc(100% - var(--player-width) - 6rem); }
+  /* 唱机始终位于首屏操作下方，多余高度由上下空轨道按 40% / 60% 分配。 */
+  .showcase { min-height: calc(100svh - 10rem); grid-template-rows: auto minmax(0, 2fr) auto minmax(0, 3fr); align-content: start; gap: 0; padding-block: 2rem 1rem; }
+  .hero { grid-row: 1; margin-bottom: 1.5rem; position: relative; z-index: 1; width: calc(100% - var(--player-width) - 6rem); }
   .intro__lead { max-width: 40rem; }
-  .workstation { margin-top: -14rem; align-self: end; }
+  .workstation { grid-row: 3; align-self: start; }
   .panel { padding-top: 0; }
 }
 @media (min-width: 87.5rem) {

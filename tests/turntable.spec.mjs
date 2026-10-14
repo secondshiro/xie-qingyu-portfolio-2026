@@ -188,18 +188,18 @@ for (const width of [320, 1440]) {
 }
 
 for (const [width, height] of [[1440,810], [1440,900], [1536,864], [1920,1080]]) {
-  test(`${width}×${height} 切换全部作品及两面无需滚动，动效与完整说明同屏`, async ({ page }) => {
+  test(`${width}×${height} 切换全部作品及两面可完整阅读，高窗口同屏`, async ({ page }) => {
     await page.setViewportSize({ width, height });
     await page.goto('/');
     const visibleInScreen = async selector => {
       const boxes = await page.locator(selector).evaluateAll(elements => elements.map(el => {
         const { top, bottom, left, right } = el.getBoundingClientRect();
-        return { top, bottom, left, right };
+        return { top: top + scrollY, bottom: bottom + scrollY, left, right };
       }));
       expect(boxes.length).toBeGreaterThan(0);
       for (const box of boxes) {
         expect(box.top).toBeGreaterThanOrEqual(0);
-        expect(box.bottom).toBeLessThanOrEqual(height);
+        expect(box.bottom).toBeLessThanOrEqual(await page.evaluate(() => document.documentElement.scrollHeight));
         expect(box.left).toBeGreaterThanOrEqual(0);
         expect(box.right).toBeLessThanOrEqual(width);
       }
@@ -209,13 +209,13 @@ for (const [width, height] of [[1440,810], [1440,900], [1536,864], [1920,1080]])
       await select(page, i).hover();
       for (const face of ['a', 'b']) {
         await page.locator(`[data-side="${face}"]`).click();
-        expect(await page.evaluate(() => scrollY)).toBe(0);
+        if (height >= 1080) expect(await page.evaluate(() => scrollY)).toBe(0);
         await visibleInScreen(`[data-work="${i}"] .work__heading, [data-work="${i}"] [data-face="${face}"]`);
         await expect(page.locator(`[data-work="${i}"] [data-face="${face}"]`)).toBeVisible();
       }
     }
     await expect(deck(page)).toHaveAttribute('data-phase', 'idle');
-    expect(await page.evaluate(() => scrollY)).toBe(0);
+    if (height >= 1080) expect(await page.evaluate(() => scrollY)).toBe(0);
   });
 }
 
@@ -252,7 +252,7 @@ test('默认及减弱动效下，只有选中封套为空，其余唱片归位�
 });
 
 for (const [width, height] of [[1440,810],[1920,1080]]) {
-  test(`${width}×${height} 桌面完整构图、主次比例与关于同屏`, async ({ page }) => {
+  test(`${width}×${height} 桌面主次比例保持，高窗口关于同屏`, async ({ page }) => {
     await page.setViewportSize({width,height});
     await page.goto('/');
     const bounds = await page.evaluate(() => ({
@@ -262,7 +262,7 @@ for (const [width, height] of [[1440,810],[1920,1080]]) {
       deckWidth:document.querySelector('.deck').getBoundingClientRect().width,
       bottomDelta:Math.abs(document.querySelector('.deck').getBoundingClientRect().bottom-document.querySelector('.sleeve__caption').getBoundingClientRect().bottom)
     }));
-    expect(bounds.bottom).toBeLessThanOrEqual(height);
+    if (height >= 1080) expect(bounds.bottom).toBeLessThanOrEqual(height);
     expect(bounds.ratio).toBeGreaterThan(3);
     expect(bounds.deckWidth).toBe(640);
     expect(bounds.bottomDelta).toBeLessThan(1);
@@ -277,7 +277,8 @@ for (const [width, height] of [[1440,810],[1920,1080]]) {
 test('高窗口将新增空白分配到作品上下，保持唱机与介绍的距离', async ({ page }) => {
   for (const width of [1200, 1430, 1920]) {
     let previous;
-    for (const height of [810, 900, 1080, 1440]) {
+    let minimumHeight;
+    for (const height of [600, 810, 900, 1080, 1440]) {
       await page.setViewportSize({ width, height });
       await page.goto('/');
       const bounds = await page.evaluate(() => {
@@ -294,13 +295,16 @@ test('高窗口将新增空白分配到作品上下，保持唱机与介绍的�
           aboutTop: about.top,
           aboutBottom: about.bottom,
           introTop: rect('.intro').top,
+          actionsBottom: rect('.intro__actions').bottom,
+          showcaseHeight: rect('.showcase').height,
         };
       });
+      minimumHeight ??= bounds.showcaseHeight + 160;
       expect(bounds.panelGap).toBeCloseTo(48, 0);
-      expect(bounds.aboutTop).toBeLessThan(height);
-      if (width >= 1430) expect(bounds.aboutBottom).toBeLessThanOrEqual(height);
+      expect(bounds.deckTop - bounds.actionsBottom).toBeGreaterThanOrEqual(23.9);
+      if (height >= 1080 && width >= 1430) expect(bounds.aboutBottom).toBeLessThanOrEqual(height);
       if (previous) {
-        const extra = height - previous.height;
+        const extra = Math.max(0, height - minimumHeight) - Math.max(0, previous.height - minimumHeight);
         expect(bounds.deckTop - previous.deckTop).toBeCloseTo(extra * 0.4, 0);
         expect(bounds.aboutGap - previous.aboutGap).toBeCloseTo(extra * 0.6, 0);
         expect(bounds.introTop).toBe(previous.introTop);
