@@ -274,6 +274,44 @@ for (const [width, height] of [[1440,810],[1920,1080]]) {
   });
 }
 
+test('高窗口将新增空白分配到作品上下，保持唱机与介绍的距离', async ({ page }) => {
+  for (const width of [1200, 1430, 1920]) {
+    let previous;
+    for (const height of [810, 900, 1080, 1440]) {
+      await page.setViewportSize({ width, height });
+      await page.goto('/');
+      const bounds = await page.evaluate(() => {
+        const rect = selector => document.querySelector(selector).getBoundingClientRect();
+        const deck = rect('.deck');
+        const panel = rect('.panel');
+        const about = rect('.about');
+        return {
+          deckTop: deck.top,
+          deckWidth: deck.width,
+          deckHeight: deck.height,
+          panelGap: panel.top - deck.bottom,
+          aboutGap: about.top - panel.bottom,
+          aboutTop: about.top,
+          aboutBottom: about.bottom,
+          introTop: rect('.intro').top,
+        };
+      });
+      expect(bounds.panelGap).toBeCloseTo(48, 0);
+      expect(bounds.aboutTop).toBeLessThan(height);
+      if (width >= 1430) expect(bounds.aboutBottom).toBeLessThanOrEqual(height);
+      if (previous) {
+        const extra = height - previous.height;
+        expect(bounds.deckTop - previous.deckTop).toBeCloseTo(extra * 0.4, 0);
+        expect(bounds.aboutGap - previous.aboutGap).toBeCloseTo(extra * 0.6, 0);
+        expect(bounds.introTop).toBe(previous.introTop);
+        expect(bounds.deckWidth).toBe(previous.deckWidth);
+        expect(bounds.deckHeight).toBe(previous.deckHeight);
+      }
+      previous = { ...bounds, height };
+    }
+  }
+});
+
 test('唱片持续循环旋转，超过一圈及换片后都保持播放', async ({ page }) => {
   await page.goto('/');
   const spinState = () => page.locator('.deck .record__label').evaluate(el => {
