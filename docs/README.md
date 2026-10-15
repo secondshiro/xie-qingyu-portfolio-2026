@@ -1,13 +1,16 @@
 # 文档索引
 
-更新于 2026-10-14。接手先读根目录 README.md、TASK_STATUS.md、DESIGN.md 与 AGENTS.md；涉及定位和事实再读 PRODUCT.md。
+更新于 2026-10-15。接手先读根目录 README.md、TASK_STATUS.md、DESIGN.md 与 AGENTS.md；涉及定位和事实再读 PRODUCT.md。
 
 ## 当前结构与维护
 
 | 入口 | 用途 |
 | --- | --- |
-| [Edgecase 新需求试用补充](briefs/edgecase-plan-2026-10-14/REVIEW.md) | 物业投诉 Plan 试用、职责边界与后续设计工作安排 |
+| [GIS 案例改写稿](briefs/gis-metrics-rewrite-2026-10-15/REWRITE.md) | 已回填的页面文字、逐条对照、九项复核与复述检查；执行记录见同目录 REVIEW.md |
+| [Edgecase 新需求试用补充](briefs/edgecase-plan-2026-10-14/REVIEW.md) | 双模式说明、全文精简、职责边界、验证及推送记录 |
 | [品牌辅助图形补充](briefs/brand-auxiliary-2026-10-14.md) | 双折面推导、横竖版应用、素材来源与 Git 交付范围 |
+| [案例叙述与改写指标](../PRODUCT.md#改写验收指标) | 九项改写验收标准，涵盖具体改动、判断推导、页面文字分工与复述检查 |
+| [GIS 草稿比较与指标修订](briefs/gis-rewrite-2026-10-15/COMPARISON.md) | 两份稿件的阅读差异、可吸收写法、事实复核与验收方式调整 |
 | [当前状态](../TASK_STATUS.md) | 实现、验证、发布边界和待办的唯一汇总 |
 | [2026-10-08 接手记录](history/context-cleanup-2026-10-08.md) | 首页悬停与跳转、GIS 修订、四页收尾、验证和 Git 交付范围 |
 | [全站页面转场](guides/page-transitions.md) | 五页转场范围、点击与加载时序、首页状态恢复 |
@@ -21,6 +24,7 @@
 | [执行网文档](projects/execution-query/README.md) | 工具与证据入口；本地图标探索尚未定稿 |
 | [首页封面制作](guides/home-cover-prompts.md) | 已采用封面的提示词和装饰属性 |
 | [旧首页备份](../backups/homepage-before-turntable-2026-09-28/README.md) | 替换前源码、依赖和恢复方法 |
+| [GIS 改写前备份](../backups/real-estate-gis-before-metrics-rewrite-2026-10-15/README.md) | 改写前的案例页源码、校验值与恢复方式 |
 
 公开路由为 `/`、`/work/real-estate-gis/`、`/work/edgecase-planner/`、`/work/brand-system/`、`/work/execution-query/`。源码入口为 `src/pages/`，公共结构由 `src/components/` 维护，样式位于 `src/styles/`。三个 GIS 原型位于 `public/projects/real-estate-gis/prototypes/`，无新增后端或 API。
 
@@ -44,6 +48,10 @@ GIS 历史稿中的重复找楼判断已被 2026-10-08 原始记录复核撤回�
 | --- | --- |
 | [briefs/edgecase-narrative.md](briefs/edgecase-narrative.md) | 历史计划、草稿或验收记录 |
 | [briefs/edgecase-planner.md](briefs/edgecase-planner.md) | 历史计划、草稿或验收记录 |
+| [briefs/gis-metrics-rewrite-2026-10-15/REWRITE.md](briefs/gis-metrics-rewrite-2026-10-15/REWRITE.md) | 当前 GIS 页面文字的改写依据、对照与九项复核 |
+| [briefs/gis-metrics-rewrite-2026-10-15/REVIEW.md](briefs/gis-metrics-rewrite-2026-10-15/REVIEW.md) | 本轮用户决定、回填、验证与发布记录 |
+| [briefs/gis-rewrite-2026-10-15/DRAFT.md](briefs/gis-rewrite-2026-10-15/DRAFT.md) | 历史计划、草稿或验收记录（并行草稿，未采用的结构） |
+| [briefs/gis-rewrite-2026-10-15/COMPARISON.md](briefs/gis-rewrite-2026-10-15/COMPARISON.md) | 改写指标修订依据；表内结论为当时记录 |
 | [briefs/homepage.md](briefs/homepage.md) | 当前首页结构与定位 |
 | [briefs/narrative-rewrite/brand-system.md](briefs/narrative-rewrite/brand-system.md) | 历史计划、草稿或验收记录 |
 | [briefs/narrative-rewrite/delivery-report.md](briefs/narrative-rewrite/delivery-report.md) | 历史计划、草稿或验收记录 |
