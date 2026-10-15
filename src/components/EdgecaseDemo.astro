@@ -20,18 +20,15 @@ const { mode = 'selection', resetOnPage = false } = Astro.props;
         <div class="operation-line"><span class="mock-button">批量下载</span><span class="silent">点击后，没有反馈</span></div>
         <div class="operation-line improved"><span class="mock-button">正在打包</span><span>1 / 10 · 10%</span></div>
         <div class="progress-track" aria-hidden="true"><i></i></div>
-        <p class="demo-prompt">数量和百分比提示让用户知道打包进行到了哪一步。</p>
       </div>}
       {mode === 'recovery' && <div class="operation-demo">
         <div class="ghost-rows" aria-hidden="true"><i></i><i></i></div>
         <div class="mini-dialog"><strong>保存下载文件</strong><span class="skeleton-cell" aria-hidden="true"></span><span class="mock-button secondary">取消</span></div>
         <div class="operation-line"><span class="mock-button secondary">再次下载</span><span class="error-state">提示“已下载”</span></div>
-        <p class="demo-prompt">文件没有保存，下载操作却无法继续。</p>
       </div>}
       {mode === 'upload' && <div class="upload-demo">
         <div class="upload-step"><span class="step-number">1</span><strong>上传材料</strong><span class="file-row"><span aria-hidden="true">▤</span> 申请材料.pdf <span class="success-state">上传完成</span></span></div>
         <div class="upload-step"><span class="step-number">2</span><strong>AI 预审</strong><span class="file-row">检查材料内容 <span class="waiting-state">处理中…</span></span></div>
-        <p class="demo-prompt">文件传完了，内容检查可能还在继续。</p>
       </div>}
       {mode === 'context' && <div class="context-demo">
         <div class="context-switch"><button type="button" data-context="before" aria-pressed="true">修复前</button><button type="button" data-context="after" aria-pressed="false">修复后</button></div>

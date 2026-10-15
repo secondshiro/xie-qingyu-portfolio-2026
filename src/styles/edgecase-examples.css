@@ -37,6 +37,10 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 2rem;
 }
+.edgecase-page .complaint-compare {
+  max-width: 57rem;
+  margin-inline: auto;
+}
 .edgecase-page .question-compare article {
   display: grid;
   align-content: start;

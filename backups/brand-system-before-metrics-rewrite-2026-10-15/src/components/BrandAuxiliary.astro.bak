@@ -1,0 +1,51 @@
+---
+import MediaStage from './MediaStage.astro';
+
+const media = '/projects/brand-system/media/auxiliary';
+const steps = [
+  { src: 'original-mark.svg', label: '01 / 原标志', alt: '原标志的斜向笔画、内折角与断开的端部', width: 635, height: 344 },
+  { src: 'fold-unit.svg', label: '02 / 提取折角', alt: '提取斜向笔画与内折角后，整理为带宽一致的折角单元', width: 440, height: 272 },
+  { src: 'double-fold.svg', label: '03 / 双折面', alt: '两个折角单元相向排列，中间保留斜向通道', width: 700, height: 460 },
+];
+---
+
+<div class="brand-auxiliary">
+  <figure class="brand-auxiliary__derivation" data-protected-media>
+    <ol class="brand-auxiliary__steps" aria-label="辅助图形推导">
+      {steps.map((step) => (
+        <li>
+          <div class="brand-auxiliary__drawing">
+            <img src={`${media}/${step.src}`} alt={step.alt} width={step.width} height={step.height} loading="lazy" decoding="async" draggable="false" />
+          </div>
+          <span>{step.label}</span>
+        </li>
+      ))}
+    </ol>
+    <figcaption class="media-stage__caption">
+      <span class="evidence-label">辅助图形延展提案</span>
+      <span>统一笔画宽度和端部，保留两块折面之间的斜向通道。</span>
+    </figcaption>
+  </figure>
+
+  <div class="evidence-grid brand-auxiliary__applications">
+    <MediaStage src={`${media}/landscape.svg`} alt="黑底横版海报，白色双折面沿右边缘展开，左侧排列品牌标语" caption="横版把图形放在右侧，左侧留出连续文字区。" kind="proposal" label="延展提案 · 横版" width={960} height={540} />
+    <MediaStage src={`${media}/portrait.svg`} alt="白底竖版封面，标识与标语在上方，黑色双折面从下方进入" caption="竖版沿用同一基础形，调整位置与缩放，保留内折角和中央通道。" kind="proposal" label="延展提案 · 竖版" width={696} height={928} />
+  </div>
+</div>
+
+<style>
+  .brand-auxiliary { display: grid; gap: 2rem; min-width: 0; }
+  .brand-auxiliary__derivation { display: grid; gap: 0.8rem; margin: 0; min-width: 0; }
+  .brand-auxiliary__steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem; margin: 0; padding: 2rem; list-style: none; background: #fff; border-radius: var(--radius-media); }
+  .brand-auxiliary__steps li { display: grid; gap: 1rem; min-width: 0; }
+  .brand-auxiliary__drawing { display: grid; aspect-ratio: 16 / 11; place-items: center; }
+  .brand-auxiliary__drawing img { display: block; width: 100%; height: auto; max-height: 100%; object-fit: contain; background: transparent; }
+  .brand-auxiliary__steps span { color: var(--color-muted); font-size: 0.875rem; line-height: 1.5; }
+  :global(.brand-auxiliary__applications.evidence-grid .media-stage__frame) { position: relative; }
+  :global(.brand-auxiliary__applications.evidence-grid .media-stage__frame img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: transparent; }
+  @media (max-width: 45rem) {
+    .brand-auxiliary__steps { grid-template-columns: 1fr; gap: 2rem; padding: 1.5rem; }
+    .brand-auxiliary__steps li { grid-template-columns: minmax(0, 1fr) 7rem; align-items: center; gap: 1.5rem; }
+    .brand-auxiliary__drawing { aspect-ratio: 16 / 11; }
+  }
+</style>

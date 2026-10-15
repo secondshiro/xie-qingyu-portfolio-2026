@@ -11,7 +11,7 @@ const media = '/projects/real-estate-gis/media';
 const prototypes = '/projects/real-estate-gis/prototypes';
 const facts = [
   { label: '角色', value: '业务梳理、产品架构、UX 与交互原型' },
-  { label: '输入', value: '需求规格、业务流程、旧系统截图与初版原型' },
+  { label: '输入', value: '需求规格、业务流程与旧系统截图' },
   { label: '贡献', value: '业务入口分配、整幢布局与户室关系核对' },
   { label: '输出', value: '总图、整幢和实测替换预测三个可操作原型' },
   { label: '边界', value: '个人回溯重构 · 已完成交互原型' },
@@ -26,7 +26,7 @@ const facts = [
   <main class="case-page gis-case" id="main" tabindex="-1">
     <CaseHero
       title="房产 GIS 体验重构"
-      summary="房产系统从原技术环境迁移到国产环境，找楼、查看房屋、核对测绘变更这三件事没有变。我重排了它们的页面和入口。选幢后把楼栋属性与相关入口收进同一面板，整幢页把户室矩阵放回主要区域，测绘核对把新旧户室与面积差异并列成组。本次交付是个人回溯重构，三项各有一个可操作原型。"
+      summary="房产系统从原技术环境迁移到国产环境，找楼、查看房屋、核对测绘变更这三件事没有变。我重排了它们的页面和入口。选幢后把楼栋属性与相关入口收进同一面板，整幢页把主要区域留给户室矩阵，测绘核对把新旧户室与面积差异并列成组。本次交付是个人回溯重构，三套页面都可以直接点开。"
       facts={facts}
     />
 
@@ -51,7 +51,7 @@ const facts = [
         <span>查看整幢房屋，或核对测绘变更</span>
       </div>
       <div class="case-copy">
-        <p>三个原型使用同一栋楼和同一间户室，方便连着检查页面之间是否对应，总图按 17 幢进入，整幢页显示的仍是 17 幢，测绘核对里 1501 室也还是同一间房。</p>
+        <p>三个原型使用同一栋楼和同一间户室，总图按 17 幢进入，整幢页显示的仍是 17 幢，测绘核对里 1501 室也还是同一间房。</p>
       </div>
     </CaseSection>
 
@@ -59,7 +59,7 @@ const facts = [
       id="origin"
       label="01 / 项目源头"
       title="技术迁移是背景，我重排的是任务路径"
-      intro="这次改造的背景是房产系统迁移到国产技术环境（信创）。迁移会替换底层环境，工作人员的任务还是那三件，在地图上找到一栋楼，查看楼内房屋，必要时核对新旧测绘记录。我的输入是需求规格、业务流程、旧系统截图和一份初版原型，用来判断这三件事各自需要什么信息。"
+      intro="这次改造的背景是房产系统迁移到国产技术环境（信创）。迁移会替换底层环境，工作人员的任务还是那三件，在地图上找到一栋楼，查看楼内房屋，必要时核对新旧测绘记录。我的输入是需求规格、业务流程、旧系统截图和一份初版原型，我用它们判断这三件事各自需要什么信息。"
     >
       <div class="case-copy">
         <p>这类业务有三层对象，地图上的楼栋、楼内的户室，以及测绘记录和系统记录之间的对应关系。需求梳理阶段，我先把每层对象各自的属性、状态和操作列清楚，再决定每个页面以哪一层为主、其余信息退到次要位置。后面几节的页面结构都来自这次梳理。</p>
@@ -70,7 +70,7 @@ const facts = [
       id="problem"
       label="02 / 问题重定义"
       title="同一批房屋信息，三个任务看的东西不同"
-      intro="定位时要看清楼栋在哪，查看整幢要按楼层和单元对照户室，核对变更要同时看到新旧两边的户室和面积。三种用法要的信息不一样。我先看旧界面的空间怎么分，再判断每个页面的主要区域应该留给谁。"
+      intro="定位时要看清楼栋在哪，查看整幢要按楼层和单元对照户室，核对变更要同时看到新旧两边的户室和面积。我先看旧界面的版面怎么分，再判断每个页面的主要区域应该留给谁。"
       tone="panel"
     >
       <div class="evidence-grid">
@@ -92,9 +92,9 @@ const facts = [
         />
       </div>
       <div class="case-copy">
-        <p>总图的旧界面把地图工具放在顶部工具栏，选中的楼栋和可用的操作分处两处。选中一栋楼之后，工作人员要先确认选的是哪一栋，再决定做什么。这两件事发生在同一步，所以楼栋信息与可用入口应该落在同一块区域，地图只负责定位。</p>
+        <p>总图的旧界面把地图工具放在顶部工具栏，选中的楼栋和可用的操作分在两个地方。选中一栋楼之后，工作人员要先确认选的是哪一栋，再决定做什么。这两件事发生在同一步，所以楼栋信息与可用入口应该落在同一块区域，地图只负责定位。</p>
         <p>整幢页要按楼层和单元对照户室。旧界面同时保留顶部工具、左侧属性、上方平面区和下方楼盘表，户室集中在其中一块。对照发生在户室矩阵里，主要区域应该留给它，平面图和属性退到次要位置。</p>
-        <p>核对变更要把新旧测绘记录对上。旧界面用两张表逐行对照，一组对应关系分在同一行的两个单元格里。判断一组对应是否成立，要同时看到两边的户室和面积差，所以它们应该并列出现。</p>
+        <p>核对变更要把新旧测绘记录对上。这一处的旧界面截图保存在需求材料里，两组记录用两张表逐行并排，一组对应关系落在同一行的两个单元格里。判断一组对应是否成立，要同时看到两边的户室和面积差，所以它们应该并列出现。</p>
       </div>
     </CaseSection>
 
@@ -102,14 +102,14 @@ const facts = [
       id="workspaces"
       label="03 / 核心方案"
       title="找到楼以后，按任务查看房屋和核对变更"
-      intro="选幢、查看整幢、核对变更各自对应一个页面，都围绕同一栋楼组织信息。总图确定当前楼栋，整幢页按楼层和单元展开这栋楼的户室，测绘核对比对新旧记录。三个页面各服务一个任务，不要求按顺序办理。"
+      intro="选幢、查看整幢、核对变更各自对应一个页面，都围绕同一栋楼组织信息。总图确定当前楼栋，整幢页按楼层和单元展开这栋楼的户室，测绘核对比对新旧记录。每页各服务一个任务，不要求按顺序办理。"
       tone="stone"
     >
       <div class="workspace-stack">
         <article class="workspace">
           <header class="workspace__header">
-            <span>01 / 空间 · 选幢</span>
-            <div><h3>让当前楼栋的信息与操作靠在一起</h3><p>选中楼栋后，右侧集中显示名称、编号、属性和相关入口。我按一个条件分配这些入口，即这个操作是否必须先有选中的楼栋。查看整幢房屋、核对测绘变更都以当前楼栋为前提，放在面板里；新建和入库在还没有楼栋或还没有图形时也要能开始，留在全局区域。旧系统里选幢后再找功能、或先选功能再选楼都能走，本次原型演示的是前一种，入口集中到面板，操作前仍可确认当前操作的是哪一栋。</p></div>
+            <span>空间 · 选幢</span>
+            <div><h3>让当前楼栋的信息与操作靠在一起</h3><p>选中楼栋后，右侧集中显示名称、编号、属性和相关入口。我按一个条件分配这些入口，即这个操作是否必须先有选中的楼栋。查看整幢房屋、核对测绘变更都以当前楼栋为前提，放在面板里；新建楼栋和资料入库不同，待新建的楼栋本身还没有地图图形，这两项留在全局区域。</p><p>旧系统里选幢后再找功能、或先选功能再选楼都能走，本次原型演示的是前一种，入口集中到面板。</p></div>
           </header>
           <div class="experience-diagram" aria-label="从地图选楼到查看楼栋信息的操作路径">
             <div class="diagram-node diagram-node--map"><span class="diagram-kicker">空间</span><b>地图定位</b><div class="map-sketch" aria-hidden="true"><i></i><i></i><i></i><i></i><b>17</b><span></span><span></span></div></div>
@@ -124,29 +124,29 @@ const facts = [
 
         <article class="workspace">
           <header class="workspace__header">
-            <span>02 / 对象 · 看整幢</span>
-            <div><h3>把主要区域留给整幢户室</h3><p>我把平面参考和属性收进侧栏，让矩阵默认占主要区域。实际层与名义层沿用原有表达，各户室的业务状态色带也保留；选择一间房屋后，侧栏显示它的具体属性。</p></div>
+            <span>对象 · 看整幢</span>
+            <div><h3>把主要区域留给整幢户室</h3><p>我把平面参考和属性收进侧栏，让矩阵默认占主要区域。楼层有两套编号，一套是建筑的实际层号，一套是业务使用的名义层号，这个对应关系沿用原有表达；各户室的业务状态色带也保留。选择一间房屋后，侧栏显示它的具体属性。</p></div>
           </header>
           <div class="evidence-grid">
-            <MediaStage src={`${media}/public/legacy-building-overview-observed.webp`} alt="旧整幢页面同时保留顶部工具、左侧属性、上方平面区和下方楼盘表" caption="上方平面区、左侧属性和下方楼盘表同时保留，整幢户室集中在下半屏。" kind="observed" width={1600} height={1000} />
-            <MediaStage src={`${media}/final/building-current-overview.png`} alt="宇济一号 17 幢的整幢页面，左侧显示平面参考和属性，右侧按楼层与单元排列户室" caption="平面参考放在侧栏，楼层与各单元的户室集中到右侧矩阵。" kind="redesigned" width={1440} height={900} />
+            <MediaStage src={`${media}/public/legacy-building-overview-observed.webp`} alt="旧整幢页面同时保留顶部工具、左侧属性、上方平面区和下方楼盘表" caption="改版前，上方平面区、左侧属性和下方楼盘表同时保留，整幢户室集中在下半屏。" kind="observed" width={1600} height={1000} />
+            <MediaStage src={`${media}/final/building-current-overview.png`} alt="宇济一号 17 幢的整幢页面，左侧显示平面参考和属性，右侧按楼层与单元排列户室" caption="改版后，平面参考放在侧栏，楼层与各单元的户室集中到右侧矩阵。" kind="redesigned" width={1440} height={900} />
           </div>
           <PrototypeFrame src={`${prototypes}/building/index.html?building=宇济一号&code=17幢&room=1501`} title="分层分户图交互原型" poster={`${media}/final/building-current-overview.png`} posterAlt="宇济一号 17 幢的整幢页面，左侧显示平面参考和属性，右侧按楼层与单元排列户室" linkLabel="打开完整整幢房屋原型" />
         </article>
 
         <article class="workspace">
           <header class="workspace__header">
-            <span>03 / 任务 · 核对变更</span>
-            <div><h3>把户室对应和面积差异放在同一行</h3><p>“实测替换预测”是测绘成果回到系统时的核对环节。新测出的户室要和系统里已有的房屋对上，面积有差异的交给人工判断。我把每组对应做成关系卡，两边是户室，中间是面积差异。以 1 单元 1501 室为例，系统记录 94.20㎡、测绘记录 95.90㎡，卡片显示 +1.70㎡；需要看全部字段时切回表格。普通对应可以逐项确认；拆分、合并这类结构变化单独标出，一次普通确认不会把它们算作已处理，后续处置交回业务。</p></div>
+            <span>任务 · 核对变更</span>
+            <div><h3>把户室对应和面积差异放在同一行</h3><p>“实测替换预测”是测绘成果回到系统时的核对环节。测绘记录里的户室要和系统记录里的房屋对上，面积有差异的交给人工判断。我把每组对应做成关系卡，两边是户室，中间是面积差异。以 1 单元 1501 室为例，系统记录 94.20㎡、测绘记录 95.90㎡，卡片显示 +1.70㎡。</p><p>普通对应可以逐项确认。拆分、合并这类结构变化单独标出，一次普通确认不会把它们算作已处理，后续处置交回业务。需要看全部字段时切回表格。</p></div>
           </header>
           <div class="experience-diagram experience-diagram--task" aria-label="从对照户室和面积到人工确认的核对路径">
-            <div class="diagram-node diagram-node--relation"><span class="diagram-kicker">核对内容</span><b>现有户与实测户</b><div class="room-pair" aria-hidden="true"><span>1501室<br /><small>94.20㎡</small></span><em>?</em><span>1501室<br /><small>95.90㎡</small></span></div></div>
+            <div class="diagram-node diagram-node--relation"><span class="diagram-kicker">核对内容</span><b>同一间房的两份记录</b><div class="room-pair" aria-hidden="true"><span><b>系统记录</b>1501室<br /><small>94.20㎡</small></span><em>?</em><span><b>测绘记录</b>1501室<br /><small>95.90㎡</small></span></div></div>
             <span class="diagram-arrow" aria-hidden="true">→</span>
             <div class="diagram-node diagram-node--cards"><span class="diagram-kicker">判断依据</span><b>关系卡</b><div class="relation-card" aria-hidden="true"><span>面积差异</span><strong>+1.70㎡</strong><small>需人工核对</small></div></div>
             <span class="diagram-arrow" aria-hidden="true">→</span>
             <div class="diagram-node diagram-node--decision"><span class="diagram-kicker">人工确认</span><b>核对状态</b><div class="decision-state" aria-hidden="true"><span></span>待核对</div><small>展示确认反馈，不实际入库</small></div>
           </div>
-          <PrototypeFrame src={`${prototypes}/task/index.html?building=宇济一号&code=17幢&from=gis&step=3&view=cards&filter=review`} title="实测替换预测交互原型" poster={`${media}/final/13-task-relations-focus.png`} posterAlt="测绘变更核对页面，以关系卡并列显示现有户室、测绘户室和面积差异" linkLabel="打开完整测绘变更核对原型" />
+          <PrototypeFrame src={`${prototypes}/task/index.html?building=宇济一号&code=17幢&from=gis&step=3&view=cards&filter=review`} title="实测替换预测交互原型" poster={`${media}/final/13-task-relations-focus.png`} posterAlt="测绘变更核对页面，以关系卡并列显示系统记录、测绘记录和面积差异" linkLabel="打开完整测绘变更核对原型" />
         </article>
       </div>
     </CaseSection>
@@ -155,27 +155,27 @@ const facts = [
       id="strategy"
       label="04 / 行业判断"
       title="用三类产品，检查入口、地图与核对怎么组织"
-      intro="我用三类公开产品检查三个决定，选中一个对象之后业务入口放在哪，地图在整个页面里承担什么，逐项核对要拆到什么粒度。参照只用来看别的产品怎样组织，具体安排仍由本案的任务和信息决定。"
+      intro="我用这三类产品检查三个决定。选中一个对象之后业务入口放在哪，地图在整个页面里承担什么，逐项核对要拆到什么粒度。参照只用来看别的产品怎样组织，具体安排仍由本案的任务和信息决定。"
     >
       <details class="industry-references">
-        <summary>查看三类产品的参照依据<span aria-hidden="true">＋</span></summary>
+        <summary>查看参照依据<span aria-hidden="true">＋</span></summary>
         <div class="industry-references__content">
           <div class="reference-grid">
             <article class="reference-card">
               <span>直接行业平台</span>
-              <h3>选中楼栋后，业务入口是否靠近对象</h3>
+              <h3>选中楼栋后，业务入口放在哪</h3>
               <p>SuperMap 的公开方案覆盖不动产登记等业务，是我能找到的直接行业参照。我用它检查总图的分工，选中一栋楼之后，与这栋楼有关的操作应该出现在当前对象旁边。据此我把楼栋属性和相关入口放进总图右侧面板。</p>
               <a href="https://www.supermap.com/zh-cn/a/solutions/119_4553.html" target="_blank" rel="noopener noreferrer">SuperMap 公开资料 ↗</a>
             </article>
             <article class="reference-card">
               <span>空间产品参照</span>
-              <h3>地图先负责找楼，再展开这栋楼的信息</h3>
-              <p>DataV Atlas 面向地理空间数据的展示与分析，是空间类产品的参照。我用它检查总图的信息分配，地图用于找楼和选楼，选中之后再展开这栋楼的属性和操作。</p>
+              <h3>地图在整个页面里承担什么</h3>
+              <p>DataV Atlas 面向地理空间数据的展示与分析，是空间类产品的参照。我用它检查地图的职责范围，底图只负责找楼和选楼，选中之后的楼栋属性和业务操作交给面板，不在地图上再叠一层信息。</p>
               <a href="https://help.aliyun.com/zh/datav/datav-atlas/product-overview/what-is-datav-atlas/" target="_blank" rel="noopener noreferrer">DataV Atlas 公开资料 ↗</a>
             </article>
             <article class="reference-card">
               <span>工作流产品参照</span>
-              <h3>核对拆到一组户室，而不是一张长表</h3>
+              <h3>逐项核对要拆到什么粒度</h3>
               <p>飞书多维表格是按记录组织状态的工作流产品，作为这类工具的参照。我用它检查核对的粒度，一次判断对应一组户室。据此实测替换用关系卡承载每组对应，确认动作仍由工作人员执行。</p>
               <a href="https://www.feishu.cn/product/base" target="_blank" rel="noopener noreferrer">飞书多维表格公开资料 ↗</a>
             </article>
@@ -198,11 +198,11 @@ const facts = [
       <div class="decision-grid">
         <article class="decision-card"><span>01</span><h3>业务状态和当前选中分别表达</h3><p>一间房屋可以同时有多个业务状态，性质另外用符号表示。状态的相对颜色和符号含义沿用原图例，20 项状态一起保留。改动的是选中反馈，用独立描边标出当前选中的房屋，不覆盖状态色带，选择和状态可以同时看清。</p></article>
         <article class="decision-card"><span>02</span><h3>矩阵看整幢，平面图作参考</h3><p>要按楼层和单元逐户对照，矩阵能同时铺开一层；要确认一间房屋在楼里的位置，平面图更直观。两者都留下，平面参考收进侧栏后仍可随时打开，实际层与名义层继续分开显示。演示中实际第 18 层对应名义 17A 层，两列并排才能同时对照层序与业务名称。</p></article>
-        <article class="decision-card"><span>03</span><h3>关系卡看对应，表格查字段</h3><p>关系卡用于逐组判断对应关系和面积差异，需要看完整字段时切回表格。两种视图对应两种核对深度。</p></article>
+        <article class="decision-card"><span>03</span><h3>关系卡看对应，表格查字段</h3><p>关系卡用于逐组判断对应关系和面积差异，卡片上保留户室编号、两侧面积和差值，其余字段留在表格里查。两种视图对应两种核对深度。</p></article>
       </div>
       <div class="evidence-grid">
         <MediaStage src={`${media}/final/15-decision-matrix.png`} alt="户室矩阵局部，实际层与名义层并列，各户室以色带表示业务状态" caption="实际层与名义层并列显示，各户室仍保留业务状态色带。" kind="redesigned" width={1190} height={380} />
-        <MediaStage src={`${media}/final/16-decision-relation-card.png`} alt="关系卡局部，现有户室与测绘户室两侧排列，面积差异显示在中间" caption="现有户室与测绘户室并列，面积差异显示在中间，卡片同时标记待核对状态。" kind="redesigned" width={1190} height={117} />
+        <MediaStage src={`${media}/final/16-decision-relation-card.png`} alt="关系卡局部，系统记录与测绘记录两侧排列，面积差异显示在中间" caption="系统记录与测绘记录并列，面积差异显示在中间，卡片同时标记待核对状态。" kind="redesigned" width={1190} height={117} />
       </div>
     </CaseSection>
 
@@ -229,7 +229,7 @@ const facts = [
     >
       <div class="boundary-grid">
         <article class="boundary-card"><h3>用 AI 把方案做成可操作页面</h3><p>总图、整幢和测绘核对各自可以独立打开，围绕同一栋楼检查布局、对应关系和操作反馈；发现的问题回到规则或页面修改。</p></article>
-        <article class="boundary-card"><h3>用业务事实约束生成结果</h3><p>生成的页面要回到原始需求逐条核对操作逻辑、状态含义和字段对应。哪些关系在业务上成立、哪些规则仍要确认，由我判断，AI 负责实现。</p></article>
+        <article class="boundary-card"><h3>用业务事实约束生成结果</h3><p>哪些关系在业务上成立、哪些规则仍要确认，由我判断。AI 负责实现，不替我做这些判断，也不把待确认的规则写成已定论。</p></article>
       </div>
     </CaseSection>
 
