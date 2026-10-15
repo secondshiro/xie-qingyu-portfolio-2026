@@ -6,6 +6,7 @@
 
 | 入口 | 用途 |
 | --- | --- |
+| [Edgecase 新需求试用补充](briefs/edgecase-plan-2026-10-14/REVIEW.md) | 物业投诉 Plan 试用、职责边界与后续设计工作安排 |
 | [品牌辅助图形补充](briefs/brand-auxiliary-2026-10-14.md) | 双折面推导、横竖版应用、素材来源与 Git 交付范围 |
 | [当前状态](../TASK_STATUS.md) | 实现、验证、发布边界和待办的唯一汇总 |
 | [2026-10-08 接手记录](history/context-cleanup-2026-10-08.md) | 首页悬停与跳转、GIS 修订、四页收尾、验证和 Git 交付范围 |

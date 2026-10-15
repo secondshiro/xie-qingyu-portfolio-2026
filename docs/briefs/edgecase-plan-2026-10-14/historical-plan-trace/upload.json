@@ -1,0 +1,40 @@
+{
+  "planId": "property-20261014-upload",
+  "taskName": "附件上传",
+  "taskGoal": "附件上传",
+  "actors": [
+    "居民"
+  ],
+  "flowSteps": [
+    "选择图片或视频",
+    "上传",
+    "预览或删除附件"
+  ],
+  "knownConstraints": [
+    "独立手机号输入页不可与列表合并",
+    "办理中只读，已办结才可评价",
+    "本文档中的建议和待确认项不是需求方已确认决定",
+    "管理端设计不在范围"
+  ],
+  "complexitySignals": [
+    "async_action",
+    "non_success_possible"
+  ],
+  "knownDecisions": [
+    {
+      "questionId": "R5.P2",
+      "status": "not_applicable",
+      "decisionNote": "本操作范围为小程序内上传、查询或提交，不包含导出文件和向外部应用交付结果。第4、5、6章。",
+      "sourceRefIds": [
+        "req"
+      ]
+    }
+  ],
+  "sourceRefs": [
+    {
+      "id": "req",
+      "type": "requirement",
+      "label": "物业投诉小程序需求v1.0，第4至11章及附录原始需求；已写规则不代表运行验证"
+    }
+  ]
+}

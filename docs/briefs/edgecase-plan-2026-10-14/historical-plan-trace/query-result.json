@@ -1,0 +1,167 @@
+{
+  "schemaVersion": "0.1.0",
+  "skillVersion": "0.2.0",
+  "mode": "plan",
+  "planningBriefId": "property-20261014-query",
+  "taskName": "查询列表及查看详情",
+  "taskGoal": "查询列表及查看详情",
+  "scopeSummary": "独立输入手机号 → 查询列表 → 查看详情 → 返回列表",
+  "triggeredRuleIds": [
+    "R2",
+    "R4",
+    "R5",
+    "R9"
+  ],
+  "checkpoints": [
+    {
+      "id": "property-20261014-query-r2-p1",
+      "planningBriefId": "property-20261014-query",
+      "ruleId": "R2",
+      "family": "state_continuity",
+      "questionId": "R2.P1",
+      "decisionDimension": "state_continuity",
+      "attentionPriority": "P1",
+      "prompt": "切换视图时，哪些筛选、选择、排序、页码或视野需要保留？",
+      "checkpoint": "逐项定义活跃状态在目标视图中的保留或等价表达。",
+      "status": "open"
+    },
+    {
+      "id": "property-20261014-query-r4-p1",
+      "planningBriefId": "property-20261014-query",
+      "ruleId": "R4",
+      "family": "async_recovery",
+      "questionId": "R4.P1",
+      "decisionDimension": "completion",
+      "attentionPriority": "P2",
+      "prompt": "哪个事件才表示用户任务真正完成？",
+      "checkpoint": "定义业务完成事件，不把服务端完成自动等同于用户任务完成。",
+      "status": "decided",
+      "decisionNote": "第5章及P04：查询完成后展示对应手机号的列表；E07要求无记录展示空态。",
+      "sourceRefIds": [
+        "req"
+      ]
+    },
+    {
+      "id": "property-20261014-query-r4-p2",
+      "planningBriefId": "property-20261014-query",
+      "ruleId": "R4",
+      "family": "async_recovery",
+      "questionId": "R4.P2",
+      "decisionDimension": "process_visibility",
+      "attentionPriority": "P1",
+      "prompt": "用户如何知道请求已受理、正在处理以及已经完成？",
+      "checkpoint": "规划受理、处理中和完成反馈。",
+      "status": "open"
+    },
+    {
+      "id": "property-20261014-query-r4-p3",
+      "planningBriefId": "property-20261014-query",
+      "ruleId": "R4",
+      "family": "async_recovery",
+      "questionId": "R4.P3",
+      "decisionDimension": "repeat_safety",
+      "attentionPriority": "P2",
+      "prompt": "等待期间再次触发同一操作会发生什么？",
+      "checkpoint": "明确阻止重复、幂等复用或安全重建策略。",
+      "status": "decided",
+      "decisionNote": "P03交互规则3查询期间禁止重复提交；E08列表加载防抖。",
+      "sourceRefIds": [
+        "req"
+      ]
+    },
+    {
+      "id": "property-20261014-query-r5-p1",
+      "planningBriefId": "property-20261014-query",
+      "ruleId": "R5",
+      "family": "async_recovery",
+      "questionId": "R5.P1",
+      "decisionDimension": "recovery",
+      "attentionPriority": "P0",
+      "prompt": "失败、取消、超时、部分成功或外部交接取消后，任务进入什么状态？",
+      "checkpoint": "为每个已知非成功路径定义可理解的恢复状态。",
+      "status": "open"
+    },
+    {
+      "id": "property-20261014-query-r5-p2",
+      "planningBriefId": "property-20261014-query",
+      "ruleId": "R5",
+      "family": "async_recovery",
+      "questionId": "R5.P2",
+      "decisionDimension": "completion",
+      "attentionPriority": "P2",
+      "prompt": "外部交接或文件生成后，什么才算用户已经取得结果？",
+      "checkpoint": "把后台完成与用户真正完成任务分开。",
+      "status": "not_applicable",
+      "decisionNote": "本操作范围为小程序内上传、查询或提交，不包含导出文件和向外部应用交付结果。第4、5、6章。",
+      "sourceRefIds": [
+        "req"
+      ]
+    },
+    {
+      "id": "property-20261014-query-r5-p3",
+      "planningBriefId": "property-20261014-query",
+      "ruleId": "R5",
+      "family": "async_recovery",
+      "questionId": "R5.P3",
+      "decisionDimension": "repeat_safety",
+      "attentionPriority": "P0",
+      "prompt": "重试会复用结果、安全重建，还是产生重复任务？",
+      "checkpoint": "定义安全重试与重复任务防护。",
+      "status": "open"
+    },
+    {
+      "id": "property-20261014-query-r9-p1",
+      "planningBriefId": "property-20261014-query",
+      "ruleId": "R9",
+      "family": "expectation_constraint",
+      "questionId": "R9.P1",
+      "decisionDimension": "validation",
+      "attentionPriority": "P1",
+      "prompt": "哪些字段必填、有哪些格式限制，界面提示与校验是否使用同一要求？",
+      "checkpoint": "逐字段明确可验证的输入限制及提示。",
+      "status": "open"
+    },
+    {
+      "id": "property-20261014-query-r9-p2",
+      "planningBriefId": "property-20261014-query",
+      "ruleId": "R9",
+      "family": "expectation_constraint",
+      "questionId": "R9.P2",
+      "decisionDimension": "validation",
+      "attentionPriority": "P1",
+      "prompt": "空值与错误格式分别怎样提示并阻止继续？",
+      "checkpoint": "分别设计必填与格式校验，只验证适用的分支。",
+      "status": "open"
+    },
+    {
+      "id": "property-20261014-query-r9-p3",
+      "planningBriefId": "property-20261014-query",
+      "ruleId": "R9",
+      "family": "expectation_constraint",
+      "questionId": "R9.P3",
+      "decisionDimension": "recovery",
+      "attentionPriority": "P0",
+      "prompt": "修正后如何继续，并保留其他已经填写的内容？",
+      "checkpoint": "确认修正后能继续，且无关输入不被清空。",
+      "status": "open"
+    }
+  ],
+  "p0QuestionIds": [
+    "R5.P1",
+    "R5.P3",
+    "R9.P3"
+  ],
+  "knownConstraints": [
+    "独立手机号输入页不可与列表合并",
+    "办理中只读，已办结才可评价",
+    "本文档中的建议和待确认项不是需求方已确认决定",
+    "管理端设计不在范围"
+  ],
+  "sourceRefs": [
+    {
+      "id": "req",
+      "type": "requirement",
+      "label": "物业投诉小程序需求v1.0，第4至11章及附录原始需求；已写规则不代表运行验证"
+    }
+  ]
+}

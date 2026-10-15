@@ -1,0 +1,110 @@
+{
+  "schemaVersion": "0.1.0",
+  "skillVersion": "0.2.0",
+  "mode": "plan",
+  "planningBriefId": "property-20261014-upload",
+  "taskName": "附件上传",
+  "taskGoal": "附件上传",
+  "scopeSummary": "选择图片或视频 → 上传 → 预览或删除附件",
+  "triggeredRuleIds": [
+    "R4",
+    "R5"
+  ],
+  "checkpoints": [
+    {
+      "id": "property-20261014-upload-r4-p1",
+      "planningBriefId": "property-20261014-upload",
+      "ruleId": "R4",
+      "family": "async_recovery",
+      "questionId": "R4.P1",
+      "decisionDimension": "completion",
+      "attentionPriority": "P0",
+      "prompt": "哪个事件才表示用户任务真正完成？",
+      "checkpoint": "定义业务完成事件，不把服务端完成自动等同于用户任务完成。",
+      "status": "open"
+    },
+    {
+      "id": "property-20261014-upload-r4-p2",
+      "planningBriefId": "property-20261014-upload",
+      "ruleId": "R4",
+      "family": "async_recovery",
+      "questionId": "R4.P2",
+      "decisionDimension": "process_visibility",
+      "attentionPriority": "P1",
+      "prompt": "用户如何知道请求已受理、正在处理以及已经完成？",
+      "checkpoint": "规划受理、处理中和完成反馈。",
+      "status": "open"
+    },
+    {
+      "id": "property-20261014-upload-r4-p3",
+      "planningBriefId": "property-20261014-upload",
+      "ruleId": "R4",
+      "family": "async_recovery",
+      "questionId": "R4.P3",
+      "decisionDimension": "repeat_safety",
+      "attentionPriority": "P0",
+      "prompt": "等待期间再次触发同一操作会发生什么？",
+      "checkpoint": "明确阻止重复、幂等复用或安全重建策略。",
+      "status": "open"
+    },
+    {
+      "id": "property-20261014-upload-r5-p1",
+      "planningBriefId": "property-20261014-upload",
+      "ruleId": "R5",
+      "family": "async_recovery",
+      "questionId": "R5.P1",
+      "decisionDimension": "recovery",
+      "attentionPriority": "P0",
+      "prompt": "失败、取消、超时、部分成功或外部交接取消后，任务进入什么状态？",
+      "checkpoint": "为每个已知非成功路径定义可理解的恢复状态。",
+      "status": "open"
+    },
+    {
+      "id": "property-20261014-upload-r5-p2",
+      "planningBriefId": "property-20261014-upload",
+      "ruleId": "R5",
+      "family": "async_recovery",
+      "questionId": "R5.P2",
+      "decisionDimension": "completion",
+      "attentionPriority": "P2",
+      "prompt": "外部交接或文件生成后，什么才算用户已经取得结果？",
+      "checkpoint": "把后台完成与用户真正完成任务分开。",
+      "status": "not_applicable",
+      "decisionNote": "本操作范围为小程序内上传、查询或提交，不包含导出文件和向外部应用交付结果。第4、5、6章。",
+      "sourceRefIds": [
+        "req"
+      ]
+    },
+    {
+      "id": "property-20261014-upload-r5-p3",
+      "planningBriefId": "property-20261014-upload",
+      "ruleId": "R5",
+      "family": "async_recovery",
+      "questionId": "R5.P3",
+      "decisionDimension": "repeat_safety",
+      "attentionPriority": "P0",
+      "prompt": "重试会复用结果、安全重建，还是产生重复任务？",
+      "checkpoint": "定义安全重试与重复任务防护。",
+      "status": "open"
+    }
+  ],
+  "p0QuestionIds": [
+    "R4.P1",
+    "R4.P3",
+    "R5.P1",
+    "R5.P3"
+  ],
+  "knownConstraints": [
+    "独立手机号输入页不可与列表合并",
+    "办理中只读，已办结才可评价",
+    "本文档中的建议和待确认项不是需求方已确认决定",
+    "管理端设计不在范围"
+  ],
+  "sourceRefs": [
+    {
+      "id": "req",
+      "type": "requirement",
+      "label": "物业投诉小程序需求v1.0，第4至11章及附录原始需求；已写规则不代表运行验证"
+    }
+  ]
+}

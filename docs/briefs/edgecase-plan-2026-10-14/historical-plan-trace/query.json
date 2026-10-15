@@ -1,0 +1,60 @@
+{
+  "planId": "property-20261014-query",
+  "taskName": "查询列表及查看详情",
+  "taskGoal": "查询列表及查看详情",
+  "actors": [
+    "居民"
+  ],
+  "flowSteps": [
+    "独立输入手机号",
+    "查询列表",
+    "查看详情",
+    "返回列表"
+  ],
+  "knownConstraints": [
+    "独立手机号输入页不可与列表合并",
+    "办理中只读，已办结才可评价",
+    "本文档中的建议和待确认项不是需求方已确认决定",
+    "管理端设计不在范围"
+  ],
+  "complexitySignals": [
+    "async_action",
+    "non_success_possible",
+    "input_constraint",
+    "view_switch",
+    "active_state"
+  ],
+  "knownDecisions": [
+    {
+      "questionId": "R5.P2",
+      "status": "not_applicable",
+      "decisionNote": "本操作范围为小程序内上传、查询或提交，不包含导出文件和向外部应用交付结果。第4、5、6章。",
+      "sourceRefIds": [
+        "req"
+      ]
+    },
+    {
+      "questionId": "R4.P1",
+      "status": "decided",
+      "decisionNote": "第5章及P04：查询完成后展示对应手机号的列表；E07要求无记录展示空态。",
+      "sourceRefIds": [
+        "req"
+      ]
+    },
+    {
+      "questionId": "R4.P3",
+      "status": "decided",
+      "decisionNote": "P03交互规则3查询期间禁止重复提交；E08列表加载防抖。",
+      "sourceRefIds": [
+        "req"
+      ]
+    }
+  ],
+  "sourceRefs": [
+    {
+      "id": "req",
+      "type": "requirement",
+      "label": "物业投诉小程序需求v1.0，第4至11章及附录原始需求；已写规则不代表运行验证"
+    }
+  ]
+}
