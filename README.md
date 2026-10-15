@@ -46,7 +46,7 @@ npm run build
 
 ## 发布状态
 
-2026-10-15 已完成 GIS 连续阅读修订、Edgecase 与执行网案例改写、品牌系统改写及章节调整，补入投诉页需求检查前后对比图，并统一案例标题字重与章节间距。用户已授权将网站更新、配套记录和恢复备份提交并推送至 `origin/main`，本次验证与交付结果见 [Git 同步记录](docs/history/git-delivery-2026-10-15.md)，当前待办见 [TASK_STATUS.md](TASK_STATUS.md)。
+2026-10-15 已完成 GIS 连续阅读修订、Edgecase 与执行网案例改写、品牌系统改写及章节调整，补入投诉页需求检查前后对比图，并统一案例标题字重与章节间距。网站更新、配套记录和恢复备份已按授权随 `ccef88a` 推送至 `origin/main`，推送后已核对远端一致。本次验证与交付结果见 [Git 同步记录](docs/history/git-delivery-2026-10-15.md)，当前待办见 [TASK_STATUS.md](TASK_STATUS.md)。
 
 用户于 2026-09-15 确认网站已公开发布。仓库仍未记录托管平台、线上地址或部署命令，线上更新状态需另行核验。此前过程见 [历史状态快照](docs/history/status-before-git-sync-2026-10-15.md)。
 
