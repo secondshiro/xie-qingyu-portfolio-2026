@@ -1,11 +1,14 @@
 # 文档索引
 
-更新于 2026-10-15。接手先读根目录 README.md、TASK_STATUS.md、DESIGN.md 与 AGENTS.md；涉及定位和事实再读 PRODUCT.md。
+更新于 2026-10-16。接手先读根目录 README.md、TASK_STATUS.md、DESIGN.md 与 AGENTS.md；涉及定位和事实再读 PRODUCT.md。
 
 ## 当前结构与维护
 
 | 入口 | 用途 |
 | --- | --- |
+| [2026-10-16 Git 同步记录](history/git-delivery-2026-10-16.md) | 任务原型样式、功能恢复、测试、文档及关键截图的交付范围与推送结果 |
+| [GIS 原型交接说明](briefs/gis-prototype-2026-10-16/REVIEW.md) | 已采纳的样式、功能恢复边界、关键截图、源码与测试入口 |
+| [GIS 原型功能恢复](history/gis-workflow-recovery-2026-10-16.md) | 追查未合入主分支的转办与校验改动，恢复功能、保留样式，并增加 mockup 与新窗口一致性检查 |
 | [2026-10-15 Git 同步记录](history/git-delivery-2026-10-15.md) | 四个案例更新、投诉页对比图、标题样式、文档整理、提交范围与本次验证结果 |
 | [GIS 案例改写稿](briefs/gis-metrics-rewrite-2026-10-15/REWRITE.md) | 已回填的页面文字、逐条对照、九项复核与复述检查；执行记录见同目录 REVIEW.md |
 | [Edgecase 案例改写稿](briefs/edgecase-metrics-rewrite-2026-10-15/REWRITE.md) | 按九项指标重写的页面文字，40 处替换、1 段新增边界说明、结构改动说明、九项复核与字数对照；03 节素材与两栏布局同日被下条替换 |
