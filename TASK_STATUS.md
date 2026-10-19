@@ -55,7 +55,7 @@ Edgecase Skill 源文件与安装副本在仓库外，已同步到指令修订 6
 
 ## 后续工作
 
-- 首页文案 A、B 版待决定。行数、标题和关于段待决定项见 [草稿](docs/briefs/home-metrics-rewrite-2026-10-19/REWRITE-DRAFT.md)，首页源码尚未回填。草稿、配套阅读地图和交接记录已随 `fae7ee1` 推送至 `origin/main`，推送后已核对一致。
+- 首页文案 A、B 版待决定。行数、标题和关于段待决定项见 [草稿](docs/briefs/home-metrics-rewrite-2026-10-19/REWRITE-DRAFT.md)，首页源码尚未回填。
 
 - GIS 任务原型窄屏海报仍为旧截图，尚未覆盖此次样式与转办功能。后续从当前原型重新取图并同步 [素材索引](docs/guides/gis-media-index.md)；运行功能以站内原型为准。
 
