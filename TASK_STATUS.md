@@ -1,6 +1,6 @@
 # 作品集当前状态
 
-更新于 2026-10-16。此文件汇总当前实现、验证与待办。逐轮过程见 [整理前状态快照](docs/history/status-before-git-sync-2026-10-15.md)，本轮 Git 交付见 [同步记录](docs/history/git-delivery-2026-10-16.md)。
+更新于 2026-10-19。此文件汇总当前实现、验证与待办。逐轮过程见 [整理前状态快照](docs/history/status-before-git-sync-2026-10-15.md)，GIS 原型恢复记录见 [交付记录](docs/history/git-delivery-2026-10-16.md)，本轮首页文案草稿见 [交接记录](docs/history/home-copy-draft-2026-10-19.md)。
 
 ## 当前实现
 
@@ -54,6 +54,8 @@ Edgecase Skill 源文件与安装副本在仓库外，已同步到指令修订 6
 用户于 2026-09-15 确认网站已公开发布。本轮用户提供的公开地址为 [作品集网站](https://xie-qingyu-portfolio-2026.pages.dev/)，仓库尚未记录已核实的部署流程。本轮以 Git 推送为交付目标，线上更新状态另行核验。早期提交记录以 Git 历史为准。
 
 ## 后续工作
+
+- 首页文案 A、B 版待决定。行数、标题和关于段待决定项见 [草稿](docs/briefs/home-metrics-rewrite-2026-10-19/REWRITE-DRAFT.md)，首页源码尚未回填。
 
 - GIS 任务原型窄屏海报仍为旧截图，尚未覆盖此次样式与转办功能。后续从当前原型重新取图并同步 [素材索引](docs/guides/gis-media-index.md)；运行功能以站内原型为准。
 

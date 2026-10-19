@@ -1,11 +1,13 @@
 # 文档索引
 
-更新于 2026-10-16。接手先读根目录 README.md、TASK_STATUS.md、DESIGN.md 与 AGENTS.md；涉及定位和事实再读 PRODUCT.md。
+更新于 2026-10-19。接手先读根目录 README.md、TASK_STATUS.md、DESIGN.md 与 AGENTS.md；涉及定位和事实再读 PRODUCT.md。
 
 ## 当前结构与维护
 
 | 入口 | 用途 |
 | --- | --- |
+| [2026-10-19 首页文案交接](history/home-copy-draft-2026-10-19.md) | 两版草稿、版面约束、待决定项及代码未改的边界 |
+| [首页改写草稿](briefs/home-metrics-rewrite-2026-10-19/REWRITE-DRAFT.md) · [阅读地图](briefs/home-metrics-rewrite-2026-10-19/mindmap.html) | 按九项指标改写的首页文案、版面行数预算实测、A/B 两版对照与待决定项；阅读地图是可点击跳转与返回的导图版，支持只看结论；源码未改，待确认后回填 |
 | [2026-10-16 Git 同步记录](history/git-delivery-2026-10-16.md) | 任务原型样式、功能恢复、测试、文档及关键截图的交付范围与推送结果 |
 | [GIS 原型交接说明](briefs/gis-prototype-2026-10-16/REVIEW.md) | 已采纳的样式、功能恢复边界、关键截图、源码与测试入口 |
 | [GIS 原型功能恢复](history/gis-workflow-recovery-2026-10-16.md) | 追查未合入主分支的转办与校验改动，恢复功能、保留样式，并增加 mockup 与新窗口一致性检查 |
