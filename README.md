@@ -46,8 +46,6 @@ npm run build
 
 ## 发布状态
 
-2026-10-19 完成首页文案改写草稿与配套阅读地图，提供 A 紧凑版和 B 完整版的对照、版面实测及待决定项。草稿和截图已入档，首页源码未修改。文档整理与 Git 交付见 [首页文案交接记录](docs/history/home-copy-draft-2026-10-19.md)。
-
 2026-10-16 已恢复 GIS 任务原型的转人工、楼盘变更和校验警示流程，保留已采纳的字号、间距与卡片布局，补齐双入口检查和交接文档。更新已随 `bec3d9c` 推送至 `origin/main`，并核对远端一致。本轮 Git 交付见 [同步记录](docs/history/git-delivery-2026-10-16.md)，当前上下文见 [TASK_STATUS.md](TASK_STATUS.md)。
 
 2026-10-15 已完成 GIS 连续阅读修订、Edgecase 与执行网案例改写、品牌系统改写及章节调整，补入投诉页需求检查前后对比图，并统一案例标题字重与章节间距。网站更新、配套记录和恢复备份已按授权随 `ccef88a` 推送至 `origin/main`，推送后已核对远端一致。该轮验证与交付结果见 [Git 同步记录](docs/history/git-delivery-2026-10-15.md)，当前待办见 [TASK_STATUS.md](TASK_STATUS.md)。
