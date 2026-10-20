@@ -51,7 +51,7 @@ const facts = [
         <article><span class="proof-label">检查切入点</span><h3>从单个控件，看到整份表单</h3><p>需求已经写明上传失败可以单条重试。可如果文字填完了，视频还在上传，提交按钮这时该怎么响应，需求里没有写。顺着这一问，检查范围就从上传控件扩到了整张表单。</p></article>
         <article><span class="proof-label">设计判断</span><h3>把业务条件对应到操作分支</h3><p>若必须等附件传完，界面要解释等待原因并提供失败处理入口；若允许移除选填附件后提交，就要说明本次提交包含哪些内容。</p><p>这两种分支都由业务条件决定，直接影响按钮什么时候可用、失败之后从哪里恢复。需求里这两条当时还没有答复。</p></article>
       </div>
-      <div class="case-copy"><h3>让输出直接指向要做的设计</h3><p>我要求 Plan 的结论里带上下一步要画什么、怎么检查。下面三条是当时得到的设计安排，都还没有实施。</p></div>
+      <div class="case-copy"><h3>让输出直接指向要做的设计</h3><p>我要求 Plan 的结论里带上下一步要画什么、怎么检查。下面三条是当时得到的设计安排。</p></div>
       <div class="evolution-list">
         <article><span>组件状态</span><div><h3>让用户认出哪个附件需要处理</h3><p>区分上传中、成功和失败，为失败项提供单条重试入口，保留其他附件。</p></div></article>
         <article><span>流程分支</span><div><h3>把附件状态与提交操作放在一起设计</h3><p>补上上传未完成和部分失败的分支，依据提交条件确定按钮状态与后续操作。</p></div></article>
@@ -60,7 +60,7 @@ const facts = [
     </CaseSection>
     <CaseSection id="flight" label="04 / Review 设计后" title="先确认业务规则，再决定改哪处界面" intro="这次 Review 用的是一份已有的飞行计划设计稿。航线弹窗可以勾选多条，确认区域却只显示一条。AI 先追问一个计划允许几条航线，答复回来才知道该改弹窗还是改确认区域。" tone="stone">
       <div class="flight-evidence">
-        <MediaStage src={`${media}/flight-picker.png`} alt="航线选择弹窗使用复选框，同时勾选多条航线及文件夹" caption="评审使用的原设计稿，弹窗使用复选框。本次提出的单选建议尚未实施。" kind="observed" width={784} height={1784} />
+        <MediaStage src={`${media}/flight-picker.png`} alt="航线选择弹窗使用复选框，同时勾选多条航线及文件夹" caption="评审使用的原设计稿，弹窗使用复选框；评审建议改为互斥单选。" kind="observed" width={784} height={1784} />
         <div class="flight-evidence__detail">
           <MediaStage src={`${media}/flight-summary.png`} alt="选中后执行航线区域只展示一条航线" caption="确认区域只展示一条航线，与弹窗允许多选的表达不同。" kind="observed" width={760} height={540} />
           <div class="case-copy"><h3>同一处差异，可能对应两种修改方向</h3><p>如果允许多条，要检查确认区域有没有把选中的航线列全；如果只允许一条，要改的是弹窗的选择方式。</p><p>业务答复确认一个计划只允许一条航线。我据此建议改成互斥单选，文件夹只负责展开和收起，让选择方式跟业务规则对上。</p></div>
@@ -98,7 +98,7 @@ const facts = [
       </figure>
       <div class="question-compare">
         <article><span class="proof-label">观察到的差异</span><h3>“必须以 http:// 或 https:// 开头”，却允许普通文本通过</h3><p>问题出在进入下一步之前的校验环节，提示和校验说的不是同一件事。</p><p>建议在字段旁提示错误，修正后再放行，同时保留其他输入。</p></article>
-        <article><span class="proof-label">规则补充与回查</span><h3>把漏掉的检查补成输入约束规则</h3><p>第一次跑到这里时，规则没有检出格式问题。我补上输入约束这一条，按字段分别检查必填和格式限制。</p><p>拿补过规则的版本回查原页面，这次认出了链接字段的差异，还多查了改错之后能不能继续走、输入有没有保留。改动只在 Skill 这边，Arco 页面我没有改。</p></article>
+        <article><span class="proof-label">规则补充与回查</span><h3>把漏掉的检查补成输入约束规则</h3><p>第一次跑到这里时，规则没有检出格式问题。我补上输入约束这一条，按字段分别检查必填和格式限制。</p><p>拿补过规则的版本回查原页面，这次认出了链接字段的差异，还多查了改错之后能不能继续走、输入有没有保留。改动只在 Skill 这边，没有动 Arco 页面。</p></article>
       </div>
     </CaseSection>
     <CaseSection id="boundary" label="07 / 使用反馈与改进" title="让工具只回答设计要决定的事" intro="物业投诉那份报告里还写了系统能不能查回结果这类开发问题。使用者指出这些不该由设计回答，我把问法收了回来，让工具先说清设计师要决定什么。">
@@ -106,7 +106,7 @@ const facts = [
         <article><span class="proof-label">修订提问 / 明确职责</span><h3>把系统问题转成必要的协作问题</h3><p>提交后没收到结果，设计侧安排状态提示和恢复入口；系统能否查回结果，由开发补充事实。</p><p>Skill 只追问会影响设计的必要事实，标出它会影响哪个分支，其余部分继续往下走。</p></article>
         <article><span class="proof-label">修订输出 / 交代下一步</span><h3>让结论保留依据，也指向后续动作</h3><p>我把物业投诉里的做法写进输出要求，每个检查点都要说明它对应哪份设计产物、之后怎么验证。</p><p>已有要求直接沿用，只追问剩余决定；取得答复后继续原检查点。</p></article>
       </div>
-      <div class="case-copy"><h3>保留可回查的规则与依据</h3><p>两次调整都写进了 Skill，九条规则和证据要求没有减少，29 项自动测试通过。设计工作安排没有自动检查，靠人工回看。</p><p>规则里的检查范围和判断条件是我想的，AI 负责读需求、读设计稿并按规则跑检查，业务取舍和设计修改由人确认。</p><p>需要说明的是，这套工具是我的个人实践，规则和检查结论没有进入正式产品流程。飞行计划的单选建议、物业投诉上那三条设计安排都还没有实施，Arco 页面也不是我改的。29 项自动测试查的是规则资产和格式，不覆盖提问质量。</p></div>
+      <div class="case-copy"><h3>保留可回查的规则与依据</h3><p>两次调整都写进了 Skill，九条规则和证据要求保留，29 项自动测试通过；这些测试检查规则资产和格式，提问质量靠人工回看。</p><p>规则里的检查范围和判断条件由我确定，AI 负责读需求、读设计稿并按规则跑检查，业务取舍和设计修改由人确认。</p><p>这套工具是个人实践，还没有进入正式产品流程。飞行计划的单选建议、物业投诉上那三条设计安排，都还没有落到设计稿里。</p></div>
     </CaseSection>
     <section class="site-container case-closing" aria-labelledby="closing-title"><h2 id="closing-title">继续看看其他作品</h2><div class="case-closing__links"><a href="/#selected-work">返回作品索引</a></div></section>
   </main>

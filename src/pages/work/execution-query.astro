@@ -9,7 +9,7 @@ import '../../styles/execution-query.css';
 const facts = [
   { label: '角色', value: '独立完成产品判断、交互设计与工具实现' },
   { label: '交付', value: '本地查询工具、任务历史、Excel 导出与维护说明' },
-  { label: '阶段', value: '本地重构完成，已用两项合成任务进行浏览器试用' },
+  { label: '阶段', value: '本地重构完成，已用两项合成任务试用' },
 ];
 
 const tocSections = [
@@ -91,7 +91,7 @@ const tocSections = [
       <div class="case-copy">
         <p>名单和结果都留在本地之后，工具还要一直从官网页面取数。功能是一层层加在旧工具上的，取数和显示混在一处，官网换了验证方式，两部分都要重新安排。</p>
       </div>
-      <p class="evidence-note">下面五张截图来自工具的真实界面，公司名称、案号和金额使用固定合成数据。工具在本机处理真实查询，公开页面只展示合成示例。</p>
+      <p class="evidence-note">下面五张截图来自工具的真实界面，公司名称、案号和金额为固定合成数据。</p>
       <div class="product-pair" data-protected-media>
         <figure class="product-evidence" data-evidence-kind="real-product-synthetic-data">
           <p class="product-pair__label">V1 · 旧工具</p>
@@ -194,7 +194,7 @@ const tocSections = [
       </div>
       <figcaption class="artifact-caption">
         <span>真实产品·合成数据</span>
-        等待验证时，橙色提示条说明需要去官网操作，当前任务和 0 / 2 进度仍保留。画面使用固定合成数据。
+        等待验证时，橙色提示条说明需要去官网操作，当前任务和 0 / 2 进度仍保留。
       </figcaption>
     </figure>
       <div class="case-copy">
@@ -228,7 +228,7 @@ const tocSections = [
         </div>
         <figcaption class="artifact-caption">
           <span>真实产品·合成数据</span>
-          Excel 分为查询汇总、案件明细和未完成三张工作表，供分别查看与筛选。画面使用固定合成数据。
+          Excel 分为查询汇总、案件明细和未完成三张工作表，供分别查看与筛选。
         </figcaption>
       </figure>
     </CaseSection>
@@ -236,7 +236,7 @@ const tocSections = [
     <CaseSection id="evidence" label="06 / 试用与维护" title="从提交名单到导出，实际走了一遍" intro="2026 年 9 月 12 日，我用两项合成任务在真实浏览器中检查了这条流程。" tone="stone">
       <div class="case-copy" data-field-trial>
         <p>名单从控制台提交后，工具准备好官网查询页。使用者通过文字点选完成一次人工验证，第一项取得案件列表和 1 / 1 详情，第二项接着使用同一页面，确认无记录。最终 2 / 2 项完成、0 项失败，导出的三张工作表也检查了结构、公式错误和显示情况。</p>
-        <p>这次试用覆盖两项任务，验证了当时从查询到导出的流程。样本只代表这次小范围检查，后续批次仍需观察；官网改变页面或验证流程后，也要重新核对。</p>
+        <p>这次试用覆盖两项任务，后续批次还要继续观察；官网改动页面或验证流程后，也要重新核对。</p>
       </div>
     <figure
       class="product-evidence"
@@ -254,7 +254,7 @@ const tocSections = [
       </div>
       <figcaption class="artifact-caption">
         <span>真实产品·合成数据</span>
-        完成状态显示 2 / 2 项完成、0 项失败，一项有记录、一项无记录，旁边保留变化比较。画面使用固定合成数据。
+        完成状态显示 2 / 2 项完成、0 项失败，一项有记录、一项无记录，旁边保留变化比较。
       </figcaption>
     </figure>
       <div class="case-copy">
