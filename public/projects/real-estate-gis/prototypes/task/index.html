@@ -75,8 +75,9 @@
 
     /* —— 校验列表（步骤2） —— */
     .validation-tools { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; font-size: 13px; color: var(--text-2); }
-    .validation-tools select { font: inherit; color: var(--text-1); padding: 7px 10px; border: 1px solid var(--border-2); border-radius: 5px; background: var(--bg-white); }
-    .validation-tools select:focus-visible { outline: 2px solid var(--primary-6); outline-offset: 2px; }
+    .validation-tools .ui-select { flex: 0 0 auto; width: 200px; min-width: 180px; }
+    .validation-tools .ui-select__trigger { height: 32px; font-size: 13px; }
+    .validation-tools .ui-select__option { height: 30px; line-height: 30px; }
     .check-summary { margin: 0 0 20px; color: var(--text-2); font-size: 14px; }
     .check-table-wrap { overflow-x: auto; border: 1px solid var(--border-1); border-radius: 6px; }
     .check-table { width: 100%; border-collapse: collapse; font-size: 14px; table-layout: fixed; min-width: 760px; }
@@ -549,7 +550,24 @@
           <div class="step-panel" id="step2">
             <div class="card" style="padding:20px;">
               <h2 class="card__title" style="margin:0 0 8px;">校验结果</h2>
-              <div class="validation-tools"><label for="validationScenario">切换校验场景</label><select id="validationScenario"><option value="normal">全部通过</option><option value="association">关联幢缺失</option><option value="duplicate">已完成替换入库</option><option value="rooms">户室分层数据缺失</option><option value="multiple">多项警示 · 多户明细</option></select><span>可切换示例，查看不同校验结果</span></div>
+              <div class="validation-tools">
+                <span id="validationScenarioLabel">切换校验场景</span>
+                <div class="ui-select" data-select data-scenario>
+                  <button type="button" class="ui-select__trigger" data-trigger aria-haspopup="listbox" aria-expanded="false" aria-labelledby="validationScenarioLabel">
+                    <span class="ui-select__value" data-value>全部通过</span>
+                    <span class="ui-select__caret"></span>
+                  </button>
+                  <div class="ui-select__panel" data-panel role="listbox" aria-labelledby="validationScenarioLabel">
+                    <div class="ui-select__option is-selected" data-option data-id="normal" role="option" aria-selected="true">全部通过</div>
+                    <div class="ui-select__option" data-option data-id="association" role="option" aria-selected="false">关联幢缺失</div>
+                    <div class="ui-select__option" data-option data-id="duplicate" role="option" aria-selected="false">已完成替换入库</div>
+                    <div class="ui-select__option" data-option data-id="rooms" role="option" aria-selected="false">户室分层数据缺失</div>
+                    <div class="ui-select__option" data-option data-id="multiple" role="option" aria-selected="false">多项警示 · 多户明细</div>
+                  </div>
+                </div>
+                <input type="hidden" id="validationScenario" value="normal">
+                <span>可切换示例，查看不同校验结果</span>
+              </div>
               <p class="check-summary" id="checkSummary" role="status" aria-live="polite"></p>
               <div class="check-table-wrap"><table class="check-table"><caption class="check-object" id="checkObject"></caption><thead><tr><th scope="col">结果</th><th scope="col">检查项目</th><th scope="col">检查对象</th><th scope="col">结果说明</th></tr></thead><tbody id="checkList"></tbody></table></div>
               <p class="check-guidance" id="checkGuidance"></p>
@@ -1656,17 +1674,12 @@
     statusFilter = n.dataset.filter; renderFunnel(); renderCards(true);
   }));
 
-  $('validationScenario').value = validationScenario;
-  $('validationScenario').addEventListener('change', event => {
-    validationScenario = event.target.value;
-    renderChecks(); updateGate();
-    if ($('step3').classList.contains('is-active')) goStep(2);
-    const url = new URL(location.href); url.searchParams.set('check', validationScenario); url.searchParams.set('step', '2'); history.replaceState(null, '', url);
-  });
+  // 校验场景下拉（.ui-select 组件，与步骤1 的两个下拉同一套规范）
+  // 选中后的重算逻辑见下方「校验场景下拉」区块，紧跟在通用下拉绑定之后
 
   $('toStep2').addEventListener('click', () => { renderChecks(); goStep(2); });
   $('backTo1').addEventListener('click', () => {goStep(1); $('targetBuildingInput').focus();});
-  $('backTo2').addEventListener('click', () => { renderChecks(); goStep(2); $('validationScenario').focus(); });
+  $('backTo2').addEventListener('click', () => { renderChecks(); goStep(2); document.querySelector('.ui-select[data-scenario] .ui-select__trigger').focus(); });
   $('toStep3').addEventListener('click', () => { goStep(3); $('backTo2').focus(); });
   $('backBtn').addEventListener('click', () => {
     const params = new URLSearchParams({ restore:'1', building:taskBuilding, code:taskCode });
@@ -1682,6 +1695,7 @@
     document.querySelectorAll('.ui-select.is-open').forEach(o => {
       const t = o.querySelector('.ui-select__trigger');
       if (t && t.tagName === 'INPUT'){ const lv = t.getAttribute('data-last') || ''; if (t.value !== lv) t.value = lv; }
+      else if (t) t.setAttribute('aria-expanded', 'false');
       o.classList.remove('is-open');
     });
   }
@@ -1693,8 +1707,9 @@
     const targetId = sel.getAttribute('data-target');
     const emptyEl = searchable ? sel.querySelector('[data-empty]') : null;
     const valueEl = sel.querySelector('.ui-select__value');
-    const opts = () => panel.querySelectorAll('.ui-select__option');
+    const opts = () => [...panel.querySelectorAll('.ui-select__option')];
     if (isInput) trigger.setAttribute('data-last', trigger.value || '');
+    else trigger.setAttribute('aria-expanded', 'false');
 
     function filterOptions(q){
       q = (q || '').trim().toLowerCase();
@@ -1709,10 +1724,12 @@
     }
     function openPanel(){
       if (sel.classList.contains('is-open')) return;
-      document.querySelectorAll('.ui-select.is-open').forEach(o => { if (o !== sel){ const t = o.querySelector('.ui-select__trigger'); if (t && t.tagName === 'INPUT'){ const lv = t.getAttribute('data-last') || ''; if (t.value !== lv) t.value = lv; } o.classList.remove('is-open'); } });
+      document.querySelectorAll('.ui-select.is-open').forEach(o => { if (o !== sel){ const t = o.querySelector('.ui-select__trigger'); if (t && t.tagName === 'INPUT'){ const lv = t.getAttribute('data-last') || ''; if (t.value !== lv) t.value = lv; } else if (t) t.setAttribute('aria-expanded', 'false'); o.classList.remove('is-open'); } });
       sel.classList.add('is-open');
+      if (!isInput) trigger.setAttribute('aria-expanded', 'true');
       if (searchable){ filterOptions(''); if (trigger.select) { try { trigger.select(); } catch(e){} } }
     }
+    function visibleOptions(){ return opts().filter(o => o.style.display !== 'none'); }
 
     if (isInput){
       trigger.addEventListener('focus', openPanel);
@@ -1720,28 +1737,87 @@
       trigger.addEventListener('input', e => { if (!sel.classList.contains('is-open')) sel.classList.add('is-open'); filterOptions(e.target.value); });
       trigger.addEventListener('keydown', e => { if (e.key === 'Escape'){ sel.classList.remove('is-open'); trigger.value = trigger.getAttribute('data-last') || ''; } });
     } else {
-      trigger.addEventListener('click', e => { e.stopPropagation(); const wasOpen = sel.classList.contains('is-open'); closeUiSelects(); if (!wasOpen) sel.classList.add('is-open'); });
+      trigger.addEventListener('click', e => { e.stopPropagation(); const wasOpen = sel.classList.contains('is-open'); closeUiSelects(); if (!wasOpen) openPanel(); });
+      // 按钮式触发器的键盘操作：Enter/空格/上下箭头展开并落到当前项，Esc 收起
+      trigger.addEventListener('keydown', e => {
+        if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Enter' || e.key === ' '){
+          e.preventDefault();
+          openPanel();
+          const list = visibleOptions();
+          const current = list.findIndex(o => o.classList.contains('is-selected'));
+          const next = e.key === 'ArrowUp'
+            ? (current > 0 ? current - 1 : list.length - 1)
+            : (current >= 0 ? current : 0);
+          if (list[next]) list[next].focus();
+        } else if (e.key === 'Escape' && sel.classList.contains('is-open')){
+          closeUiSelects();
+        }
+      });
     }
 
     panel.addEventListener('click', e => e.stopPropagation());
     if (isInput) panel.addEventListener('mousedown', e => e.preventDefault()); // 选取时保持输入框聚焦
 
     opts().forEach(opt => {
+      if (!isInput) opt.tabIndex = -1;
+      opt.addEventListener('keydown', e => {
+        if (e.key === 'Escape'){ e.preventDefault(); closeUiSelects(); trigger.focus(); return; }
+        if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); opt.click(); trigger.focus(); return; }
+        if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(e.key)) return;
+        e.preventDefault();
+        const list = visibleOptions();
+        const i = list.indexOf(opt);
+        const next = e.key === 'ArrowDown' ? Math.min(i + 1, list.length - 1)
+          : e.key === 'ArrowUp' ? Math.max(i - 1, 0)
+          : e.key === 'Home' ? 0 : list.length - 1;
+        if (list[next]) list[next].focus();
+      });
       opt.addEventListener('click', e => {
         e.stopPropagation();
-        opts().forEach(o => o.classList.remove('is-selected'));
+        opts().forEach(o => {
+          o.classList.remove('is-selected');
+          if (!isInput) o.setAttribute('aria-selected', 'false');
+        });
         opt.classList.add('is-selected');
+        if (!isInput) opt.setAttribute('aria-selected', 'true');
         const id = opt.getAttribute('data-id') || '';
         const name = opt.getAttribute('data-name') || opt.textContent.trim();
         if (isInput){ trigger.value = (id ? id + ' ' : '') + name; trigger.setAttribute('data-last', trigger.value); }
         else if (valueEl) valueEl.textContent = opt.textContent.trim();
         if (targetId){ const t = document.getElementById(targetId); if (t) t.value = id; }
         sel.classList.remove('is-open');
+        if (!isInput) trigger.setAttribute('aria-expanded', 'false');
         if (isInput) trigger.blur();
       });
     });
   });
   document.addEventListener('click', closeUiSelects);
+
+  // 校验场景下拉：选中即重算校验结果，并把 key 记到地址栏
+  const scenarioSelect = document.querySelector('.ui-select[data-scenario]');
+  if (scenarioSelect){
+    const scenarioTrigger = scenarioSelect.querySelector('.ui-select__trigger');
+    const scenarioValue = scenarioSelect.querySelector('.ui-select__value');
+    const scenarioOpts = [...scenarioSelect.querySelectorAll('.ui-select__option')];
+    const syncScenarioSelect = () => {
+      scenarioOpts.forEach(o => {
+        const on = o.dataset.id === validationScenario;
+        o.classList.toggle('is-selected', on);
+        o.setAttribute('aria-selected', String(on));
+        if (on && scenarioValue) scenarioValue.textContent = o.textContent.trim();
+      });
+      $('validationScenario').value = validationScenario;
+    };
+    syncScenarioSelect();
+    scenarioOpts.forEach(opt => opt.addEventListener('click', () => {
+      validationScenario = opt.dataset.id;
+      syncScenarioSelect();
+      scenarioTrigger.focus();
+      renderChecks(); updateGate();
+      if ($('step3').classList.contains('is-active')) goStep(2);
+      const url = new URL(location.href); url.searchParams.set('check', validationScenario); url.searchParams.set('step', '2'); history.replaceState(null, '', url);
+    }));
+  }
 
   $('taskObjectTitle').textContent = taskObjectLabel;
   $('targetBuildingInput').value = 'BD-DEMO-' + taskCodeNumber.padStart(3,'0') + ' ' + taskObjectLabel;

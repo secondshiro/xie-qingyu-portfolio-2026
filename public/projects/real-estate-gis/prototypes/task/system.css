@@ -334,6 +334,7 @@ svg { flex-shrink: 0; }
   display: flex; align-items: center; justify-content: flex-start; gap: 8px;
 }
 .ui-select__option:hover { background: var(--primary-1, #F3F7FF); }
+.ui-select__option:focus-visible { outline: 2px solid var(--primary-6); outline-offset: -2px; background: var(--primary-1, #F3F7FF); }
 .ui-select__option.is-selected { color: var(--primary-6); font-weight: 600; }
 .ui-select__option.is-selected::after {
   content: ''; width: 14px; height: 14px; flex: none;

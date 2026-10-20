@@ -16,7 +16,10 @@
 .wk-dropdown__trigger{display:inline-flex;align-items:center;gap:10px}
 .wk-dropdown__trigger svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .wk-dropdown.is-open .wk-dropdown__trigger svg{transform:rotate(180deg)}
-.building .wk-toolbar{z-index:100}
+/* 工具栏需要 overflow 可见，否则下拉面板会被裁在 48px 高的条里：
+   workspace-tdesign.css 的 .workspace-shell .wk-toolbar 带 overflow:hidden，
+   这里用更高优先级的组合选择器覆盖它 */
+.workspace-shell.building .wk-toolbar{z-index:100;overflow:visible}
 .building #quickDrop{z-index:101}
 .building #quickDrop .wk-dropdown__menu{z-index:9999}
 </style>

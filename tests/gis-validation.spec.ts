@@ -1,6 +1,13 @@
 import { expect, test } from '@playwright/test';
+import type { FrameLocator, Page } from '@playwright/test';
 
 const route = '/projects/real-estate-gis/prototypes/task/index.html?building=宇济一号&code=17幢';
+
+// 校验场景用原型统一的 .ui-select 组件：点触发器展开，再点选项
+async function pickScenario(surface: Page | FrameLocator, label: string) {
+  await surface.getByRole('button', { name: '切换校验场景' }).click();
+  await surface.getByRole('option', { name: label, exact: true }).click();
+}
 
 test('作品集内嵌原型可返回校验、切换多项警示，再回到户室转办', async ({ page }) => {
   await page.goto('/work/real-estate-gis/');
@@ -8,7 +15,7 @@ test('作品集内嵌原型可返回校验、切换多项警示，再回到户�
   await iframe.scrollIntoViewIfNeeded();
   const task = page.frameLocator('iframe[title="实测替换预测交互原型"]');
   await task.getByRole('button', { name: '返回校验', exact: true }).click();
-  await task.getByLabel('切换校验场景').selectOption('multiple');
+  await pickScenario(task, '多项警示 · 多户明细');
   await expect(task.locator('#checkSummary')).toContainText('警示 2 项');
   await task.locator('#checkList details').nth(1).locator('summary').click();
   await expect(task.locator('#checkList details').nth(1).locator('li')).toHaveCount(8);
@@ -64,11 +71,11 @@ for (const [scenario, title, reason] of [
 test('原型场景切换重新计算结果，恢复后可继续且保留结构项阻断', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto(`${route}&step=2`);
-  for (const scenario of ['rooms', 'normal']) {
+  for (const [scenario, label] of [['rooms', '户室分层数据缺失'], ['normal', '全部通过']] as const) {
     await expect(page.locator('.prototype-note')).toContainText('不会修改真实房屋记录');
-    await page.getByLabel('切换校验场景').selectOption(scenario);
+    await pickScenario(page, label);
     await expect(page.locator('.prototype-note')).not.toHaveAttribute('open');
-    await expect(page.getByLabel('切换校验场景')).toBeVisible();
+    await expect(page.getByRole('button', { name: '切换校验场景' })).toHaveText(label);
     await expect(page).toHaveURL(new RegExp('check=' + scenario));
     await expect(page.locator('#toStep3')).toBeEnabled();
   }
@@ -118,12 +125,12 @@ for (const width of [1070, 1672]) {
 
  test('校验页直接切换多项警示，刷新保留样例并能恢复全部通过', async ({ page }) => {
   await page.goto(`${route}&step=2`);
-  await page.getByLabel('切换校验场景').selectOption('multiple');
+  await pickScenario(page, '多项警示 · 多户明细');
   await page.reload();
-  await expect(page.getByLabel('切换校验场景')).toHaveValue('multiple');
+  await expect(page.getByRole('button', { name: '切换校验场景' })).toHaveText('多项警示 · 多户明细');
   await expect(page.locator('#checkSummary')).toContainText('警示 2 项');
   await expect(page.locator('#toStep3')).toBeEnabled();
-  await page.getByLabel('切换校验场景').selectOption('normal');
+  await pickScenario(page, '全部通过');
   await page.locator('#toStep3').click();
   await expect(page.locator('#step3')).toBeVisible();
   await expect(page.locator('#validationNotice')).toBeHidden();
