@@ -605,7 +605,9 @@ function needleTail(tip,ang){
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
 /* ═══ 主循环 ═══ */
-function tick(t){
+function tick(){
+  /* 与 transit/autoSew 的起点使用同一时钟，避免 iframe 动画帧时间偏移。 */
+  const t=performance.now();
   if(phase!=='board'&&phase!=='seal'){requestAnimationFrame(tick);return;}
   let fillAmt=-1, fillOp=0;
   const angTarget=MENTOR_ANG;   /* 针不再转向：全程固定捏合轴，只位移 */
