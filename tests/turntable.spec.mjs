@@ -3,6 +3,10 @@ import { test, expect } from '@playwright/test';
 const projects = ['房产 GIS 体验重构', '把设计经验整理成可复用的 AI 工作流', '新禾智飞品牌系统提案', '执行网查询助手', '粤见 · 广府非遗体验小程序'];
 const select = (page, index) => page.locator(`[data-select="${index}"]`);
 const deck = page => page.locator('[data-deck]');
+const settled = async page => {
+  await page.waitForLoadState('load');
+  await expect(page.locator('html')).not.toHaveAttribute('data-page-transition-phase', /.+/);
+};
 
 test('五张印刷封面加载成功，中文目录标签在封面之外且保留作品选择', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 810 });
@@ -372,10 +376,10 @@ test('触屏封套一次点击进入对应案例，返回保留该作品', async
   for (let i = 0; i < paths.length; i++) {
     await select(page, i).tap();
     await expect(page).toHaveURL(`${baseURL}/work/${paths[i]}/`);
-    await expect(page.locator('html')).not.toHaveAttribute('data-page-transition-phase', /.+/);
+    await settled(page);
     await page.locator('.site-nav__links a').tap();
     await expect(page).toHaveURL(`${baseURL}/`);
-    await expect(page.locator('html')).not.toHaveAttribute('data-page-transition-phase', /.+/);
+    await settled(page);
     await expect(select(page, i)).toHaveAttribute('aria-current', 'true');
     await expect(page.locator(`#work-${i}`)).toBeVisible();
   }

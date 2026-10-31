@@ -19,7 +19,10 @@ const cases = [
 const gis = cases[0].path;
 const openCase = (page: Page, index = 0) => page.locator(`[data-select="${index}"]`);
 const curtain = (page: Page) => page.locator('html');
-const settled = (page: Page) => expect(curtain(page)).not.toHaveAttribute('data-page-transition-phase', /.+/);
+const settled = async (page: Page) => {
+  await page.waitForLoadState('load');
+  await expect(curtain(page)).not.toHaveAttribute('data-page-transition-phase', /.+/);
+};
 
 async function observeTransitions(page: Page) {
   await page.addInitScript(() => {
