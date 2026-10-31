@@ -547,8 +547,8 @@ function toSeal(){
     <g id="sealhz" transform="translate(292,506)"><g class="s-in">${sealSVG(26,40,'shouze',true)}</g></g>`;
   veil.classList.add('on'); buzz(20);
 }
-/* ═══ v5 跳转解析：预览服务的根目录不一（曾现 404 Not Found），先探测可达的 v5 真源再跳 ═══ */
-const V5CANDS=['../yuejian-plan/v5.html?shell=off','/yuejian-plan/v5.html?shell=off','../../yuejian-plan/v5.html?shell=off','v5.html?shell=off'];
+/* ═══ 站内小程序与 P0 同目录；旧源稿路径可能回退到作品集首页，不参与探测 ═══ */
+const V5CANDS=['v5.html?shell=off'];
 let V5PROBE=null;
 function probeV5(){
   if(V5PROBE)return V5PROBE;
