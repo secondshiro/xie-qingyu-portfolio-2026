@@ -14,6 +14,7 @@ const cases = [
   { path: '/work/edgecase-planner/', name: 'AI 评审', index: 1 },
   { path: '/work/brand-system/', name: '品牌系统', index: 2 },
   { path: '/work/execution-query/', name: '执行网助手', index: 3 },
+  { path: '/work/yuejian/', name: '粤见', index: 4 },
 ];
 const gis = cases[0].path;
 const openCase = (page: Page, index = 0) => page.locator(`[data-select="${index}"]`);

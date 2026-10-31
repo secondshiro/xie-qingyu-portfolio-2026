@@ -1,18 +1,19 @@
 import { test, expect } from '@playwright/test';
 
-const projects = ['房产 GIS 体验重构', '把设计经验整理成可复用的 AI 工作流', '新禾智飞品牌系统提案', '执行网查询助手'];
+const projects = ['房产 GIS 体验重构', '把设计经验整理成可复用的 AI 工作流', '新禾智飞品牌系统提案', '执行网查询助手', '粤见 · 广府非遗体验小程序'];
 const select = (page, index) => page.locator(`[data-select="${index}"]`);
 const deck = page => page.locator('[data-deck]');
 
-test('四张印刷封面加载成功，中文目录标签在封面之外且保留作品选择', async ({ page }) => {
+test('五张印刷封面加载成功，中文目录标签在封面之外且保留作品选择', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 810 });
   await page.goto('/');
-  await expect(page.locator('.sleeve__arrow')).toHaveCount(4);
-  await expect(page.locator('.work__open')).toHaveCount(0);
+  await expect(page.locator('.sleeve__arrow')).toHaveCount(5);
+  await expect(page.locator('.work__open, .sleeve__open')).toHaveCount(0);
+  expect(await page.locator('.sleeve__cover').evaluateAll(items => new Set(items.map(el => Math.round(el.getBoundingClientRect().top))).size)).toBe(1);
   await expect(page.locator('.collection__hint-hover')).toHaveText('悬停换片 · 点击看案例');
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < projects.length; i++) {
     const sleeve = select(page, i);
-    await expect(sleeve.locator('.sleeve__cover')).toHaveText('查看案例');
+    await expect(sleeve.locator('.sleeve__cover')).toHaveText('');
     expect(await sleeve.locator('img').evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true);
     const geometry = await sleeve.evaluate(el => ({
       cover: el.querySelector('.sleeve__cover').getBoundingClientRect().bottom,
@@ -23,10 +24,6 @@ test('四张印刷封面加载成功，中文目录标签在封面之外且保�
     expect(geometry.caption - geometry.cover).toBe(12);
     expect(geometry.panel - geometry.bottom).toBeGreaterThanOrEqual(40);
     await sleeve.hover();
-    await expect(sleeve.locator('.sleeve__open')).toHaveCSS('opacity', '1');
-    const coverBox = await sleeve.locator('.sleeve__cover').boundingBox();
-    const overlayBox = await sleeve.locator('.sleeve__open').boundingBox();
-    expect(overlayBox).toEqual(coverBox);
     await expect(sleeve).toHaveAttribute('aria-current', 'true');
     await expect(page.locator(`[data-work="${i}"]`)).toBeVisible();
     await expect(page).toHaveURL('/');
@@ -34,14 +31,14 @@ test('四张印刷封面加载成功，中文目录标签在封面之外且保�
 });
 
 for (const width of [320, 375, 390, 768, 1010, 1024, 1280, 1440]) {
-  test(`${width}px 个人定位、四个封套与全部详情可读，无横向溢出`, async ({ page }) => {
+  test(`${width}px 个人定位、五个封套与全部详情可读，无横向溢出`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/');
     await expect(page.locator('h1')).toHaveCount(1);
     await expect(page.locator('h1')).toBeVisible();
     await expect(page.locator('h1')).toHaveText('产品体验设计师');
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < projects.length; i++) {
       await expect(select(page, i).locator('.sleeve__title')).toBeVisible();
       await select(page, i).hover();
       for (const face of ['a', 'b']) {
@@ -124,7 +121,6 @@ test('键盘焦点可见，左右键选片，上下键切换 A/B 且不滚动', 
   await select(page, 0).focus();
   await page.keyboard.press('ArrowRight');
   await expect(select(page, 1)).toBeFocused();
-  await expect(select(page, 1).locator('.sleeve__open')).toHaveCSS('opacity', '1');
   await expect(select(page, 1)).toHaveAttribute('aria-current', 'true');
   expect(await select(page, 1).evaluate(el => getComputedStyle(el).boxShadow)).toBe('none');
   expect(await select(page, 1).locator('.sleeve__title').evaluate(el => getComputedStyle(el).textDecorationLine)).toBe('underline');
@@ -139,11 +135,11 @@ test('键盘焦点可见，左右键选片，上下键切换 A/B 且不滚动', 
   await expect(page.locator('[data-side="a"]')).toHaveAttribute('aria-pressed', 'true');
 });
 
-test('无 JavaScript 有四个案例入口，简历下载与案例链接可用', async ({ browser, request }) => {
+test('无 JavaScript 有五个案例入口，简历下载与案例链接可用', async ({ browser, request }) => {
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
   await page.goto('http://127.0.0.1:4331/');
-  await expect(page.locator('noscript a')).toHaveCount(4);
+  await expect(page.locator('noscript a')).toHaveCount(5);
   for (const link of await page.locator('noscript a').all()) {
     await expect(link).toBeVisible();
     const response = await request.get(await link.getAttribute('href'));
@@ -205,7 +201,7 @@ for (const [width, height] of [[1440,810], [1440,900], [1536,864], [1920,1080]])
       }
     };
     await visibleInScreen('h1, .intro__lead, .intro__actions, .deck, .sleeve__cover, .sides');
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < projects.length; i++) {
       await select(page, i).hover();
       for (const face of ['a', 'b']) {
         await page.locator(`[data-side="${face}"]`).click();
@@ -234,9 +230,9 @@ test('默认及减弱动效下，只有选中封套为空，其余唱片归位�
   await page.setViewportSize({width: 1452, height: 993});
   await page.emulateMedia({reducedMotion: 'reduce'});
   await page.goto('/');
-  for (let current = 0; current < 4; current++) {
+  for (let current = 0; current < projects.length; current++) {
     await select(page, current).hover();
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < projects.length; i++) {
       const style = await select(page, i).locator('.sleeve__record').evaluate(el => ({opacity: getComputedStyle(el).opacity, y: new DOMMatrix(getComputedStyle(el).transform).m42 / el.getBoundingClientRect().height}));
       expect(style.opacity).toBe(i === current ? '0' : '1');
       if(i !== current) expect(style.y).toBeCloseTo(-0.24, 2);
@@ -260,13 +256,13 @@ for (const [width, height] of [[1440,810],[1920,1080]]) {
       ratio:document.querySelector('.deck').getBoundingClientRect().width / document.querySelector('.sleeve__cover').getBoundingClientRect().width,
       controls:document.querySelector('.panel__head').getBoundingClientRect().height,
       deckWidth:document.querySelector('.deck').getBoundingClientRect().width,
-      bottomDelta:Math.abs(document.querySelector('.deck').getBoundingClientRect().bottom-document.querySelector('.sleeve__caption').getBoundingClientRect().bottom)
+      bottomDelta:Math.abs(document.querySelector('.deck').getBoundingClientRect().bottom-document.querySelector('.crate li:last-child .sleeve__caption').getBoundingClientRect().bottom)
     }));
     if (height >= 1080) expect(bounds.bottom).toBeLessThanOrEqual(height);
     expect(bounds.ratio).toBeGreaterThan(3);
     expect(bounds.deckWidth).toBe(640);
     expect(bounds.bottomDelta).toBeLessThan(1);
-    const captionsFit = await page.locator('.sleeve__title').evaluateAll(items => items.every(el => el.clientHeight <= 18 && el.scrollWidth <= el.clientWidth));
+    const captionsFit = await page.locator('.sleeve__title').evaluateAll(items => items.every(el => el.clientHeight <= 54 && el.scrollWidth <= el.clientWidth));
     expect(captionsFit).toBe(true);
     await expect(page.locator(".sleeve__deliverable, #sleeve-help, .intro__eyebrow")).toHaveCount(0);
     expect(bounds.controls).toBeLessThanOrEqual(34);
@@ -347,8 +343,8 @@ test('页面与控制按钮均可左右选片，唱片共用无数字标签', as
   await page.keyboard.press('ArrowLeft');
   await expect(page.locator('[data-select]').first()).toHaveAttribute('aria-current', 'true');
   await expect(page.locator('#collection-title')).toHaveCount(0);
-  await expect(page.locator('.sleeve__record .record__label')).toHaveCount(4);
-  expect(await page.locator('.sleeve__record').allTextContents()).toEqual(['', '', '', '']);
+  await expect(page.locator('.sleeve__record .record__label')).toHaveCount(5);
+  expect(await page.locator('.sleeve__record').allTextContents()).toEqual(['', '', '', '', '']);
 });
 
 test('悬停预览保持最新作品，离开封套不跳转或重置', async ({ page }) => {
@@ -361,20 +357,17 @@ test('悬停预览保持最新作品，离开封套不跳转或重置', async ({
   await expect(page.locator('#work-2')).toBeVisible();
   await expect(deck(page)).toHaveAttribute('data-phase', 'idle');
   await expect(deck(page)).toHaveAttribute('data-loaded', '2');
-  await expect(select(page, 2).locator('.sleeve__open')).toHaveCSS('opacity', '0');
   await select(page, 2).hover();
-  await expect(select(page, 2).locator('.sleeve__open')).toHaveCSS('opacity', '1');
   await page.screenshot({ path: 'artifacts/screenshots/home-sleeve-hover.png', fullPage: true });
 });
 
 test('触屏封套一次点击进入对应案例，返回保留该作品', async ({ browser, baseURL }) => {
   const context = await browser.newContext({ hasTouch: true, isMobile: true, viewport: { width: 390, height: 844 } });
   const page = await context.newPage();
-  const paths = ['real-estate-gis', 'edgecase-planner', 'brand-system', 'execution-query'];
+  const paths = ['real-estate-gis', 'edgecase-planner', 'brand-system', 'execution-query', 'yuejian'];
   await page.goto(`${baseURL}/`);
   await expect(page.locator('.collection__hint-touch')).toBeVisible();
   await expect(page.locator('.collection__hint-hover')).toBeHidden();
-  for (const label of await page.locator('.sleeve__open').all()) await expect(label).toHaveCSS('opacity', '1');
   await page.screenshot({ path: 'artifacts/screenshots/home-sleeve-touch.png', fullPage: true });
   for (let i = 0; i < paths.length; i++) {
     await select(page, i).tap();

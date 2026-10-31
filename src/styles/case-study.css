@@ -246,6 +246,66 @@
   color: var(--color-ink);
 }
 
+/* 案例内部分块：一个 18px 小标题带一块内容；块内 1rem，块间由 .case-blocks 统管 */
+.case-blocks {
+  display: grid;
+  gap: clamp(2rem, 4vw, 2.5rem);
+  min-width: 0;
+}
+
+.case-block {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.case-block > h3 {
+  font-size: 1.125rem;
+  font-weight: 500;
+  letter-spacing: -0.0125em;
+  line-height: 1.35;
+}
+
+.case-block > p {
+  max-width: var(--reading);
+  color: var(--color-muted);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+/* 对照块：卡片与结论之间留出气泡尾巴的高度 */
+.case-block--compare {
+  gap: 1.5rem;
+}
+
+/* 结论气泡：接在对照下方的那句判断，尾巴向上指回上面那张卡（粤见 01 节）。
+   底色用站内既有的下沉色，不新增色板；文字回到主文字色，因为这一句是本节结论 */
+.case-callout {
+  position: relative;
+  max-width: var(--reading);
+  margin-top: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--radius-media);
+  background: var(--color-panel);
+}
+
+.case-callout::before {
+  content: '';
+  position: absolute;
+  top: -0.75rem;
+  left: 2rem;
+  width: 1.6rem;
+  height: 0.78rem;
+  background: var(--color-panel);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
+.case-callout p {
+  color: var(--color-ink);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
 .evidence-grid,
 .reference-grid,
 .value-grid,
@@ -292,6 +352,75 @@
   height: 100%;
 }
 
+/* 竖屏媒体网格（手机截图 / 竖版视频 / 可操作原型）：
+   固定 21.25rem 轨道保证所有单屏媒体同一尺寸，媒体满幅铺满格子、无白边；
+   1160px 容器下一行三格，其余整行居中；45rem 以下转全宽单列 */
+.portrait-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 21.25rem);
+  justify-content: center;
+  align-items: start;
+  gap: 1.5rem 1rem;
+}
+
+/* 四件一组时按 2×2 排列：auto-fill 在三列宽度下会剩一张孤零零落在左边；
+   两列不满宽，改为贴左，与正文左缘对齐 */
+.portrait-grid--pair {
+  grid-template-columns: repeat(2, 21.25rem);
+  justify-content: start;
+}
+
+.portrait-grid .media-stage {
+  min-width: 0;
+}
+
+.portrait-grid .media-stage__frame {
+  background: var(--color-stone);
+  border-radius: var(--radius-media);
+  overflow: hidden;
+}
+
+.portrait-grid .media-stage__frame img,
+.portrait-grid .media-stage__frame video {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* 可操作原型嵌入（390×844）：与竖屏媒体同一轨道、同一比例，满幅无白边 */
+.proto-embed {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+.proto-embed__viewport {
+  position: relative;
+  aspect-ratio: 390 / 844;
+  background: var(--color-stone);
+  border-radius: var(--radius-media);
+  overflow: hidden;
+}
+
+.proto-embed__viewport iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 390px;
+  height: 844px;
+  max-width: none; /* global.css 的通用 max-width:100% 会把 390 压回容器宽 */
+  border: 0;
+  background: var(--color-paper);
+  transform-origin: top left;
+  /* transform 由页面脚本按容器宽实时计算（容器 aspect-ratio 恒 390/844，内容一律按真机 390 布局） */
+}
+
+.proto-embed__link {
+  text-align: center;
+  font-size: 0.8rem;
+}
+
 .evidence-key,
 .reference-card,
 .value-card,
@@ -307,7 +436,38 @@
 }
 
 .evidence-key {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  --evidence-cols: 4;
+  grid-template-columns: repeat(var(--evidence-cols), minmax(0, 1fr));
+}
+
+/* 条目不足四条时按实际条数均分整栏，不留空列（粤见「看 / 约 / 收」）。
+   只改变量，单列断点仍可整体覆盖 grid-template-columns */
+.evidence-key[data-columns='3'] {
+  --evidence-cols: 3;
+}
+
+/* 两栏变体：行业做法与本案并排（粤见 01 节），只改变量，单列断点仍可整体覆盖 */
+.evidence-key[data-columns='2'] {
+  --evidence-cols: 2;
+  position: relative;
+  column-gap: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+/* 中间一条竖线，把两边读成对立而不是并列 */
+.evidence-key[data-columns='2']::before {
+  content: '';
+  position: absolute;
+  top: 1.25rem;
+  bottom: 1.25rem;
+  left: 50%;
+  width: 1px;
+  background: var(--color-line);
+}
+
+@media (max-width: 45rem) {
+  .evidence-key[data-columns='2']::before {
+    display: none;
+  }
 }
 
 .evidence-key div {
@@ -625,8 +785,9 @@
   .workspace-notes,
   .boundary-grid,
   .workspace__header,
-  .experience-diagram {
-    grid-template-columns: 1fr;
+  .experience-diagram,
+  .portrait-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .experience-diagram { justify-items: stretch; }

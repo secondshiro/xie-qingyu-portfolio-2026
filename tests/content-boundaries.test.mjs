@@ -8,6 +8,7 @@ const pages = [
   'src/pages/work/brand-system.astro',
   'src/pages/work/edgecase-planner.astro',
   'src/pages/work/execution-query.astro',
+  'src/pages/work/yuejian.astro',
 ];
 
 test('公开页面只展示批准的邮箱和定位', async () => {
