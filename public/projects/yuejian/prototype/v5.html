@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <!-- 维护提示：筑紫字体已子集嵌入（tools/font-embed.mjs）——改文案/加字后重跑该脚本更新子集 -->
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>粤见 · v5 十屏｜八页型 · 纸墨朱</title>
+<title>粤见 · 广府非遗体验原型</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='%23F4EFE3'/><rect x='6' y='5' width='4' height='6' fill='%23A6402C'/></svg>">
 <style>
 :root{
@@ -587,11 +587,11 @@ body.bare .stage{margin:auto 0;box-shadow:0 18px 44px -26px rgba(30,27,24,.45),0
 /* 入口行贴屏底：body 拉成列，mrows 顶到底，留 14px 呼吸位再接 tabBar */
 #p8 .body{display:flex;flex-direction:column}
 #p8 .mrows{margin-top:auto;padding-bottom:14px}
-#p8 .mrow2{display:flex;align-items:center;gap:12px;padding:14px 2px;border-top:1px solid var(--line);
+#p8 .mrow2{display:grid;grid-template-columns:minmax(0,1fr) auto 8px;align-items:center;gap:12px;padding:14px 2px;border-top:1px solid var(--line);
   cursor:pointer;text-decoration:none;color:var(--ink)}
 #p8 .mrow2:last-child{border-bottom:1px solid var(--line)}
 #p8 .mrow2 .mk{font-size:14px;letter-spacing:.06em}
-#p8 .mrow2 .rv{margin-left:auto;font-size:11px;color:var(--mute);letter-spacing:.06em}
+#p8 .mrow2 .rv{text-align:right;font-size:11px;color:var(--mute);letter-spacing:.06em}
 
 /* ══ P10 手泽册（册变体） ══ */
 #p10 .dock{gap:12px}
@@ -1349,7 +1349,7 @@ body.nomotion *{animation:none!important;transition:none!important}
             <span class="pt">
               <span class="lab">手泽 · 今日新收</span>
               <b>广绣小花</b>
-              <i>今日上手 · 十二针 · 梁玉屏替您收针</i>
+              <i>扫码体验 · 十二针 · 梁玉屏替您收针</i>
               <em>收下时，她的手替您缝完了花心与茎叶。</em>
 
           </span>
@@ -1416,7 +1416,7 @@ body.nomotion *{animation:none!important;transition:none!important}
         <div class="dhead">
           <span class="lab" id="pcLab">手泽 · 今日新收</span>
           <h1 id="pcName">广绣小花</h1>
-          <div class="dmeta" id="pcMeta">今日上手 · 十二针 · 梁玉屏替您收针</div>
+          <div class="dmeta" id="pcMeta">扫码体验 · 十二针 · 梁玉屏替您收针</div>
         </div>
 
         <div class="quote" id="pcQuote"><span class="ql">收下时，她的手替您缝完了</span><span class="ql">花心与茎叶。</span></div>
@@ -1424,7 +1424,7 @@ body.nomotion *{animation:none!important;transition:none!important}
         <div class="lfacts" id="pcFacts">
           <div><dt>针数</dt><dd>十二针</dd></div>
           <div><dt>收针人</dt><dd>梁玉屏</dd></div>
-          <div><dt>上手</dt><dd>课上</dd></div>
+          <div><dt>来源</dt><dd>扫码体验</dd></div>
           <div><dt>今日</dt><dd>新收</dd></div>
         </div>
       </div>
@@ -1633,9 +1633,9 @@ body.nomotion *{animation:none!important;transition:none!important}
   var PIECES = [
     { img:'assets/shouze-flower.png', name:'广绣小花',
       lab:'手泽 · 今日新收', cap:'广绣小花 · 今日收下',
-      meta:['今日上手 · 十二针 · 梁玉屏替您收针'],
+      meta:['扫码体验 · 十二针 · 梁玉屏替您收针'],
       quote:['收下时，她的手替您缝完了', '花心与茎叶。'],
-      facts:[['针数', '十二针'], ['收针人', '梁玉屏'], ['上手', '课上'], ['今日', '新收']] },
+      facts:[['针数', '十二针'], ['收针人', '梁玉屏'], ['来源', '扫码体验'], ['今日', '新收']] },
     { img:'assets/p5-first.jpg', name:'第一片',
       lab:'手泽 · 第壹件', cap:'第一片 · 粤绣起针',
       meta:['十一月七日 · 第一课 · 粤绣起针', '旋针齐针 · 七层色阶 · 三小时'],

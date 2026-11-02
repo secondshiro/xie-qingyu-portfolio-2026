@@ -11,10 +11,10 @@ const W = 780;
 const H = 1688;
 
 const facts = [
-  { label: '角色', value: '题材研究、信息架构、十一屏视觉与动效、走查脚本，独立完成' },
-  { label: '输入', value: '粤绣等广府非遗品类资料，工坊课单与手作收下场景；390×844 小程序载体' },
-  { label: '贡献', value: '四 tab 信息架构、八种页型、八种动作原语、四色设计令牌、P0 上手序列' },
-  { label: '输出', value: '十一屏可操作原型、五段动效录像、设计规范两页、四套走查脚本' },
+  { label: '角色', value: '信息架构、界面视觉与交互动效设计，独立完成' },
+  { label: '输入', value: '广府非遗主题；展馆浏览、工坊预约与作品留存场景' },
+  { label: '贡献', value: '四个底部栏目、八类页面布局、纸张动效与视觉规范' },
+  { label: '输出', value: '十一屏可操作原型、五段演示录像、两页视觉规范' },
   { label: '阶段', value: '高保真原型完成；未上线，无业务数据' },
 ];
 
@@ -31,26 +31,26 @@ const tocSections = [
 
 <SiteLayout
   title="粤见 · 广府非遗体验小程序｜谢擎宇"
-  description="把广府非遗的一次体验做成 390×844 的小程序高保真原型：看懂一件、约到一课、收下一件手作。四 tab 信息架构、八种页型、八种互不重复的动效原语、四色设计令牌，附可操作原型与动效录像。"
+  description="围绕展馆浏览、工坊预约与手作留存设计的微信小程序概念原型，展示十一屏界面、纸张交互动效与视觉规范。"
   current="work"
 >
   <main class="case-page" id="main" tabindex="-1">
     <CaseHero
       eyebrow="概念产品 · 移动端 C 端体验"
       title="粤见 · 广府非遗体验小程序"
-      summary="广府非遗的多数接触停在展柜前的一次路过。粤见把一次体验做完整：在展厅看懂一件，在工坊约到一课，把手作收进自己的「手泽」册。我独立完成了从题材研究、信息架构到十一屏高保真原型的全部设计与走查。"
+      summary="粤见是一个广府非遗体验小程序的概念设计。我把展馆浏览、工坊预约和作品留存连在一起，让观众看过一件器物后，可以认识匠人、了解课程，再把体验中留下的作品收进自己的「手泽」册。设计重点是移动端的信息安排、纸墨视觉与交互动效。"
       facts={facts}
     />
 
     <div class="site-container case-cover">
       <MediaStage
         src={`${media}/screens/overview.png`}
-        alt="粤见十一屏总览：三行手机截图，按封、索、器、档、课、决、凭、册、凭变体、册变体、手泽详情排列"
-        caption="十一屏按 L1 根页、L2 详情、L3 结果分层，底栏四 tab 只出现在根页。界面中的器物与人物照片是生成示意图。"
+        alt="粤见十一屏界面总览，按首页、展厅、器物、人物、工坊、课程、凭证和个人内容排列"
+        caption="十一屏涵盖首页、展厅、工坊、我的，以及器物、人物、课程与作品详情。底部栏目只在四个主页面出现。界面照片为生成示意图，人物经历、引语与课程信息用于概念演示。"
         kind="proposal"
-        label="定稿总览"
+        label="界面总览"
         width={3424}
-        height={2884}
+        height={4278}
         priority
       />
     </div>
@@ -61,13 +61,13 @@ const tocSections = [
       id="result"
       label="00 / 先看结果"
       title="十一屏走完「看、约、收」一条线"
-      intro="概念产品粤见把一次广府非遗体验拆成三步：看懂一件、约到一课、收下一件手作。这条线上的每个页面都已定稿——四个 tab 根页、器档决三屏详情、一张凭证，凭与册的两个列表变体，以及手泽的单件详情。可操作原型、动效录像、设计规范和走查脚本随附，可以在本页直接看。"
+      intro="先通过器物细节和匠人介绍了解一门手艺，再查看课程的时间、费用与余位，预约后留下入场凭证。体验中收下的作品汇集在「手泽」册里，可以回看与分享。下方原型可完整体验这条路径。"
       tone="stone"
     >
       <div class="evidence-key" data-columns="3" aria-label="三步体验导览">
-        <div><b>看</b><p>展厅只陈列，器物与人物各有详情层——结构见 03，语言见 04。</p></div>
-        <div><b>约</b><p>课单与凭证是唯一的决策面——翻单与撕票两段动效见 05。</p></div>
-        <div><b>收</b><p>手作进「手泽」册，每件收下的都有详情页，可看大图、可分享——02 节从第一针玩起，收下直落册页。</p></div>
+        <div><b>看</b><p>从展品进入器物详情，再认识做它的人。</p></div>
+        <div><b>约</b><p>先看清课程安排与费用，预约后保留入场凭证。</p></div>
+        <div><b>收</b><p>把扫码小游戏与工坊课程的作品收在一处，回看时保留各自的来源。</p></div>
       </div>
     </CaseSection>
 
@@ -75,30 +75,32 @@ const tocSections = [
       id="origin"
       label="01 / 项目源头"
       title="先定载体，再把一条体验线做深"
-      intro="粤绣、扎作、榄雕、广彩——可看的品类很多，多数访客却完成不了其中任何一步体验。粤见要设计的是「完成一次体验」：看懂一件、约到一课、收下一件，而不是再多一个资讯入口。"
+      intro="这次概念设计以展馆与工坊相连的场景为前提。范围收在一次体验之内，从看展品到了解课程，再到预约与留存作品，让内容浏览有一个可以继续参与的去向。"
     >
       <div class="case-blocks">
         <div class="case-copy">
-          <p>体验发生在展馆与工坊现场，所以载体定为微信小程序：扫码即用。全部界面先按 390×844 一档真机尺寸做深，多端放到下一步。</p>
+          <p>观众在现场扫码后就能开始浏览，因此选择微信小程序作为载体。界面以手机竖屏为主，把图片、课程信息和底部操作放在单手浏览时容易找到的位置。</p>
         </div>
 
         <section class="case-block case-block--compare" aria-labelledby="origin-compare">
-          <h3 id="origin-compare">同类怎么做，我怎么做</h3>
+          <h3 id="origin-compare">同类参照与设计取舍</h3>
+          <p>原型完成后，补充对照广东省非物质文化遗产馆的公开网页，重点看内容入口与活动信息的组织。</p>
           <div class="evidence-key" data-columns="2">
-            <div><b>商城那套</b><p>首页轮播、分类二级、商品详情、购物车、订单物流、评价晒单、会员权益，一套铺满。</p></div>
-            <div><b>粤见这条线</b><p>只做广府非遗一个题材。卖的是工坊里的一场课，三小时、180 元含材料、按人收，钱只在这一处进。</p></div>
+            <div><b>广东省非物质文化遗产馆</b><p>官网把展览、活动、非遗名录与数字资源分别组织，覆盖查资料、看展与参加活动等场馆服务。活动列表已提供地点、时间、报名时间和余票，工坊活动也有现场报名与小程序预约。</p></div>
+            <div><b>粤见的体验范围</b><p>聚焦一次工坊体验。从器物进入，接着认识匠人、查看课程，再到预约凭证和作品册。四个主栏目围绕这条路径安排，示例课程按人预约，一次只约一场。</p></div>
           </div>
           <div class="case-callout">
-            <p>那套结构成立的前提是 SKU 多、复购频繁、履约靠物流，粤见一条都不占。它要解决的是怎么让人从展柜前走到课桌前，让人多买一件不是这里的问题。</p>
+            <p>综合场馆需要让不同目的的访客找到入口。粤见把一次体验做深，因此保留器物、人物和课程的连续去向，把预约与作品留存放在同一套页面里。</p>
           </div>
+          <p><a href="https://www.gdsfyg.cn/" target="_blank" rel="noopener noreferrer">广东省非物质文化遗产馆官网 ↗</a></p>
         </section>
 
         <section class="case-block" aria-labelledby="origin-tradeoff">
-          <h3 id="origin-tradeoff">拿掉什么，留下什么</h3>
+          <h3 id="origin-tradeoff">落实到页面的三个选择</h3>
           <div class="workspace-notes">
-            <div><b>留下</b><p>四个 tab、一条线。展厅只陈列七件常设，详情页做厚，凭证做成一张能撕的票，撑住到场那一下。</p></div>
-            <div><b>拿掉</b><p>购物车与 SKU。一场课一个价，一次只约一场，凑单不成立。</p></div>
-            <div><b>留到下一版</b><p>内容社区、公开评价、会员权益。要内容量和运营，第一版都没有，闭环因此只转一圈。</p></div>
+            <div><b>从内容进入课程</b><p>器物详情先讲材质与工艺，末尾连接匠人，人物页再连接她的课。下一步入口紧贴正在看的内容。</p></div>
+            <div><b>决定前看全信息</b><p>时间、地点与余位是双方都需交代的预约信息。粤见把三步工序和含材料费用也放在课程页，说明要做什么、要花多久。</p></div>
+            <div><b>保留体验中的作品</b><p>扫码小游戏与课程手作收进「手泽」册，每件标明来源。作品详情保留图片和体验记录，并提供分享入口。</p></div>
           </div>
         </section>
       </div>
@@ -108,7 +110,7 @@ const tocSections = [
       id="play"
       label="02 / 先玩一把"
       title="原型从第一针开始"
-      intro="左边是可操作原型，模拟观众在展馆扫码进入小程序后的第一屏。以粤绣为例，落屏即拖一枚针，缝完钤「手泽」印，点「收下」或「先随便看看」都会进入完整十一屏。右边的录像是这套序列的完整演示。"
+      intro="原型模拟观众在展馆扫码后的首次体验。先以粤绣小游戏引入，让观众拖针完成一朵小花，再把这份数字纪念收进「手泽」册。点「收下」进入作品册，点「先随便看看」进入首页，之后都可继续浏览与预约。旁边的录像展示完整过程。"
     >
       <div class="portrait-grid">
         <div class="proto-embed">
@@ -117,7 +119,7 @@ const tocSections = [
           </div>
           <a class="proto-embed__link" href="/projects/yuejian/prototype/p0.html" target="_blank" rel="noopener noreferrer">在新窗口打开原型 ↗</a>
         </div>
-        <MediaStage src={`${media}/motion/p0-intro.mp4`} poster={`${media}/motion/p0-intro-poster.jpg`} alt="P0 上手全程录像：拖针、自动缝、钤印、掀纸，直落我的手泽" caption="上手全程：拖针、自动缝、钤印、掀纸，收下直落「我的手泽」。" kind="proposal" label="上手录像" video width={390} height={844} />
+        <MediaStage src={`${media}/motion/p0-intro.mp4`} poster={`${media}/motion/p0-intro-poster.jpg`} alt="扫码小游戏全程录像，完成小花后收进我的手泽" caption="从拖针到收下，先完成一份数字纪念，再进入「我的手泽」。" kind="proposal" label="上手录像" video width={390} height={844} />
       </div>
       <script>
         const frame = document.querySelector<HTMLIFrameElement>('[data-yuejian-frame]');
@@ -143,81 +145,81 @@ const tocSections = [
     <CaseSection
       id="structure"
       label="03 / 产品结构"
-      title="四个 tab，八种页型，深度不超过三层"
-      intro="L1 只有封、索、课、册四个 tab；详情与结果各层不出现 tabBar，返回按来源——从哪进的就回哪，不是写死的上一页。层级先立住，界面才有地方放。"
+      title="四个主栏目，详情按任务展开"
+      intro="首页负责引入，展厅负责浏览，工坊承接预约，我的汇集凭证与作品。进入详情后收起底部栏目，把空间留给当前内容；返回时回到刚才的浏览位置。"
     >
       <div class="case-copy">
-        <p>页型先于一屏一稿。八种页型立起来之后，新页面是选页型、填槽位：新增一件展品只加一行数据。已约凭证页有列表变体「我的课」，册页有详情变体「我的手泽」，手泽再下钻的单件详情页直接套档案页型的骨架，只换数据与槽位——变体不另立页型，页面语言不会散，第十一屏也没有新增一种页型。</p>
-        <p>封面不设按钮。主视觉整幅就是入口，点它进器物详情；四枚朱砂圈排在题签正下方，换的是展品，不是页。首屏因此只剩一条视线：图、题、圈、tab。</p>
-        <p>上线前先把状态填满。五个核心页乘三种状态共 15 格状态矩阵，每格的规矩一致：空态必须给一个能按的动作，失败态必须回答停在哪、已输入还在不在。</p>
+        <p>十一屏沿用八类基础布局。器物详情依次安排图片、材质与出处、工艺介绍和匠人入口；课程详情集中展示场次、费用与工序。我的课复用凭证卡，我的手泽复用作品卡，让同类内容在不同页面保持相同的阅读顺序。</p>
+        <p>首页把器物图片作为主要入口，题名和材质放在画面下方，四枚圆点切换展品。整幅图片都可以点进详情，观众看中哪一件，就从哪一件继续了解。</p>
+        <p>没有作品时，我的页面保留去工坊的入口，让空白处也能接住下一步。预约成功后，场次、地点与席位集中在凭证上，之后可以从我的课再次找到。</p>
       </div>
       <div class="portrait-grid">
-        <MediaStage src={`${media}/screens/p1.png`} alt="封 · 首页：百鸟朝凤主视觉满幅铺满，题签居中压在画面下缘，四枚朱砂圈排在题签之下，底部四 tab 贴底" caption="封 · 首页。封面就是作品本身：点主视觉直接进器物详情，题签下的四枚朱砂圈轮换四件展品，tab 贴底。" kind="proposal" width={W} height={H} />
-        <MediaStage src={`${media}/screens/p2.png`} alt="索 · 展厅：常设七件横向长廊，页头带收藏筛" caption="索 · 展厅。只陈列七件常设，收藏是页头的一枚筛，不是一屏。" kind="proposal" width={W} height={H} />
-        <MediaStage src={`${media}/screens/p5.png`} alt="课 · 工坊排期：主推课卡与行列表" caption="课 · 工坊排期。主推一张卡，往后场次列三行，满员是标记不是死按钮。" kind="proposal" width={W} height={H} />
+        <MediaStage src={`${media}/screens/p1.png`} alt="首页，器物图片满幅展示，题名下有四枚展品切换圆点，底部为四个栏目" caption="首页。点图片进入器物详情，题名下的四枚圆点切换展品。" kind="proposal" width={W} height={H} />
+        <MediaStage src={`${media}/screens/p2.png`} alt="展厅，七件展品横向排列，页头有全部与收藏切换" caption="展厅。七件展品横向陈列，页头可切换到收藏。" kind="proposal" width={W} height={H} />
+        <MediaStage src={`${media}/screens/p5.png`} alt="工坊，主推课程卡片与其他场次列表" caption="工坊。主推课程用大图卡片，其他场次用列表展示时间与余位。" kind="proposal" width={W} height={H} />
       </div>
       <div class="portrait-grid">
-        <MediaStage src={`${media}/screens/p8.png`} alt="册 · 我的：名片、装裱卡与入口行" caption="册 · 我的。手泽一件、课一节，都是册里的一格。" kind="proposal" width={W} height={H} />
-        <MediaStage src={`${media}/screens/p8-empty.png`} alt="册 · 我的空态：不给暂无，给一个去工坊的动作" caption="?state=empty 空态。不给「暂无」，给一个去工坊的动作。" kind="proposal" label="状态矩阵" width={W} height={H} />
-        <MediaStage src={`${media}/screens/p9.png`} alt="凭的列表变体：待上课在前，已核销在后" caption="已约凭证的列表变体。待上课在前，已核销在后，凭证本体仍从凭证卡打开。" kind="proposal" label="变体" width={W} height={H} />
+        <MediaStage src={`${media}/screens/p8.png`} alt="我的，个人名片、作品卡与课程入口" caption="我的。先看到自己的作品，再找到课程、作品册与收藏入口。" kind="proposal" width={W} height={H} />
+        <MediaStage src={`${media}/screens/p8-empty.png`} alt="我的页面空态，展示去工坊的入口" caption="还没有作品时，保留去工坊的入口。" kind="proposal" label="空态设计" width={W} height={H} />
+        <MediaStage src={`${media}/screens/p9.png`} alt="我的课列表，待上课在前，已核销在后" caption="我的课。待上课的预约排在前面，已结束的课程保留在下方。" kind="proposal" label="延展页面" width={W} height={H} />
       </div>
       <div class="portrait-grid">
-        <MediaStage src={`${media}/screens/p7.png`} alt="凭 · 已约凭证：凭证卡、骑缝编号与次要操作" caption="凭 · 已约凭证（L3 结果层）。交易的结果要有一张「东西」，不是一条 toast。" kind="proposal" width={W} height={H} />
-        <MediaStage src={`${media}/screens/p10.png`} alt="册的详情变体：我的手泽双卡，今日新收置顶" caption="册的详情变体。今日新收的广绣小花置顶，原作与下一课都在底栏。" kind="proposal" label="变体" width={W} height={H} />
-        <MediaStage src={`${media}/screens/p11.png`} alt="手泽详情：广绣小花大图置顶，批注与四格事实条，底栏分享与匠人两个动作" caption="手泽详情，图为主、文字为辅：大图可全屏，可下载原图、分享；底栏只留分享与匠人两个动作。" kind="proposal" label="变体" width={W} height={H} />
+        <MediaStage src={`${media}/screens/p7.png`} alt="预约凭证，包含场次、地点、席位和入场码" caption="预约凭证。场次、地点、席位与入场码放在一张票上，方便到场时查找。" kind="proposal" width={W} height={H} />
+        <MediaStage src={`${media}/screens/p10.png`} alt="我的手泽，扫码数字纪念与课程手作两张卡片" caption="我的手泽。扫码小游戏的数字纪念与课程手作一起留存，每件注明来源。" kind="proposal" label="延展页面" width={W} height={H} />
+        <MediaStage src={`${media}/screens/p11.png`} alt="作品详情，广绣小花大图置顶，下方有扫码体验记录和分享入口" caption="作品详情。大图与体验记录放在一起，底部可以分享，也可以继续了解匠人。" kind="proposal" label="延展页面" width={W} height={H} />
       </div>
     </CaseSection>
 
     <CaseSection
       id="language"
       label="04 / 视觉语言"
-      title="四个语义色，一套从题材推导的规矩"
-      intro="纸、墨、朱、人四个色各有实体：纸是版面底色，墨是正文，朱是印章与主操作，人留给标题与人名。对不上实体的颜色，不进色板。"
+      title="用纸白、墨黑、朱红与灰绿建立层次"
+      intro="纸白承接图片与文字，墨黑保证正文清楚，朱红用于印章和操作提示，灰绿用于题名与人名。把色彩收在这四组里，让器物与人物照片保留画面的主要分量。"
     >
       <div class="portrait-grid">
-        <MediaStage src={`${media}/screens/p3.png`} alt="器 · 器物详情：百鸟朝凤，年代材质尺寸出处各占一行，题名后跟白文印" caption="器 · 器物详情（阅读页）。年代、材质、尺寸、出处各占一行，排版松；题名后跟印章。" kind="proposal" width={W} height={H} />
-        <MediaStage src={`${media}/screens/p4.png`} alt="档 · 人物档案：梁玉屏，引语与三个数字，底部只有她的课一个动作" caption="档 · 人物档案。一页只讲一个人：三个数字收口，底部只留一个动作——她的课。" kind="proposal" width={W} height={H} />
-        <MediaStage src={`${media}/screens/p6.png`} alt="决 · 课程决策：事实表、三道工序与底栏支付预约" caption="决 · 课程决策（决策页）。排版紧：事实表四行、工序三步，实心主操作是唯一的决策面。" kind="proposal" width={W} height={H} />
+        <MediaStage src={`${media}/screens/p3.png`} alt="器物详情，图片下方展示题名、材质、尺寸与出处，题名后跟印章" caption="器物详情。材质、尺寸与出处集中成组，正文分段展开，题名末尾保留一枚印章。" kind="proposal" width={W} height={H} />
+        <MediaStage src={`${media}/screens/p4.png`} alt="人物档案，梁玉屏的照片、引语、经历与针法，下方连接课程" caption="人物档案。照片与引语引入匠人，经历和针法接在下方，底部承接她的课程。" kind="proposal" width={W} height={H} />
+        <MediaStage src={`${media}/screens/p6.png`} alt="课程详情，场次与费用信息、三步工序和底部预约入口" caption="课程详情。先看场次、费用和余位，再看三步工序；预约入口固定在底部。" kind="proposal" width={W} height={H} />
       </div>
       <div class="case-copy">
-        <p>形态只有一条判据：描边是尚未发生，实心是已生效。这条信号只留给唯一的决策面，列表状态用色相分，不再叠加第二套形态语言。呼吸感按页型分配：阅读页（器、档）松，决策页（决）与凭证页（凭）紧。字号立下限：正文不小于 14px，元信息 12px 是下限，装饰字不小于 10px 且对比达到 3:1；题名与正文的主级差保持在 3 倍以上。</p>
-        <p>匠人头像用 42px 圆头照片，印章只作落款与钤印，两个信号不打架。器物页题名「百鸟朝凤」后跟一枚白文竖长印——红底挖空小篆，统一 34×34，跟在末字之后，四屏位置一致。</p>
+        <p>器物与人物页面把图片、题名和正文拉开，让人可以慢慢看；课程页把时间、费用和余位靠拢，便于做决定。题名用明朝体，正文用宋体，导航与信息标签用黑体，以字体和间距区分阅读与操作。</p>
+        <p>印章放在题名之后，作为落款；匠人入口用照片，便于识别人。预约按钮另有一处状态变化，支付前保留描边，确认后填实并显示已支付，让动作完成有一个明确的回应。</p>
       </div>
-      <MediaStage src={`${media}/spec/ds-tokens.png`} alt="粤见设计规范第一页：纸墨朱人四色令牌、字号下限、字族与七条动效曲线" caption="设计规范（一）：色彩令牌、字号下限与七条动效曲线。数值以原型源码为准，规范页只做整理，不引入新值。" kind="proposal" label="设计规范" width={2160} height={1788} />
-      <MediaStage src={`${media}/spec/ds-pages.png`} alt="粤见设计规范第二页：八种页型槽位与导航、tabBar、印章、操作条组件规格" caption="设计规范（二）：八种页型槽位，与导航、tabBar、印章、操作条四类组件规格。" kind="proposal" label="设计规范" width={2160} height={1942} />
+      <MediaStage src={`${media}/spec/ds-tokens.png`} alt="粤见设计规范第一页，色彩、字体层级与动效节奏" caption="视觉规范。统一色彩与字体层级，并记录各类动效的起落节奏。" kind="proposal" label="设计规范" width={2160} height={1730} />
+      <MediaStage src={`${media}/spec/ds-pages.png`} alt="粤见设计规范第二页，八类页面布局与导航、印章、操作条示例" caption="页面与组件规范。说明内容顺序、导航位置、印章用法和预约按钮的状态。" kind="proposal" label="设计规范" width={2160} height={1774} />
     </CaseSection>
 
     <CaseSection
       id="motion"
       label="05 / 交互动效"
-      title="每个页面给一层纸的动作"
-      intro="动效原语只有八种，互不重复：器展卷、档开裂、决翻课单、凭撕票，封是落，索是拉廊，课与册是落定，课到决是接引——同一张图从工坊卡飞成决的题图，文字不飞，其余内容卷轴下展。原语绑定纸这种中性材料，不绑工艺专属符号——针线隐喻只对粤绣成立，扎作和榄雕用不上，上不了全站。"
+      title="让翻阅有纸感，让切换有来处"
+      intro="动效沿用纸张的展开、翻阅与落定感。器物详情像展开一幅画，课程页像翻开课单，预约凭证像落下一张票。纸张能贯穿不同非遗题材，针线的动作则留在粤绣小游戏里。"
       tone="panel"
     >
       <div class="case-copy">
-        <p>每条曲线 x1 不超过 x2。第一版四条曲线全违反过：Chrome 按非单调曲线解释，观感是卡住后瞬移，此后成为硬线。动画一律 backwards 填充，.enter 在 1.15 秒后自动移除——结束态零残留，可无限重播。横切 480 毫秒、错峰 26 毫秒。印章一律慢钤：半秒 stampIn 压在每段编排的末尾——印永远是最后落下的那件东西。</p>
+        <p>节奏上，图片先落稳，文字稍后跟上，避免所有内容同时涌出来。展开时起手稍慢，停下时收柔一点，让画面带一点纸张的重量。印章留在末尾轻压一下，作为这一页展开完成的收尾。</p>
       </div>
       <div class="portrait-grid portrait-grid--pair">
-        <MediaStage src={`${media}/motion/p3-unroll.mp4`} poster={`${media}/motion/p3-unroll-poster.jpg`} alt="器物页展卷动效录像：纸边压下后图缓落，正文随纸显现" caption="展卷：纸边压下 560ms，图缓落 700ms，正文 200ms 后随纸显现。" kind="proposal" label="动效录像" video width={390} height={844} />
-        <MediaStage src={`${media}/motion/p6-flip.mp4`} poster={`${media}/motion/p6-flip-poster.jpg`} alt="课程决策页翻课单动效录像：空白课单绕左缘翻开，三道工序落纸" caption="翻课单：空白课单绕左缘翻开 560ms，三道工序随后落纸。" kind="proposal" label="动效录像" video width={390} height={844} />
-        <MediaStage src={`${media}/motion/p7-tear.mp4`} poster={`${media}/motion/p7-tear-poster.jpg`} alt="凭证页撕票动效录像：票卡扯下骑缝断开，印压上" caption="撕票：票卡被扯下 480ms，骑缝断开，印 260ms 压上。" kind="proposal" label="动效录像" video width={390} height={844} />
-        <MediaStage src={`${media}/motion/p56-handoff.mp4`} poster={`${media}/motion/p56-handoff-poster.jpg`} alt="工坊到课程决策的接引动效录像：同一张图飞放成题图，卷轴下展，印最后落钤" caption="接引：同一张图飞放成题图 620ms，文字不飞、原地渐显，卷轴下展，印 1.02s 最后落钤。" kind="proposal" label="动效录像" video width={390} height={844} />
+        <MediaStage src={`${media}/motion/p3-unroll.mp4`} poster={`${media}/motion/p3-unroll-poster.jpg`} alt="器物详情展开录像，纸边先落，图片与正文随后展开" caption="展开器物。纸边先落下，图片和正文随后展开，视线自然进入内容。" kind="proposal" label="动效录像" video width={390} height={844} />
+        <MediaStage src={`${media}/motion/p6-flip.mp4`} poster={`${media}/motion/p6-flip-poster.jpg`} alt="课程详情翻页录像，课单翻开后展示三步工序" caption="翻开课单。先看到纸面翻开，再读到三步工序。" kind="proposal" label="动效录像" video width={390} height={844} />
+        <MediaStage src={`${media}/motion/p7-tear.mp4`} poster={`${media}/motion/p7-tear-poster.jpg`} alt="凭证动效录像，票卡落下、骑缝断开后盖印" caption="收下凭证。票卡落下、骑缝断开，最后盖印，回应预约完成。" kind="proposal" label="动效录像" video width={390} height={844} />
+        <MediaStage src={`${media}/motion/p56-handoff.mp4`} poster={`${media}/motion/p56-handoff-poster.jpg`} alt="从工坊进入课程详情的录像，同一张图片放大成为题图，文字在新位置出现" caption="从工坊进入课程。同一张图片放大成为详情题图，让人看清刚才点开的课程；文字在新位置出现。" kind="proposal" label="动效录像" video width={390} height={844} />
       </div>
     </CaseSection>
 
     <CaseSection
       id="boundary"
       label="06 / 边界与下一步"
-      title="交付到哪一步，下一步补什么"
-      intro="这是一个概念产品的高保真阶段交付：没有上线，也没有业务数据。"
+      title="这一版的交付与后续完善"
+      intro="当前完成的是概念产品的高保真原型，尚未上线，无业务数据。"
     >
       <div class="value-grid">
-        <article class="value-card"><span>已交付</span><h3>十一屏原型与 P0 上手序列</h3><p>原型可操作；五段动效录像、设计规范两页、四套走查脚本随附。</p></article>
-        <article class="value-card"><span>可继续</span><h3>页型与组件直接复用</h3><p>新增作品只加一行数据；凭证、收藏、空态都有现成语言。</p></article>
-        <article class="value-card"><span>下一步</span><h3>多端断点规范</h3><p>平板 768 与桌面 1280 的排列变化规则，这一项完全没有动过。</p></article>
+        <article class="value-card"><span>已交付</span><h3>十一屏界面与扫码小游戏</h3><p>从扫码小游戏进入浏览与预约，配有五段演示录像和两页视觉规范。</p></article>
+        <article class="value-card"><span>可继续</span><h3>同类内容保持一致</h3><p>课程、凭证与作品卡沿用各自的内容顺序，后续增加内容时继续使用。</p></article>
+        <article class="value-card"><span>下一步</span><h3>带入真实工坊场景</h3><p>下一步结合工坊的实际排期、预约与入场规则，确认课程信息和凭证是否够用。</p></article>
       </div>
       <div class="case-copy">
-        <p>界面中的器物与人物照片是生成示意图，正式版需换实拍并取得授权；可自证的只有点击数审计——主任务「约一节课」两击完成。AI 对话不是这个产品的解法：核心动作是看、约、收，一条清楚的浏览路径比一个聊天框贴题。</p>
+        <p>界面照片为生成示意图，人物经历、引语与课程安排均用于概念演示。正式使用前，需要以真实展品、匠人与工坊资料替换，并完成相应授权。当前原型演示预约流程，未接入真实支付。</p>
       </div>
     </CaseSection>
 
