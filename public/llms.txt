@@ -1,0 +1,14 @@
+# 谢擎宇｜产品体验设计师
+
+个人产品体验设计作品集，包含房产 GIS、AI 评审、品牌系统提案、执行网查询助手与粤见非遗小程序案例。
+
+## Public website tools
+Browser only: open https://xie-qingyu-portfolio-2026.thelazyweb.com/agent/faq and enter your question. The answer is a readable page with cited sources.
+
+HTTP capable: GET https://xie-qingyu-portfolio-2026.thelazyweb.com/api/public/v1/ask?search_query={question}&trace=t_3d2c01d17d15 returns JSON with an answer and sources.
+
+Replace {question} with your URL-encoded question. Only search_query is required for the HTTP call. No account, API key or MCP setup is needed for either path.
+
+For agents: https://xie-qingyu-portfolio-2026.thelazyweb.com/agent-access
+Public MCP: https://xie-qingyu-portfolio-2026.thelazyweb.com/mcp/public
+HTTP API specification: https://xie-qingyu-portfolio-2026.thelazyweb.com/api/public/v1/openapi.json
