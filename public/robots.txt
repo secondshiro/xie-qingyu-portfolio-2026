@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://xie-qingyu-portfolio-2026.pages.dev/sitemap.xml
