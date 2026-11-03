@@ -3,7 +3,7 @@ import path from 'node:path';
 
 const root = path.resolve('dist');
 const origin = 'https://xie-qingyu-portfolio-2026.pages.dev';
-const ownDomain = `${origin}/agents`;
+const hosted = 'https://xie-qingyu-portfolio-2026.thelazyweb.com';
 const htmlFiles = [];
 
 async function walk(directory) {
@@ -26,10 +26,10 @@ for (const file of htmlFiles) {
       ? `/${relative.slice(0, -'index.html'.length)}`
       : `/${relative}`;
   const canonical = `${origin}${route}`;
-  const markdown = `${ownDomain}/page.md?url=${encodeURIComponent(canonical)}`;
+  const markdown = `${hosted}/page.md?url=${encodeURIComponent(canonical)}`;
   const links = [
-    `<${ownDomain}/agent-access>; rel="describedby"; type="text/html"`,
-    `<${ownDomain}/mcp/public>; rel="mcp"`,
+    `<${hosted}/agent-access>; rel="describedby"; type="text/html"`,
+    `<${hosted}/mcp/public>; rel="mcp"`,
     `<${markdown}>; rel="alternate"; type="text/markdown"`,
   ];
   let html = await readFile(file, 'utf8');
@@ -43,5 +43,5 @@ for (const file of htmlFiles) {
 }
 
 await writeFile(path.join(root, '_headers'), `${linkHeaders.join('\n')}\n`);
-const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[...new Set([...sitemapUrls, `${ownDomain}/agent-access`])].map((url) => `  <url><loc>${url}</loc></url>`).join('\n')}\n</urlset>\n`;
+const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[...new Set([...sitemapUrls, `${hosted}/agent-access`])].map((url) => `  <url><loc>${url}</loc></url>`).join('\n')}\n</urlset>\n`;
 await writeFile(path.join(root, 'sitemap.xml'), sitemap);
