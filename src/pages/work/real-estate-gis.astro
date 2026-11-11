@@ -36,14 +36,14 @@ const facts = [
       id="result"
       label="00 / 先看结果"
       title="选中 17 幢，继续查看房屋或核对变更"
-      intro="在地图选中宇济一号 17 幢，右侧显示这栋楼的属性和可以继续做的事，从这里可以打开整幢房屋，或进入测绘变更核对。下面的原型使用演示数据。“幢”指一栋楼，“户室”指楼内按房号管理的房屋。"
+      intro="在地图选中宇济一号 17 幢，右侧先显示入库状态和测绘摘要，再给出两个入口。打开分层分户图可以查看楼内户室，打开实测替换预测可以核对系统记录与测绘记录。原型使用演示数据。“幢”指一栋楼，“户室”指楼内按房号管理的房屋。"
       tone="stone"
     >
       <PrototypeFrame
         src={`${prototypes}/map/index.html?restore=1&building=宇济一号&code=17幢`}
         title="房产 GIS 总图交互原型"
         poster={`${media}/final/map-current-overview.png`}
-        posterAlt="总图中选中宇济一号 17 幢，左侧展开图层，右侧显示楼栋属性与业务入口"
+        posterAlt="总图选中宇济一号 17 幢。左侧展开图层，右侧从上到下显示测绘摘要、两项操作入口和楼幢资料"
         linkLabel="打开完整总图原型"
       />
       <div class="opportunity-path" aria-label="17 幢演示路径">
@@ -109,16 +109,16 @@ const facts = [
         <article class="workspace">
           <header class="workspace__header">
             <span>空间 · 选幢</span>
-            <div><h3>让当前楼栋的信息与操作靠在一起</h3><p>选中楼栋后，右侧集中显示名称、编号、属性和相关入口。我按一个条件分配这些入口，即这个操作是否必须先有选中的楼栋。查看整幢房屋、核对测绘变更都以当前楼栋为前提，放在面板里；新建楼栋和资料入库不同，待新建的楼栋本身还没有地图图形，这两项留在全局区域。</p><p>旧系统里可以先选幢再找功能，也可以先选功能再选楼，本次按前一种组织，入口集中到面板。</p></div>
+            <div><h3>选中楼幢后，先确认对象再选任务</h3><p>查看户室和核对测绘记录都需要先确定楼幢。我把楼幢名称、入库状态和测绘类型放在面板上部，两个任务入口紧接在摘要下方。坐落、开发商等资料可以直接查看，历史记录、维护操作和系统标识按需展开。</p><p>旧系统支持先选幢再找功能，也支持先选功能再选楼。我在总图里沿用先选幢的路径。新建或入库可能涉及还没有地图图形的楼幢，这些入口留在地图上方的「业务入口」中。</p></div>
           </header>
           <div class="experience-diagram" aria-label="从地图选楼到查看楼栋信息的操作路径">
             <div class="diagram-node diagram-node--map"><span class="diagram-kicker">空间</span><b>地图定位</b><div class="map-sketch" aria-hidden="true"><i></i><i></i><i></i><i></i><b>17</b><span></span><span></span></div></div>
             <span class="diagram-arrow" aria-hidden="true">→</span>
             <div class="diagram-node diagram-node--building"><span class="diagram-kicker">对象</span><b>选中 17 幢</b><div class="building-shape">17</div></div>
             <span class="diagram-arrow" aria-hidden="true">→</span>
-            <div class="diagram-node diagram-node--panel"><span class="diagram-kicker">继续工作</span><b>楼栋信息与操作</b><div class="panel-sketch" aria-hidden="true"><strong>宇济一号 · 17幢</strong><i></i><i></i><i></i><i></i></div></div>
+            <div class="diagram-node diagram-node--panel"><span class="diagram-kicker">继续工作</span><b>楼幢面板</b><div class="panel-sketch" aria-hidden="true"><strong>宇济一号 · 17幢</strong><i></i><i></i><i></i><i></i></div></div>
           </div>
-          <div class="workspace-notes"><div><b>对象操作</b><p>面板把属性和入口放在一起，操作前可以核对这是哪一栋。</p></div><div><b>全局入口</b><p>没有地图图形的楼栋也需要新建，入口不能依赖已有楼栋的选择。</p></div><div><b>按任务进入</b><p>查看楼内房屋与核对测绘记录是两件事，各自打开对应页面。</p></div></div>
+          <div class="workspace-notes"><div><b>图层与对象</b><p>图层设置集中在左侧。右侧面板跟随地图上选中的楼幢。</p></div><div><b>搜索定位</b><p>在顶栏输入楼盘名或幢号，定位后可以直接在右侧继续操作。</p></div><div><b>展开维护</b><p>「历史与维护」展开后分成两列，一侧查记录，一侧找维护入口。</p></div></div>
           <a class="workspace__prototype-link" href={`${prototypes}/map/index.html?restore=1&building=宇济一号&code=17幢`} target="_blank" rel="noopener noreferrer">打开 17 幢的总图原型 ↗</a>
         </article>
 
