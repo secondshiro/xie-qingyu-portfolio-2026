@@ -28,16 +28,16 @@
   --wk-primary-active: var(--primary-active, #003CAB);
   --wk-primary-bg: var(--primary-1, #ECF2FE);
   --wk-primary-bg-hover: var(--color-primary-bg-hover, #D4E3FC);
-  --wk-text: var(--text-1, #16161A);
-  --wk-text-secondary: var(--text-2, #4B4B4B);
-  --wk-text-placeholder: var(--text-3, #646A73);
+  --wk-text: var(--text-1, #182331);
+  --wk-text-secondary: var(--text-2, #405064);
+  --wk-text-placeholder: var(--text-3, #576579);
   --wk-text-disabled: var(--text-disabled, #C9CDD4);
-  --wk-bg-page: var(--bg-page, #F3F3F3);
+  --wk-bg-page: var(--bg-page, #f3f6fa);
   --wk-bg-surface: var(--bg-surface, #FFFFFF);
-  --wk-bg-subtle: var(--bg-subtle, #F3F3F3);
-  --wk-bg-hover: var(--bg-hover, #F3F3F3);
-  --wk-border: var(--border-1, #E3E6EB);
-  --wk-border-control: var(--border-2, #DCDCDC);
+  --wk-bg-subtle: var(--bg-subtle, #f2f5f9);
+  --wk-bg-hover: var(--bg-hover, #edf3fa);
+  --wk-border: var(--border-1, #dce3ed);
+  --wk-border-control: var(--border-2, #c8d3e1);
   --wk-success: var(--color-success, #2BA471);
   --wk-success-bg: var(--color-success-bg, #E8F7EE);
   --wk-success-text: #1F7A50;
@@ -78,6 +78,13 @@
   --wk-header-height: 64px;
   --wk-object-header-height: 52px;
   --wk-toolbar-height: 48px;
+  --wk-matrix-heading: #eaf0f7;
+  --wk-matrix-unit-line: #a9bad0;
+  --wk-matrix-grid-line: #e1e8f1;
+  --wk-matrix-room: #f8fafc;
+  --wk-matrix-room-selected: #e6effc;
+  --wk-matrix-room-selected-ink: #173e75;
+  --wk-matrix-room-indicator: #396da8;
   --wk-matrix-head-height: 32px;
   --wk-matrix-row-height: 34px;
   --wk-matrix-actual-width: 46px;
@@ -89,9 +96,9 @@
   --wk-z-drawer: 1000;
   --wk-z-dialog: 1100;
   --wk-z-tooltip: 1200;
-  --wk-shadow-float: 0 6px 16px rgba(22, 22, 26, 0.12);
+  --wk-shadow-float: 0 4px 12px rgb(26 45 70 / 12%);
   --wk-shadow-dialog: 0 16px 40px rgba(22, 22, 26, 0.16);
-  --wk-focus-ring: var(--wk-primary-bg-hover);
+  --wk-focus-ring: var(--wk-primary);
   --wk-transition-fast: 120ms ease;
   --wk-transition-base: 180ms ease;
 
@@ -156,7 +163,7 @@
   padding: 0 var(--wk-space-3);
   gap: var(--wk-space-2);
   color: var(--wk-text-placeholder);
-  background: var(--wk-bg-subtle);
+  background: #f4f7fb;
   border: 1px solid var(--wk-border);
   border-radius: var(--wk-radius-control);
 }
@@ -245,7 +252,7 @@
   min-width: 0;
   overflow: hidden;
   color: var(--wk-text);
-  font-size: var(--wk-font-title);
+  font-size: 18px;
   font-weight: var(--wk-weight-semibold);
   line-height: var(--wk-leading-title);
   text-overflow: ellipsis;
