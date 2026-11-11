@@ -131,7 +131,7 @@ const facts = [
             <MediaStage src={`${media}/public/legacy-building-overview-observed.webp`} alt="旧整幢页面同时保留顶部工具、左侧属性、上方平面区和下方楼盘表" caption="改版前，上方平面区、左侧属性和下方楼盘表同时保留，整幢户室集中在下半屏。" kind="observed" width={1600} height={1000} />
             <MediaStage src={`${media}/final/building-current-overview.png`} alt="宇济一号 17 幢的分层分户图，左侧为平面参考和属性，右侧为浅底户室矩阵" caption="改版后，平面参考收进左侧，右侧矩阵可并排查看同一层的多个单元。" kind="redesigned" width={1440} height={900} />
           </div>
-          <PrototypeFrame src={`${prototypes}/building/index.html?building=宇济一号&code=17幢&room=1501`} title="分层分户图交互原型" poster={`${media}/final/building-current-overview.png`} posterAlt="宇济一号 17 幢的分层分户图，矩阵中用浅蓝底和左侧短线标出 1 单元 1501 室" linkLabel="打开完整整幢房屋原型" />
+          <PrototypeFrame src={`${prototypes}/building/index.html?building=宇济一号&code=17幢&room=1501`} title="分层分户图交互原型" poster={`${media}/final/building-current-overview.png`} posterAlt="宇济一号 17 幢的分层分户图，矩阵中用浅蓝底和蓝色描边标出 1 单元 1501 室" linkLabel="打开完整整幢房屋原型" />
         </article>
 
         <article class="workspace">
@@ -196,7 +196,7 @@ const facts = [
       intro="参照检查的是组织方式，业务原有的信息还要在重排时逐项确认。调整展示主次会碰到三处权衡，分别是状态与选中怎样同时表达、平面参考放在哪里、核对时先看关系还是先看字段。三处都关系到信息会不会丢，下面逐条说明保留了什么。"
     >
       <div class="decision-grid">
-        <article class="decision-card"><span>01</span><h3>业务状态和当前选中分别表达</h3><p>同一户可以有多项业务状态。整格铺色时，房号会落在不同颜色上。我把状态色收成格底并排的短条，保留原图例的 20 项状态和房屋性质符号。选中的户室用浅蓝底和左侧短线标出，房号下方仍能看见各段状态色。</p></article>
+        <article class="decision-card"><span>01</span><h3>业务状态和当前选中分别表达</h3><p>同一户可以有多项业务状态。整格铺色时，房号会落在不同颜色上。我把状态色收成格底并排的短条，保留原图例的 20 项状态和房屋性质符号。选中的户室用浅蓝底和蓝色描边标出，房号下方仍能看见各段状态色。组合筛选时，匹配户室保持清晰；点选一户后，筛选条件继续保留。</p></article>
         <article class="decision-card"><span>02</span><h3>矩阵看整幢，平面图作参考</h3><p>要按楼层和单元逐户对照，矩阵能同时铺开一层；要确认一间房屋在楼里的位置，平面图更直观。两者都留下，平面参考收进侧栏后仍可随时打开，实际层与名义层继续分开显示。演示中实际第 18 层对应名义 17A 层，两列并排才能同时对照层序与业务名称。</p></article>
         <article class="decision-card"><span>03</span><h3>关系卡看对应，表格查字段</h3><p>卡片把一组关系的两侧记录和面积差异放在一起。要对照多组记录的层号、房号或面积，可以切到表格按列查看。两种视图共用同一个状态筛选，切换后仍是同一批记录。</p></article>
       </div>
