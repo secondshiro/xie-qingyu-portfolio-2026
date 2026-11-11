@@ -98,6 +98,9 @@
 
     .step-panel { display: none; }
     .step-panel.is-active { display: block; }
+    .scroll-body.is-review { display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+    .scroll-body.is-review > .step-panel.is-active { display: flex; flex: 1; flex-direction: column; min-height: 0; }
+    #step3 > :is(.validation-notice, .block-bar) { flex-shrink: 0; }
 
     /* —— 步骤1 / 步骤2 通用 —— */
     .field-row { display: flex; flex-wrap: wrap; gap: 18px; margin-bottom: 18px; }
@@ -149,11 +152,11 @@
     .block-bar__btn { flex-shrink: 0; }
 
     /* —— 工作区：左树右卡 —— */
-    .workspace { display: grid; grid-template-columns: 180px 1fr; gap: 16px; align-items: start; }
+    .workspace { display: grid; grid-template-columns: 180px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); gap: 16px; flex: 1; min-height: 0; }
     /* —— 楼层定位：垂直区间滑块（TDesign 垂直带刻度滑块） —— */
-    .floor-slider { position: sticky; top: 12px; background: var(--bg-surface); border: 1px solid var(--border-2); border-radius: 10px; padding: 16px 16px 20px; display: flex; flex-direction: column; }
+    .floor-slider { align-self: start; max-height: 100%; min-height: 0; background: var(--bg-surface); border: 1px solid var(--border-2); border-radius: 10px; padding: 16px 16px 20px; display: flex; flex-direction: column; }
     .floor-slider__title { font-size: var(--type-body); color: var(--text-2); font-weight: 600; margin-bottom: 24px; flex-shrink: 0; }
-    .floor-slider__body { position: relative; display: flex; gap: 18px; flex: 0 0 364px; height: 364px; }
+    .floor-slider__body { position: relative; display: flex; gap: 18px; flex: 1 1 364px; min-height: 120px; height: 364px; }
     .floor-slider__scale { position: relative; width: 30px; flex-shrink: 0; }
     .floor-slider__scale span { position: absolute; right: 0; transform: translateY(-50%);  color: var(--text-3); font-variant-numeric: tabular-nums; }
     .floor-slider__track { position: relative; width: 14px; flex-shrink: 0; background: var(--bg-subtle); border-radius: 8px; touch-action: none; }
@@ -176,11 +179,8 @@
     .floor-range-input__to { color: var(--text-3); font-size: 14px; padding-bottom: 5px; }
     .floor-range-input__unit { color: var(--text-3); font-size: 12px; padding-bottom: 5px; }
 
-    @media (max-height: 900px) {
-      .floor-slider { position: static; }
-    }
-
-    .result-pane { min-width: 0; }
+    .result-pane { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+    .result-list { flex: 1; min-height: 0; overflow: auto; overscroll-behavior: contain; padding: 2px 3px 4px; margin: -2px -3px -4px; }
     /* 结果栏标题（户室关联 / 组结果 / 楼层范围）已并入顶部工具栏，样式移除 */
     .cards { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
     /* —— 卡片行组（Row-Group）轴心布局 —— */
@@ -267,6 +267,7 @@
     /* 关系状态决定显示哪些记录，视图切换仅决定呈现方式。 */
     .board-tools {
       display: flex;
+      flex-shrink: 0;
       flex-wrap: wrap;
       align-items: center;
       gap: 4px 14px;
@@ -694,7 +695,7 @@
                     <button type="button" class="ds-toggle__btn" data-density="compact" aria-pressed="false"><svg class="ds-toggle__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="4.5" cy="6" r="1.3" fill="currentColor" stroke="none"/><circle cx="4.5" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="4.5" cy="18" r="1.3" fill="currentColor" stroke="none"/><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/></svg><span>表格</span></button>
                   </div>
                 </div>
-                <div class="cards" id="cards"></div>
+                <div class="result-list" role="region" aria-label="户室关系列表" tabindex="0"><div class="cards" id="cards"></div></div>
               </section>
             </div>
 
@@ -1556,7 +1557,10 @@
       else it.removeAttribute('aria-current');
     });
     $('backTo2').hidden = n !== 3;
-    document.querySelector('.scroll-body').scrollTop = 0;
+    const scrollBody = document.querySelector('.scroll-body');
+    scrollBody.classList.toggle('is-review', n === 3);
+    scrollBody.scrollTop = 0;
+    document.querySelector('.result-list').scrollTop = 0;
     const url = new URL(location.href);
     url.searchParams.set('step', String(n));
     history.replaceState(null, '', url);
