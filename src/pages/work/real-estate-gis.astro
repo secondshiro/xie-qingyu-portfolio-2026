@@ -137,7 +137,7 @@ const facts = [
         <article class="workspace">
           <header class="workspace__header">
             <span>任务 · 核对变更</span>
-            <div><h3>把户室对应和面积差异放在同一行</h3><p>“实测替换预测”是测绘成果回到系统时的核对环节。测绘记录里的户室要和系统记录里的房屋对上，面积有差异的交给人工判断。我把每组对应做成关系卡，两边是户室，中间是面积差异。以 1 单元 1501 室为例，系统记录 94.20㎡、测绘记录 95.90㎡，卡片显示 +1.70㎡。</p><p>普通对应可以逐项确认。拆分、合并这类结构变化单独标出，一次普通确认不会把它们算作已处理，后续处置交回业务。需要看全部字段时切回表格。</p></div>
+            <div><h3>把户室对应和面积差异放在同一行</h3><p>“实测替换预测”是测绘成果回到系统时的核对环节。测绘记录里的户室要和系统记录里的房屋对上，面积有差异的交给人工判断。我把每组对应做成关系卡，两边是户室，中间是面积差异。以 1 单元 1501 室为例，系统记录 94.20㎡、测绘记录 95.90㎡，卡片显示 +1.70㎡。</p><p>我把当前楼幢和三步进度放在同一条任务栏，核对时随时能确认这批记录属于哪一幢。进入入库模式后，可在关系结果上方筛出待核对项。普通对应可以逐组确认，拆分、合并等结构变化另行标出，交由业务处置。</p></div>
           </header>
           <div class="experience-diagram experience-diagram--task" aria-label="从对照户室和面积到人工确认的核对路径">
             <div class="diagram-node diagram-node--relation"><span class="diagram-kicker">核对内容</span><b>同一间房的两份记录</b><div class="room-pair" aria-hidden="true"><span><b>系统记录</b>1501室<br /><small>94.20㎡</small></span><em>?</em><span><b>测绘记录</b>1501室<br /><small>95.90㎡</small></span></div></div>
@@ -146,7 +146,7 @@ const facts = [
             <span class="diagram-arrow" aria-hidden="true">→</span>
             <div class="diagram-node diagram-node--decision"><span class="diagram-kicker">人工确认</span><b>核对状态</b><div class="decision-state" aria-hidden="true"><span></span>待核对</div><small>展示确认反馈，不实际入库</small></div>
           </div>
-          <PrototypeFrame src={`${prototypes}/task/index.html?building=宇济一号&code=17幢&from=gis&step=3&view=cards&filter=review`} title="实测替换预测交互原型" poster={`${media}/final/13-task-relations-focus.png`} posterAlt="测绘变更核对页面，以关系卡并列显示系统记录、测绘记录和面积差异" linkLabel="打开完整测绘变更核对原型" />
+          <PrototypeFrame src={`${prototypes}/task/index.html?building=宇济一号&code=17幢&from=gis&step=3&view=cards&filter=review`} title="实测替换预测交互原型" poster={`${media}/final/13-task-relations-focus.png`} posterAlt="宇济一号 17 幢的实测替换预测页面，第三步选中待核对，结果以关系卡显示" linkLabel="打开完整测绘变更核对原型" />
         </article>
       </div>
     </CaseSection>
@@ -198,7 +198,7 @@ const facts = [
       <div class="decision-grid">
         <article class="decision-card"><span>01</span><h3>业务状态和当前选中分别表达</h3><p>一间房屋可以同时有多个业务状态，性质另外用符号表示。状态的相对颜色和符号含义沿用原图例，20 项状态一起保留。改动的是选中反馈，用独立描边标出当前选中的房屋，不覆盖状态色带，选择和状态可以同时看清。</p></article>
         <article class="decision-card"><span>02</span><h3>矩阵看整幢，平面图作参考</h3><p>要按楼层和单元逐户对照，矩阵能同时铺开一层；要确认一间房屋在楼里的位置，平面图更直观。两者都留下，平面参考收进侧栏后仍可随时打开，实际层与名义层继续分开显示。演示中实际第 18 层对应名义 17A 层，两列并排才能同时对照层序与业务名称。</p></article>
-        <article class="decision-card"><span>03</span><h3>关系卡看对应，表格查字段</h3><p>关系卡用于逐组判断对应关系和面积差异，卡片上保留户室编号、两侧面积和差值，其余字段留在表格里查。两种视图对应两种核对深度。</p></article>
+        <article class="decision-card"><span>03</span><h3>关系卡看对应，表格查字段</h3><p>卡片把一组关系的两侧记录和面积差异放在一起。要对照多组记录的层号、房号或面积，可以切到表格按列查看。两种视图共用同一个状态筛选，切换后仍是同一批记录。</p></article>
       </div>
       <div class="evidence-grid">
         <MediaStage src={`${media}/final/15-decision-matrix.png`} alt="户室矩阵局部，实际层与名义层并列，各户室以色带表示业务状态" caption="实际层与名义层并列显示，各户室仍保留业务状态色带。" kind="redesigned" width={1190} height={380} />

@@ -15,49 +15,86 @@
        V8 重构（结合 Gemini 视觉蓝图 + 流转矩阵/原路返回设计）：
        ① 废弃双表 → 卡片行组（Row-Group）轴心布局（幢/层/户/用途抽卡头，预测→差异→实测横向对比，拆分在卡内纵向堆叠防错位）
        ② 左侧楼层树（带异常红点）+ 右侧卡片流
-       ③ 漏斗看板（总预测→完全匹配→面积超阈→结构变更，可点击过滤）
+       ③ 户室关系按关联状态筛选，卡片与表格共用同一筛选
        ④ 面积差异与未关联户室逐条核对，不提供无证据的批量操作
        ⑤ 结构变化只提示需结合楼盘变更业务核对，处理方式标记为待业务确认
-       ⑥ 吸底摘要持续反馈已关联、待核对、未关联与提交门禁 -->
+       ⑥ 任务栏承载提交门禁，关系工具栏显示各状态数量 -->
   <style>
     .top-nav{height:64px;box-shadow:none;border-bottom:1px solid var(--border-1);padding:0 18px;gap:18px}
     .hamburger-btn{display:none}
     .nav-logo{min-width:232px;padding:0;gap:8px;font-size:16px;font-weight:600}.nav-logo .mark{width:30px;height:30px;border-radius:9px}.nav-logo-sub{font-weight:500;color:var(--text-3);margin-left:4px}
-    .nav-right{padding:0;gap:8px}.nav-right .search-box{position:absolute;left:282px;width:min(460px,40vw);height:36px;border-radius:9px;padding:0 12px}.nav-right .search-input{width:100%}
+    .nav-right { flex: 0 0 auto; padding: 0; gap: 8px; }
+    .top-nav .search-box { flex: 0 1 460px; min-width: 0; height: 36px; border-radius: 9px; padding: 0 12px; }
+    .top-nav .search-icon { flex: 0 0 16px; }
+    .top-nav .search-input { width: 100%; min-width: 0; }
     .task-nav-link{height:34px;padding:0 10px;border:0;background:transparent;border-radius:7px;color:var(--text-2);cursor:pointer}.task-nav-link:hover{background:#f2f3f5}.nav-right .avatar{width:32px;height:32px}
-    /* —— 步骤条 —— */
-    .stepper { display: flex; align-items: center; gap: 0; margin: 8px 0; padding: 0 24px; }
-    .stepper__item { display: flex; align-items: center; gap: 10px; color: var(--text-3); font-size: 14px; }
-    .stepper__item.is-active { color: var(--text-1); font-weight: 600; }
-    .stepper__item.is-done { color: var(--color-success); }
-    .stepper__dot { width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; background: var(--bg-subtle); color: var(--text-3); border: 1px solid var(--border-2); flex-shrink: 0; }
-    .stepper__item.is-active .stepper__dot { background: var(--primary-6); color: #fff; border-color: var(--primary-6); }
-    .stepper__item.is-done .stepper__dot { background: var(--color-success); color: #fff; border-color: var(--color-success); }
-    .stepper__line { width: 56px; height: 1px; background: var(--border-2); margin: 0 12px; }
-    .stepper__back { margin-left: auto; }
-    .stepper__back[hidden] { display: none; }
-    /* —— 二级对象栏：返回关系 / 当前幢 / 当前任务 / 任务操作 —— */
-    .task-object-header { height: 52px; flex: 0 0 52px; min-width: 0; display: flex; align-items: center; gap: 14px; padding: 0 18px; background: var(--bg-white); border-bottom: 1px solid var(--border-1); }
-    .task-object-back { height: 32px; flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px; padding: 0 8px; border: 0; border-radius: 6px; background: transparent; color: var(--text-2); cursor: pointer; font: inherit; white-space: nowrap; }
+    /* 系统顶栏以下只有一块任务栏。窄桌面将进度放到同一块区域的第二行。 */
+    .task-header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(max-content, 1fr);
+      grid-template-areas: "context progress actions";
+      align-items: center;
+      gap: 8px 20px;
+      min-height: 68px;
+      padding: 8px 24px;
+      border-bottom: 1px solid var(--border-1);
+    }
+    .task-object-context { grid-area: context; display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .task-object-back,
+    .stepper__back {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0 8px;
+      min-height: 32px;
+      flex: 0 0 auto;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--text-2);
+      font: inherit;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .task-object-back { margin-left: -8px; }
     .task-object-back svg { width: 16px; height: 16px; flex: 0 0 16px; }
-    .task-object-back:hover { background: var(--bg-hover); color: var(--primary-6); }
-    .task-object-divider { width: 1px; height: 20px; flex: 0 0 1px; background: var(--border-1); }
-    .task-object-identity { flex: 1 1 auto; min-width: 0; display: flex; align-items: baseline; gap: 10px; }
-    .task-object-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-1); font-size: var(--type-title); font-weight: 600; line-height: 24px; }
-    .task-object-view { flex: 0 0 auto; color: var(--text-3); font-size: var(--type-meta); line-height: 20px; white-space: nowrap; }
-    .task-object-actions { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; min-width: 0; }
-    .task-object-actions .btn { height: 32px; }
-    /* 任务操作栏、抽屉与弹层共用 32px 操作规格。 */
+    .task-object-back:hover,
+    .stepper__back:hover { background: var(--bg-hover); color: var(--primary-6); }
+    .task-object-identity { min-width: 0; padding-left: 12px; border-left: 1px solid var(--border-1); }
+    .task-object-title { margin: 0; color: var(--text-1); font-size: var(--type-title); font-weight: 600; line-height: 22px; white-space: nowrap; }
+    .task-object-building { display: block; overflow: hidden; color: var(--text-3); font-size: var(--type-meta); line-height: 19px; text-overflow: ellipsis; white-space: nowrap; }
+    .task-object-actions { grid-area: actions; justify-self: end; display: flex; align-items: center; gap: 8px; }
+    .task-object-actions .btn { height: 32px; white-space: nowrap; }
+    .stepper { grid-area: progress; display: flex; align-items: center; gap: 8px; margin: 0; }
+    .stepper__item { display: inline-flex; align-items: center; gap: 6px; color: var(--text-3); font-size: 13px; white-space: nowrap; }
+    .stepper__item.is-active { color: var(--primary-active); font-weight: 600; }
+    .stepper__item.is-done { color: var(--text-2); }
+    .stepper__dot {
+      display: inline-grid;
+      place-items: center;
+      flex: 0 0 20px;
+      width: 20px;
+      height: 20px;
+      border: 1px solid var(--border-2);
+      border-radius: 50%;
+      background: var(--bg-surface);
+      color: var(--text-3);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1;
+    }
+    .stepper__item.is-active .stepper__dot { background: var(--primary-6); color: #fff; border-color: var(--primary-6); }
+    .stepper__item.is-done .stepper__dot { color: #1f7150; background: var(--color-success-bg); border-color: transparent; }
+    .stepper__line { width: 16px; height: 1px; background: var(--border-2); }
+    .stepper__back { margin-left: 4px; font-size: 12px; color: var(--primary-active); }
+    .stepper__back[hidden] { display: none; }
+    @media (max-width: 980px) {
+      .task-header { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "context actions" "progress progress"; }
+      .stepper { flex-wrap: wrap; }
+    }
     .drawer__actions .btn,
     .modal__foot .btn { height: 32px; font-size: 14px; }
     .task-demo-meta { display: inline-block; margin: -8px 0 16px; color: var(--text-3); font-size: var(--type-meta); line-height: 20px; }
-    @media (max-width: 1040px) {
-      .task-object-header { gap: 10px; padding: 0 14px; }
-      .task-object-identity { gap: 8px; }
-      .task-object-actions { gap: 8px; }
-      .task-object-actions .btn { padding-left: 12px; padding-right: 12px; }
-    }
-    .stepper__item.is-done + .stepper__line { background: var(--color-success); }
 
     .step-panel { display: none; }
     .step-panel.is-active { display: block; }
@@ -110,23 +147,6 @@
     .block-bar__message { min-width: 0; }
     .block-bar__body b { color: var(--color-warning); }
     .block-bar__btn { flex-shrink: 0; }
-
-    /* —— 统计看板（可点击过滤 · TDesign Statistic「组合使用」） —— */
-    /* —— 顶部工具栏：统计快筛分段控件 + 视图切换（并排同高） —— */
-    .funnel { display: flex; align-items: stretch; gap: 12px; margin-bottom: 0; flex-wrap: nowrap; }
-    .combo-seg { flex: 1 1 auto; min-width: 0; }
-    .segmented { display: flex; align-items: stretch; gap: 4px; width: 100%; height: 100%; background: transparent; border: 1px solid transparent; border-radius: 8px; padding: 3px; }
-    .seg { --tone: var(--text-2); flex: 1 1 0; min-width: 0; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid transparent; background: transparent; border-radius: 7px; padding: 6px 12px; cursor: pointer; font-family: inherit; color: var(--text-2); transition: background .12s ease, color .12s ease; }
-    .seg__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--tone); flex: 0 0 8px; }
-    .seg__k { font-size: 13px; line-height: 1; white-space: nowrap; }
-    .seg__v { font-family: 'TCloudNumber', "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 24px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: .5px; }
-    .seg.is-on { background: var(--bg-surface); color: var(--text-1); font-weight: 600; border-color: var(--border-2); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
-    .seg.is-on .seg__dot { background: var(--tone); }
-    .seg.is-on .seg__k, .seg.is-on .seg__v { color: var(--text-1); }
-    .seg.is-tone-ok { --tone: var(--color-success); }
-    .seg.is-tone-danger { --tone: var(--color-danger); }
-    .seg.is-tone-muted { --tone: var(--text-3); }
-    .seg.is-tone-neutral { --tone: var(--primary-6); }
 
     /* —— 工作区：左树右卡 —— */
     .workspace { display: grid; grid-template-columns: 180px 1fr; gap: 16px; align-items: start; }
@@ -244,15 +264,71 @@
     .rg__hint--unmatched { color: var(--text-2); padding-top: 2px; }
     .link-empty { padding: 14px 12px;  color: var(--text-2); background: var(--bg-surface); border: 1px dashed var(--border-2); border-radius: 6px; }
 
-    /* —— 看板工具条 / 结果视图切换 —— */
-    .board-tools { display: flex; align-items: center; margin-bottom: 20px; padding: 8px 12px; background: var(--grey-3); border: 1px solid var(--border-1); border-radius: 8px; }
-    .board-tools .funnel { width: 100%; }
-    .ds-toggle { display: inline-flex; align-items: stretch; gap: 2px; padding: 3px; background: var(--bg-subtle); border: 1px solid var(--border-2); border-radius: 8px; flex: 0 0 auto; }
-    .ds-toggle__btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid transparent; background: transparent; color: var(--text-2);  padding: 6px 12px; border-radius: 7px; cursor: pointer; font: inherit; transition: background 120ms ease, color 120ms ease, border-color 120ms ease; }
+    /* 关系状态决定显示哪些记录，视图切换仅决定呈现方式。 */
+    .board-tools {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px 14px;
+      margin-bottom: 12px;
+      padding: 4px 12px 0;
+      border: 1px solid var(--border-1);
+      border-radius: 8px;
+      background: var(--bg-surface);
+    }
+    .board-tools__title { margin: 0; color: var(--text-1); font-size: var(--type-title); font-weight: 600; white-space: nowrap; }
+    .relation-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 2px; }
+    .seg {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 40px;
+      padding: 0 10px;
+      border: 0;
+      border-bottom: 2px solid transparent;
+      background: transparent;
+      color: var(--text-2);
+      font: inherit;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .seg:hover { background: var(--bg-hover); }
+    .seg.is-on { border-bottom-color: var(--primary-6); color: var(--primary-active); font-weight: 600; }
+    .seg__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--tone); }
+    .seg__k { font-size: 13px; }
+    .seg__v {
+      padding: 0 5px;
+      border-radius: 4px;
+      background: var(--bg-subtle);
+      color: var(--text-2);
+      font-size: var(--type-meta);
+      font-variant-numeric: tabular-nums;
+      line-height: 18px;
+    }
+    .seg.is-on .seg__v { background: var(--primary-1); color: var(--primary-active); }
+    .seg.is-tone-ok { --tone: var(--color-success); }
+    .seg.is-tone-danger { --tone: var(--color-danger); }
+    .seg.is-tone-muted { --tone: var(--text-3); }
+    .relation-filters__divider { width: 1px; height: 16px; margin: 0 3px; background: var(--border-1); }
+    .ds-toggle { display: inline-flex; gap: 2px; padding: 2px; margin: 3px 0 6px auto; background: var(--bg-subtle); border-radius: 6px; }
+    .ds-toggle__btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      min-height: 28px;
+      padding: 0 8px;
+      border: 1px solid transparent;
+      border-radius: 5px;
+      background: transparent;
+      color: var(--text-2);
+      font: inherit;
+      white-space: nowrap;
+      cursor: pointer;
+    }
     .ds-toggle__btn:hover { color: var(--text-1); }
-    .ds-toggle__btn.is-on { background: var(--bg-surface); color: var(--text-1); font-weight: 600; border-color: var(--border-2); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
-    .ds-toggle__icon { width: 14px; height: 14px; flex: 0 0 14px; color: var(--text-3); }
-    .ds-toggle__btn.is-on .ds-toggle__icon { color: var(--primary-6); }
+    .ds-toggle__btn.is-on { background: var(--bg-surface); color: var(--text-1); font-weight: 600; border-color: var(--border-2); }
+    .ds-toggle__icon { width: 14px; height: 14px; flex: 0 0 14px; color: currentColor; }
+    .workspace-shell :is(.seg,.ds-toggle__btn):focus-visible { outline-offset: -2px; }
 
     /* —— 紧凑表格模式（高密度，保留差异高亮） —— */
     .rg-table { width: 100%; border-collapse: collapse; background: var(--bg-surface); border: 1px solid var(--border-2); border-radius: 10px; overflow: hidden;  font-variant-numeric: tabular-nums; }
@@ -357,7 +433,7 @@
       z-index: 3000;
       pointer-events: none;
     }
-    /* —— 层级规范（本屏局部覆盖 system.css）：吸底栏 100 → 抽屉 1000 → 弹窗 2000 → 轻提示 3000 —— */
+    /* —— 层级规范（本屏局部覆盖 system.css）：抽屉 1000 → 弹窗 2000 → 轻提示 3000 —— */
     .drawer-mask { z-index: 1000; }
     .modal-mask { z-index: 2000; }
 
@@ -371,13 +447,6 @@
     .drawer__actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
     .form-line { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text-1); margin-bottom: 14px; }
 
-    /* —— 吸底操作条 —— */
-    .compare-footer { position: sticky; bottom: 8px; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; padding: 12px 16px; background: var(--bg-surface); border: 1px solid var(--border-2); border-radius: 10px; box-shadow: 0 -2px 10px rgba(0,0,0,.06); z-index: 100; }
-    .compare-footer__left { display: flex; align-items: center; gap: 14px; }
-    .compare-footer__info { font-size: var(--type-body); color: var(--text-2); }
-    .compare-footer__info b { color: var(--text-1); font-variant-numeric: tabular-nums; }
-    .compare-footer__info .danger { color: var(--color-danger); }
-    .compare-footer__actions { display: flex; gap: 10px; }
     .gate-hint.is-warn { display: none; }
     .check-inline { display: inline-flex; align-items: center; gap: 6px; font-size: var(--type-body); color: var(--text-2); cursor: pointer; }
     /* 字阶收口：相同任务分组共享字号，重要性由字重、颜色和空间层级共同表达 */
@@ -388,12 +457,12 @@
     .adjust-row--head,.link-candidate__row .conf,.gate-hint,.audit-meta__k {
       font-size: var(--type-meta);
     }
-    .task-nav-link,.stepper__item,.stepper__dot,.field>label,.field input,.upload-zone,.check-item,
+    .task-nav-link,.field>label,.field input,.upload-zone,.check-item,
     .block-bar__body,.block-bar__evidence,.floor-slider__title,.rg__code,.rg__metric,.rg__delta,
     .rg__sub,.link-empty,.ds-toggle__btn,.rg-table,
     .link-btn,.adjust-box__title,.adjust-idx,.adjust-row .adj-input,
     .adj-del,.adjust-sum,.adjust-pick,.cmp-codes,.cmp__k,.cmp__col,.audit-meta__v,.irreversible,
-    .scroll-body .alert__body,.form-line,.compare-footer__info,.check-inline {
+    .scroll-body .alert__body,.form-line,.check-inline {
       font-size: var(--type-body);
     }
     .rg__metric .object { font-size: var(--type-body); }
@@ -417,15 +486,10 @@
     /* 按钮：干脆的按压反馈（无弹性） */
     .btn { transition: box-shadow var(--mo-fb) ease, color var(--mo-fb) ease, background var(--mo-fb) ease, transform var(--mo-fb) var(--mo-ease); }
     .btn:active { transform: scale(.97); }
-    .seg { position: relative; }
     .seg, .ds-toggle__btn, .link-candidate__row, .check-item {
       transition: box-shadow var(--mo-fb) ease, border-color var(--mo-fb) ease, background var(--mo-fb) ease, color var(--mo-fb) ease, transform var(--mo-fb) var(--mo-ease);
     }
     .seg:active, .rg:active, .ds-toggle__btn:active, .link-candidate__row:active, .check-item:active { transform: scale(.985); }
-    /* 分段节点点击：一圈干脆的脉冲 */
-    .seg.is-tap::after { content:''; position:absolute; inset:-1px; border-radius:7px; animation: moTap 260ms var(--mo-ease) forwards; pointer-events:none; }
-    @keyframes moTap { 0%{box-shadow:0 0 0 0 rgba(0,82,217,.45);} 100%{box-shadow:0 0 0 7px rgba(0,82,217,0);} }
-
     /* 步骤面板：进入时干脆滑入 */
     .step-panel.is-active { animation: moStepIn var(--mo-ent) var(--mo-ease) both; }
     @keyframes moStepIn { from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
@@ -466,7 +530,6 @@
       .block-bar.is-on,
       .drawer-mask.is-open .drawer__body,
       .modal-mask.is-open .modal__head, .modal-mask.is-open .modal__body, .modal-mask.is-open .modal__foot,
-      .seg.is-tap::after { animation: none !important; }
       .btn:active, .seg:active, .rg:active, .ds-toggle__btn:active, .link-candidate__row:active, .check-item:active { transform: none !important; }
     }
   </style>
@@ -477,34 +540,36 @@
   <div class="layout workspace-shell" data-wk-legacy="true">
     <header class="top-nav wk-header">
       <div class="nav-logo"><span class="mark">住</span><span>数字住房一体化平台 <span class="nav-logo-sub">空间工作台</span></span></div>
+      <div class="search-box"><svg class="search-icon" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.5"/><path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><input class="search-input" type="text" aria-label="全局搜索" placeholder="搜索楼盘 / 地址 / 幢 / 户室，回车定位"></div>
       <div class="nav-right">
-        <div class="search-box"><svg class="search-icon" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.5"/><path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><input class="search-input" type="text" placeholder="搜索楼盘 / 地址 / 幢 / 户室，回车定位"></div>
         <button class="task-nav-link">消息</button><details class="prototype-note"><summary>示例数据 · 原型说明</summary><div class="prototype-note__body"><p>此交互原型使用示例数据，不连接业务系统。查询、校验和确认用于体验流程，不会修改真实房屋记录。转办记录仅保留在当前页面，刷新后清除。</p></div></details>
         <div class="avatar">管</div>
       </div>
     </header>
     <div class="layout-body">
       <main class="content">
-      <div class="page-header-comp">
-        <div class="task-object-header wk-object-header" id="pageHeaderTop">
+      <div class="page-header-comp task-header">
+        <div class="task-object-context">
           <button class="task-object-back" type="button" id="backBtn"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>返回地图</span></button>
-          <span class="task-object-divider" aria-hidden="true"></span>
-          <div class="task-object-identity"><b class="task-object-title" id="taskObjectTitle">宇济一号 · 17幢</b><span class="task-object-view">实测替换预测</span></div>
-          <div class="task-object-actions">
-            <span class="submit-wrap" id="submitWrap">
-              <button class="btn btn--primary" id="submitBtn" disabled>提交替换入库</button>
-            </span>
-            <button class="btn btn--sm" id="draftBtn">存草稿</button>
-            <span class="gate-hint" id="gateHint"></span>
+          <div class="task-object-identity">
+            <h1 class="task-object-title">实测替换预测</h1>
+            <span class="task-object-building" id="taskObjectTitle">宇济一号 · 17幢</span>
           </div>
         </div>
-        <div class="stepper" id="stepper">
-          <div class="stepper__item is-active" data-step="1"><span class="stepper__dot">1</span>查找测绘数据</div>
-          <span class="stepper__line"></span>
+        <div class="stepper" id="stepper" role="group" aria-label="任务进度">
+          <div class="stepper__item is-active" data-step="1" aria-current="step"><span class="stepper__dot">1</span>查找测绘数据</div>
+          <span class="stepper__line" aria-hidden="true"></span>
           <div class="stepper__item" data-step="2"><span class="stepper__dot">2</span>校验</div>
-          <span class="stepper__line"></span>
+          <span class="stepper__line" aria-hidden="true"></span>
           <div class="stepper__item" data-step="3"><span class="stepper__dot">3</span>设入库模式</div>
-          <button type="button" class="btn btn--sm stepper__back" id="backTo2" hidden>返回校验</button>
+          <button type="button" class="stepper__back" id="backTo2" hidden>返回校验</button>
+        </div>
+        <div class="task-object-actions">
+          <button class="btn btn--sm" id="draftBtn">存草稿</button>
+          <span class="submit-wrap" id="submitWrap">
+            <button class="btn btn--primary" id="submitBtn" disabled>提交替换入库</button>
+          </span>
+          <span class="gate-hint" id="gateHint"></span>
         </div>
       </div>
 
@@ -587,22 +652,6 @@
               <div class="block-bar__body"><span class="status-tag status-tag--warning block-bar__evidence"><span class="dot"></span>待业务确认</span><span class="block-bar__message">发现 <b id="blockCount">0</b> 项结构变化（拆分、合并、新增或删除），请先核对处理方式，完成前不能提交。</span></div>
             </div>
 
-            <!-- 漏斗看板 + 密度开关 -->
-            <div class="board-tools">
-              <div class="funnel" id="funnel">
-                <div class="segmented combo-seg">
-                  <button type="button" class="seg is-tone-neutral is-on" data-filter="all"><span class="seg__dot"></span><span class="seg__k">全部关系</span><span class="seg__v" id="fTotal">0</span></button>
-                  <button type="button" class="seg is-tone-ok" data-filter="linked"><span class="seg__dot"></span><span class="seg__k">已关联</span><span class="seg__v" id="fLinked">0</span></button>
-                  <button type="button" class="seg is-tone-danger" data-filter="review"><span class="seg__dot"></span><span class="seg__k">待核对</span><span class="seg__v" id="fReview">0</span></button>
-                  <button type="button" class="seg is-tone-muted" data-filter="unlinked"><span class="seg__dot"></span><span class="seg__k">未关联</span><span class="seg__v" id="fUnlinked">0</span></button>
-                </div>
-                <div class="ds-toggle" id="densityToggle" aria-label="户室关联视图">
-                  <button type="button" class="ds-toggle__btn is-on" data-density="standard" aria-pressed="true"><svg class="ds-toggle__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>卡片</span></button>
-                  <button type="button" class="ds-toggle__btn" data-density="compact" aria-pressed="false"><svg class="ds-toggle__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="4.5" cy="6" r="1.3" fill="currentColor" stroke="none"/><circle cx="4.5" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="4.5" cy="18" r="1.3" fill="currentColor" stroke="none"/><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/></svg><span>表格</span></button>
-                </div>
-              </div>
-            </div>
-
             <!-- 工作区：左树右卡 -->
             <div class="workspace">
               <div class="floor-slider" id="floorSlider">
@@ -631,19 +680,24 @@
                 <label class="floor-slider__only"><input type="checkbox" id="floorOnlyAnomaly"> 仅看待核对层</label>
               </div>
               <section class="result-pane">
+                <div class="board-tools">
+                  <h2 class="board-tools__title">户室关系</h2>
+                  <div class="relation-filters" role="group" aria-label="关系状态筛选">
+                    <button type="button" class="seg is-on" aria-pressed="true" data-filter="all"><span class="seg__k">全部关系</span><span class="seg__v" id="fTotal">0</span></button>
+                    <span class="relation-filters__divider" aria-hidden="true"></span>
+                    <button type="button" class="seg is-tone-ok" aria-pressed="false" data-filter="linked"><span class="seg__dot" aria-hidden="true"></span><span class="seg__k">已关联</span><span class="seg__v" id="fLinked">0</span></button>
+                    <button type="button" class="seg is-tone-danger" aria-pressed="false" data-filter="review"><span class="seg__dot" aria-hidden="true"></span><span class="seg__k">待核对</span><span class="seg__v" id="fReview">0</span></button>
+                    <button type="button" class="seg is-tone-muted" aria-pressed="false" data-filter="unlinked"><span class="seg__dot" aria-hidden="true"></span><span class="seg__k">未关联</span><span class="seg__v" id="fUnlinked">0</span></button>
+                  </div>
+                  <div class="ds-toggle" id="densityToggle" role="group" aria-label="户室关联视图">
+                    <button type="button" class="ds-toggle__btn is-on" data-density="standard" aria-pressed="true"><svg class="ds-toggle__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>卡片</span></button>
+                    <button type="button" class="ds-toggle__btn" data-density="compact" aria-pressed="false"><svg class="ds-toggle__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="4.5" cy="6" r="1.3" fill="currentColor" stroke="none"/><circle cx="4.5" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="4.5" cy="18" r="1.3" fill="currentColor" stroke="none"/><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/></svg><span>表格</span></button>
+                  </div>
+                </div>
                 <div class="cards" id="cards"></div>
               </section>
             </div>
 
-            <!-- 吸底操作条 -->
-            <div class="compare-footer">
-              <div class="compare-footer__left">
-                <span class="compare-footer__info">已关联 <b id="footLinked">0</b> 组 · 待核对 <b id="footReview" class="danger">0</b> 组 · 未关联 <b id="footUnlinked">0</b> 组</span>
-              </div>
-              <div class="compare-footer__actions">
-                <button class="btn btn--sm" id="draftBtn2">存草稿</button>
-              </div>
-            </div>
           </div>
         </div>
       </main>
@@ -1117,8 +1171,8 @@
       + '</div>';
   }
 
-  /* ============ 漏斗看板 + 楼层树 ============ */
-  function renderFunnel(){
+  /* ============ 关系状态筛选与楼层范围 ============ */
+  function renderRelationFilters(){
     const cards = buildCards();
     const counts = { linked:0, review:0, unlinked:0 };
     cards.forEach(card => {
@@ -1126,12 +1180,15 @@
       counts[reviewState(card, state)]++;
     });
     const total = cards.length;
-    const pct = n => total ? (n/total*100).toFixed(1).replace(/\.0$/, '') + '%' : '未提供';
     $('fTotal').textContent = total;
     $('fLinked').textContent = counts.linked;
     $('fReview').textContent = counts.review;
     $('fUnlinked').textContent = counts.unlinked;
-    document.querySelectorAll('.seg').forEach(n => n.classList.toggle('is-on', n.dataset.filter === statusFilter));
+    document.querySelectorAll('.seg').forEach(button => {
+      const selected = button.dataset.filter === statusFilter;
+      button.classList.toggle('is-on', selected);
+      button.setAttribute('aria-pressed', String(selected));
+    });
   }
 
   function floorLevelOf(f){
@@ -1236,18 +1293,6 @@
     maxI.addEventListener('input', () => liveClamp(maxI));
   }
 
-  /* ============ 关联摘要 / 提交门禁 ============ */
-  function syncFooter(){
-    const counts = { linked:0, review:0, unlinked:0 };
-    buildCards().forEach(card => {
-      const state = card.anchorType === 'pred' ? predictState(card.anchorId) : measureState(card.anchorId);
-      counts[reviewState(card, state)]++;
-    });
-    $('footLinked').textContent = counts.linked;
-    $('footReview').textContent = counts.review;
-    $('footUnlinked').textContent = counts.unlinked;
-  }
-
   /* ============ 门禁（提交锁定） ============ */
   function updateGate(){
     const struct = LINKS.filter(isStructural).length;
@@ -1295,7 +1340,7 @@
 
   function renderAll(){
     renderFloorSlider();   // 先刷新楼层区间（初始化 floorLo/floorHi）再过滤卡片
-    renderCards(true); renderFunnel(); syncFooter(); updateGate();
+    renderCards(true); renderRelationFilters(); updateGate();
   }
 
   /* ============ 三列差异对比抽屉（match / over / pending / del） ============ */
@@ -1507,6 +1552,8 @@
       const it = document.querySelector('.stepper__item[data-step="'+i+'"]');
       it.classList.toggle('is-active', i === n);
       it.classList.toggle('is-done', i < n);
+      if (i === n) it.setAttribute('aria-current', 'step');
+      else it.removeAttribute('aria-current');
     });
     $('backTo2').hidden = n !== 3;
     document.querySelector('.scroll-body').scrollTop = 0;
@@ -1668,10 +1715,9 @@
     }
   });
 
-  // 漏斗过滤
+  // 关系状态筛选
   document.querySelectorAll('.seg').forEach(n => n.addEventListener('click', () => {
-    n.classList.add('is-tap'); setTimeout(() => n.classList.remove('is-tap'), 260);
-    statusFilter = n.dataset.filter; renderFunnel(); renderCards(true);
+    statusFilter = n.dataset.filter; renderRelationFilters(); renderCards(true);
   }));
 
   // 校验场景下拉（.ui-select 组件，与步骤1 的两个下拉同一套规范）
@@ -1687,7 +1733,6 @@
   });
   $('submitBtn').addEventListener('click', () => { if (!$('submitBtn').disabled) openAudit(); });
   $('draftBtn').addEventListener('click', () => showToast('此原型未接入草稿保存'));
-  $('draftBtn2').addEventListener('click', () => showToast('此原型未接入草稿保存'));
 
   // 自定义下拉（替代原生 select，展开面板符合 TDesign 规范）
   // 可搜索下拉采用 TDesign SelectInput 模式：触发器本身即输入框，键入即时过滤，面板内不再单独放搜索框
@@ -1846,7 +1891,7 @@
   const demoStep = Number(taskParams.get('step'));
   if (demoStep === 2) renderChecks();
   if ([1,2,3].includes(demoStep)) goStep(demoStep);
-  renderFunnel();
+  renderRelationFilters();
   renderCards(true);
 
   /* ============ 提交轻提示：视口内智能定位（不再因按钮靠边溢出屏幕） ============ */
