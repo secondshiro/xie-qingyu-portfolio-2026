@@ -109,7 +109,7 @@ test('减弱动效在切换中生效，直接同步最终状态', async ({ page 
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await expect(deck(page)).toHaveAttribute('data-phase', 'idle');
   await expect(deck(page)).toHaveAttribute('data-loaded', '1');
-  expect(await page.locator('.deck .record__label').evaluate(el => getComputedStyle(el, '::before').animationName)).toBe('none');
+  expect(await page.locator('.retro-record-face .record__label').evaluate(el => getComputedStyle(el, '::before').animationName)).toBe('none');
   await select(page, 2).hover();
   await expect(deck(page)).toHaveAttribute('data-loaded', '2');
 
@@ -139,10 +139,10 @@ test('键盘焦点可见，左右键选片，上下键切换 A/B 且不滚动', 
   await expect(page.locator('[data-side="a"]')).toHaveAttribute('aria-pressed', 'true');
 });
 
-test('无 JavaScript 有五个案例入口，简历下载与案例链接可用', async ({ browser, request }) => {
+test('无 JavaScript 有五个案例入口，简历下载与案例链接可用', async ({ browser, request, baseURL }) => {
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
-  await page.goto('http://127.0.0.1:4331/');
+  await page.goto(`${baseURL}/`);
   await expect(page.locator('noscript a')).toHaveCount(5);
   for (const link of await page.locator('noscript a').all()) {
     await expect(link).toBeVisible();
@@ -318,7 +318,7 @@ test('高窗口将新增空白分配到作品上下，保持唱机与介绍的�
 
 test('唱片持续循环旋转，超过一圈及换片后都保持播放', async ({ page }) => {
   await page.goto('/');
-  const spinState = () => page.locator('.deck .record__label').evaluate(el => {
+  const spinState = () => page.locator('.retro-record-face .record__label').evaluate(el => {
     const style = getComputedStyle(el, '::before');
     return {iterations:style.animationIterationCount, state:style.animationPlayState, transform:style.transform};
   });
@@ -350,6 +350,66 @@ test('页面与控制按钮均可左右选片，唱片共用无数字标签', as
   await expect(page.locator('.sleeve__record .record__label')).toHaveCount(5);
   expect(await page.locator('.sleeve__record').allTextContents()).toEqual(['', '', '', '', '']);
 });
+
+test('点击唱机开合盖板，作品和 A/B 面保持，Enter 与空格同样可操作', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/');
+  await select(page, 2).hover();
+  await page.locator('[data-side="b"]').click();
+  await expect(deck(page)).toHaveAttribute('aria-expanded', 'false');
+  await deck(page).click();
+  await expect(deck(page)).toHaveAttribute('data-lid', 'open');
+  await expect(deck(page)).toHaveAttribute('aria-expanded', 'true');
+  await expect(deck(page)).toHaveAccessibleName(/合上唱机盖/);
+  await expect(select(page, 2)).toHaveAttribute('aria-current', 'true');
+  await expect(page.locator('[data-side="b"]')).toHaveAttribute('aria-pressed', 'true');
+  await deck(page).press('Enter');
+  await expect(deck(page)).toHaveAttribute('data-lid', 'closed');
+  await deck(page).press('Space');
+  await expect(deck(page)).toHaveAttribute('data-lid', 'open');
+  await expect(deck(page)).toBeFocused();
+  await page.locator('.retro-lid__glass').click();
+  await expect(deck(page)).toHaveAttribute('data-lid', 'closed');
+});
+
+test('换片先开盖，并在落针后执行用户最后一次开合要求', async ({ page }) => {
+  await page.goto('/');
+  await select(page, 1).hover();
+  await expect(deck(page)).toHaveAttribute('data-phase', 'extracting');
+  await expect(deck(page)).toHaveAttribute('data-lid', 'open');
+  // 盖板正在为换片打开，点击要求合上，第二次点击要求保留打开。
+  await deck(page).click();
+  await deck(page).click();
+  await expect(deck(page)).toHaveAttribute('data-lid-requested', 'open');
+  await expect(deck(page)).toHaveAttribute('data-phase', 'idle');
+  await expect(deck(page)).toHaveAttribute('data-lid', 'open');
+  await select(page, 3).hover();
+  await expect(deck(page)).toHaveAttribute('data-phase', 'extracting');
+  await deck(page).click();
+  await expect(deck(page)).toHaveAttribute('data-lid', 'open');
+  await expect(deck(page)).toHaveAttribute('data-lid-requested', 'closed');
+  await expect(deck(page)).toHaveAttribute('data-phase', 'idle');
+  await expect(deck(page)).toHaveAttribute('data-lid', 'closed');
+  await expect(deck(page)).toHaveAttribute('data-loaded', '3');
+  await expect(deck(page)).toHaveAttribute('aria-busy', 'false');
+});
+
+for (const width of [320, 390, 1440]) {
+  test(`${width}px 开盖不遮住页头或造成横向溢出`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/');
+    await deck(page).click();
+    const layout = await page.evaluate(() => {
+      const lid = document.querySelector('.retro-lid__glass').getBoundingClientRect();
+      return { left: lid.left, right: lid.right, top: lid.top + scrollY, header: document.querySelector('.bar').getBoundingClientRect().bottom + scrollY, overflow: document.documentElement.scrollWidth - innerWidth };
+    });
+    expect(layout.left).toBeGreaterThanOrEqual(0);
+    expect(layout.right).toBeLessThanOrEqual(width);
+    expect(layout.top).toBeGreaterThan(layout.header);
+    expect(layout.overflow).toBeLessThanOrEqual(1);
+  });
+}
 
 test('悬停预览保持最新作品，离开封套不跳转或重置', async ({ page }) => {
   await page.goto('/');
@@ -395,4 +455,159 @@ test('封套保留原生链接操作，中键可在新标签打开案例', async
   await expect(page).toHaveURL('/');
   await expect(page.locator('html')).not.toHaveAttribute('data-page-transition-phase', /.+/);
   await opened.close();
+});
+
+test('移除唱机点击提示，保留按钮名称及开盖交互', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByText('点击唱机，开合盖板')).toHaveCount(0);
+  await expect(deck(page)).toHaveAccessibleName(/打开唱机盖/);
+  await deck(page).click();
+  await expect(deck(page)).toHaveAttribute('aria-expanded', 'true');
+});
+
+test('鼠标点击唱机后按方向键不出现黑框，Tab 进入仍有焦点提示', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/');
+  await deck(page).click();
+  for (const key of ['ArrowRight', 'ArrowDown', 'ArrowLeft', 'ArrowUp']) {
+    await page.keyboard.press(key);
+    await expect(deck(page)).toBeFocused();
+    expect(await deck(page).evaluate(el => ({ shadow: getComputedStyle(el).boxShadow, outline: getComputedStyle(el).outlineStyle }))).toEqual({ shadow: 'none', outline: 'none' });
+  }
+  await expect(select(page, 0)).toHaveAttribute('aria-current', 'true');
+  await expect(page.locator('[data-side="a"]')).toHaveAttribute('aria-pressed', 'true');
+  await page.keyboard.press('Enter');
+  await expect(deck(page)).toHaveAttribute('data-lid', 'closed');
+  await page.keyboard.press('Tab');
+  await expect(deck(page)).not.toBeFocused();
+  await page.keyboard.press('Shift+Tab');
+  await expect(deck(page)).toBeFocused();
+  expect(await deck(page).evaluate(el => getComputedStyle(el).boxShadow)).not.toBe('none');
+  await page.keyboard.press('Space');
+  await expect(deck(page)).toHaveAttribute('data-lid', 'open');
+});
+
+test('A/B 翻面先抬臂抬片，绕左右轴纵向旋转半圈后归位，两面均可继续播放', async ({ page }) => {
+  await page.goto('/');
+  for (const side of ['b', 'a']) {
+    await page.locator(`[data-side="${side}"]`).click();
+    await expect(page.locator(`[data-work="0"] [data-face="${side}"]`)).toBeVisible();
+    await expect(deck(page)).toHaveAttribute('data-lid', 'open');
+    await page.waitForFunction(() => document.querySelector('[data-record-flip]').getAnimations().some(a => a.playState === 'running'));
+    const pose = await page.locator('[data-record-flip]').evaluate(el => {
+      const animation = el.getAnimations().find(a => a.playState === 'running');
+      animation.pause();
+      animation.currentTime = animation.effect.getTiming().duration * .5;
+      const turn = new DOMMatrix(getComputedStyle(el).transform);
+      const lift = new DOMMatrix(getComputedStyle(el.parentElement).transform);
+      return { tilt: Math.abs(turn.m23), horizontalTilt: Math.abs(turn.m13), lift: lift.m43, playing: document.querySelector('[data-deck]').classList.contains('is-playing') };
+    });
+    expect(pose.tilt).toBeGreaterThan(.5);
+    expect(pose.horizontalTilt).toBeLessThan(.001);
+    expect(pose.lift).toBeGreaterThan(40);
+    expect(pose.playing).toBe(false);
+    await page.locator('[data-record-flip]').evaluate(el => el.getAnimations().filter(a => a.playState === 'paused').forEach(a => a.play()));
+    await expect(deck(page)).toHaveAttribute('data-phase', 'idle');
+    await expect(deck(page)).toHaveAttribute('data-face', side);
+    await expect(deck(page)).toHaveAttribute('data-lid', 'closed');
+    await expect(deck(page)).toHaveClass(/is-playing/);
+    expect(await page.locator('[data-record]').evaluate(el => getComputedStyle(el).transform)).toBe('none');
+    expect(await page.locator('[data-record-flip]').evaluate(el => new DOMMatrix(getComputedStyle(el).transform).m22)).toBeCloseTo(side === 'b' ? -1 : 1);
+  }
+});
+
+test('翻面途中连续切面再改选作品，最终实体和文案一致且无残留动画', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto('/');
+  await page.locator('[data-side="b"]').click();
+  await page.waitForFunction(() => document.querySelector('[data-record-flip]').getAnimations().some(a => a.playState === 'running'));
+  await page.locator('[data-side="a"]').click();
+  await page.locator('[data-side="b"]').click();
+  await select(page, 3).hover();
+  await expect(deck(page)).toHaveAttribute('data-phase', 'idle');
+  await expect(deck(page)).toHaveAttribute('data-loaded', '3');
+  await expect(deck(page)).toHaveAttribute('data-face', 'b');
+  await expect(page.locator('[data-work="3"] [data-face="b"]')).toBeVisible();
+  expect(await page.locator('[data-record]').evaluate(el => ({ opacity: getComputedStyle(el).opacity, transform: getComputedStyle(el).transform, active: el.getAnimations({ subtree: true }).filter(a => a.effect?.target instanceof Element && !a.effect.pseudoElement).length }))).toEqual({ opacity: '1', transform: 'none', active: 0 });
+  expect(errors).toEqual([]);
+});
+
+test('换片已经进入时再切 B 面，先落片再翻面并保持最终选择', async ({ page }) => {
+  await page.goto('/');
+  await select(page, 2).hover();
+  await expect(deck(page)).toHaveAttribute('data-phase', 'incoming');
+  await page.locator('[data-side="b"]').click();
+  await expect(deck(page)).toHaveAttribute('data-phase', 'flipping');
+  await expect(deck(page)).toHaveAttribute('data-phase', 'idle');
+  await expect(deck(page)).toHaveAttribute('data-loaded', '2');
+  await expect(deck(page)).toHaveAttribute('data-face', 'b');
+});
+
+test('减弱动效在翻面途中启用，立即落片并保留 B 面', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('[data-side="b"]').click();
+  await expect(deck(page)).toHaveAttribute('data-phase', 'flipping');
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect(deck(page)).toHaveAttribute('data-phase', 'idle');
+  await expect(deck(page)).toHaveAttribute('data-face', 'b');
+  expect(await page.locator('[data-record]').evaluate(el => getComputedStyle(el).transform)).toBe('none');
+  await page.locator('[data-side="a"]').click();
+  await expect(deck(page)).toHaveAttribute('data-face', 'a');
+  await expect(deck(page)).toHaveAttribute('data-phase', 'idle');
+});
+
+test('连续两次翻面时，点击盖板均按本次要求在落针后合上', async ({ page }) => {
+  await page.goto('/');
+  for (const side of ['b', 'a']) {
+    await page.locator(`[data-side="${side}"]`).click();
+    await expect(deck(page)).toHaveAttribute('data-phase', 'flipping');
+    await deck(page).click();
+    await expect(deck(page)).toHaveAttribute('data-lid-requested', 'closed');
+    await expect(deck(page)).toHaveAttribute('data-phase', 'idle');
+    await expect(deck(page)).toHaveAttribute('data-lid', 'closed');
+    await expect(deck(page)).toHaveAttribute('data-face', side);
+  }
+});
+
+test('案例返回恢复 B 面文案及实体朝向', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/');
+  await select(page, 3).hover();
+  await page.locator('[data-side="b"]').click();
+  await select(page, 3).click();
+  await expect(page).toHaveURL(/\/work\/execution-query\/$/);
+  await page.locator('.site-nav__links a').click();
+  await expect(page).toHaveURL('/');
+  await expect(deck(page)).toHaveAttribute('data-loaded', '3');
+  await expect(deck(page)).toHaveAttribute('data-face', 'b');
+  await expect(page.locator('[data-side="b"]')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('[data-work="3"] [data-face="b"]')).toBeVisible();
+});
+
+test('唱片侧壁在进出和淡出时保持立体，速度留出抬片与落片过程', async ({ page }) => {
+  await page.goto('/');
+  await select(page, 3).hover();
+  for (const phase of ['outgoing', 'incoming']) {
+    await page.waitForFunction(phase => document.querySelector('[data-deck]').dataset.phase === phase, phase, { polling: 'raf' });
+    const shape = await page.locator('[data-record]').evaluate((el, phase) => {
+      const animation = el.getAnimations().find(a => a.playState === 'running');
+      animation.pause();
+      animation.currentTime = animation.effect.getTiming().duration * (phase === 'incoming' ? .15 : .7);
+      const style = getComputedStyle(el);
+      const wall = el.querySelector('.retro-vinyl-wall');
+      return { duration: animation.effect.getTiming().duration, opacity: style.opacity, depth: style.transformStyle, visibility: Number(style.getPropertyValue('--retro-record-visibility')), wallOpacity: Number(getComputedStyle(wall).opacity), wallHeight: wall.offsetHeight, wallNormal: new DOMMatrix(getComputedStyle(wall).transform).m23 };
+    }, phase);
+    expect(shape.duration).toBeGreaterThanOrEqual(600);
+    expect(shape.opacity).toBe('1');
+    expect(shape.depth).toBe('preserve-3d');
+    expect(shape.visibility).toBeGreaterThan(0);
+    expect(shape.visibility).toBeLessThan(1);
+    expect(shape.wallOpacity).toBeCloseTo(shape.visibility, 3);
+    expect(shape.wallHeight).toBeGreaterThan(0);
+    expect(Math.abs(shape.wallNormal)).toBeCloseTo(1);
+    await page.locator('[data-record]').evaluate(el => el.getAnimations().filter(a => a.playState === 'paused').forEach(a => a.play()));
+  }
+  await expect(deck(page)).toHaveAttribute('data-phase', 'idle');
+  await expect(deck(page)).toHaveAttribute('data-loaded', '3');
 });

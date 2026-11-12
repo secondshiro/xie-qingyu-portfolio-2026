@@ -1,5 +1,6 @@
 ---
 import '../styles/home-turntable.css';
+import RetroTurntable from '../components/RetroTurntable.astro';
 import PageTransitionHead from '../components/PageTransitionHead.astro';
 ---
 <!DOCTYPE html>
@@ -68,36 +69,7 @@ import PageTransitionHead from '../components/PageTransitionHead.astro';
       </li>
     </ul>
   </section>
-    <div class="player">
-<div class="deck" data-deck data-phase="idle" role="img" aria-label="唱机，当前唱片为房产 GIS 体验重构">
-
-      <span class="deck__frame" aria-hidden="true"></span>
-
-      <div class="platter" aria-hidden="true">
-        <div class="record" data-record>
-          <span class="record__grooves"></span>
-          <span class="record__label"></span>
-        </div>
-      </div>
-
-      <div class="arm" data-arm aria-hidden="true">
-        <span class="arm__weight"></span>
-        <span class="arm__pivot"></span>
-        <span class="arm__head"></span>
-      </div>
-
-      <div class="tuner" aria-hidden="true">
-        <span class="tuner__scale"></span>
-        <span class="tuner__needle"></span>
-      </div>
-
-      <div class="deck__foot" aria-hidden="true">
-        <span class="deck__spec">33⅓ RPM</span>
-        <span class="deck__led"></span>
-      </div>
-
-    </div>
-    </div>
+    <RetroTurntable />
   </div>
   <section class="panel" aria-label="当前作品介绍">
     <div class="panel__head">
