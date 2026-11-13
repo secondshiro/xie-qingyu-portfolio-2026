@@ -1,6 +1,7 @@
 ---
 import { renderRetroTurntable } from '../lib/retro-turntable';
 import '../styles/retro-turntable.css';
+import MusicControls from './MusicControls.astro';
 ---
 <div class="player">
   <button class="deck retro-deck is-playing" type="button" data-deck data-phase="idle" data-lid="closed"
@@ -8,4 +9,5 @@ import '../styles/retro-turntable.css';
     aria-label="打开唱机盖，当前唱片为房产 GIS 体验重构" disabled>
     <span class="retro-camera" aria-hidden="true"><span class="retro-world" set:html={renderRetroTurntable()} /></span>
   </button>
+  <MusicControls />
 </div>

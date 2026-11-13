@@ -1,3 +1,5 @@
+import { createHomeMusic } from './home-music.js';
+
 (() => {
   'use strict';
 
@@ -11,6 +13,7 @@
   const announcement = document.querySelector('[data-announcement]');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   if (!deck || !record || !flipper || !crate || !sleeves.length || sleeves.length !== articles.length) return;
+  const music = createHomeMusic();
 
   // Animate material opacity without turning the entire 3D record into one flat layer.
   try {
@@ -44,9 +47,9 @@
   const title = index => articles[index].querySelector('.work__title').textContent.trim();
   const motionOff = () => reducedMotion.matches || typeof record.animate !== 'function';
   const faceRotation = side => `rotateX(${side === 'b' ? 180 : 0}deg)`;
-  const world = deck.querySelector('.retro-world');
+  const player = deck.closest('.player');
   const hoverPointer = window.matchMedia('(any-hover: hover) and (any-pointer: fine)');
-  const resetHoverAngle = () => { world?.style.removeProperty('--retro-hover-yaw'); };
+  const resetHoverAngle = () => { player?.style.removeProperty('--retro-hover-yaw'); };
 
   deck.addEventListener('pointermove', event => {
     if (event.pointerType !== 'mouse' || event.buttons || !hoverPointer.matches || reducedMotion.matches || deck.dataset.phase !== 'idle') {
@@ -56,7 +59,7 @@
     // Use the fixed button bounds so the moving model cannot feed back into its angle.
     const bounds = deck.getBoundingClientRect();
     const offset = Math.max(-1, Math.min(1, (event.clientX - bounds.left) / bounds.width * 2 - 1));
-    world?.style.setProperty('--retro-hover-yaw', `${(offset * -3).toFixed(3)}deg`);
+    player?.style.setProperty('--retro-hover-yaw', `${(offset * -3).toFixed(3)}deg`);
   });
   deck.addEventListener('pointerleave', resetHoverAngle);
   deck.addEventListener('pointercancel', resetHoverAngle);
@@ -124,6 +127,7 @@
   }
 
   function paintSelection(index) {
+    music.select(index);
     selected = index;
     sleeves.forEach((sleeve, i) => {
       sleeve.setAttribute('aria-current', String(i === index));
@@ -147,6 +151,7 @@
 
   function setPhase(phase) {
     deck.dataset.phase = phase;
+    music.phase(phase);
     if (phase !== 'idle') resetHoverAngle();
     paintLidControl();
   }
@@ -291,13 +296,14 @@
 
   function select(index) {
     const target = (index + sleeves.length) % sleeves.length;
-    if (target === selected) return;
+    if (target === selected) { music.preview(); return; }
     const positions = sleeves.map(sleeve => {
       const style = getComputedStyle(sleeve.querySelector('.sleeve__record'));
       return { transform: style.transform, opacity: style.opacity };
     });
     paintSelection(target);
     void playSelection(target, positions);
+    music.preview();
   }
 
   sleeves.forEach((sleeve, index) => {

@@ -260,7 +260,7 @@ for (const [width, height] of [[1440,810],[1920,1080]]) {
       ratio:document.querySelector('.deck').getBoundingClientRect().width / document.querySelector('.sleeve__cover').getBoundingClientRect().width,
       controls:document.querySelector('.panel__head').getBoundingClientRect().height,
       deckWidth:document.querySelector('.deck').getBoundingClientRect().width,
-      bottomDelta:Math.abs(document.querySelector('.deck').getBoundingClientRect().bottom-document.querySelector('.crate li:last-child .sleeve__caption').getBoundingClientRect().bottom)
+      bottomDelta:Math.abs(document.querySelector('.player').getBoundingClientRect().bottom-document.querySelector('.crate li:last-child .sleeve__caption').getBoundingClientRect().bottom)
     }));
     if (height >= 1080) expect(bounds.bottom).toBeLessThanOrEqual(height);
     expect(bounds.ratio).toBeGreaterThan(3);
@@ -290,7 +290,7 @@ test('高窗口将新增空白分配到作品上下，保持唱机与介绍的�
           deckTop: deck.top,
           deckWidth: deck.width,
           deckHeight: deck.height,
-          panelGap: panel.top - deck.bottom,
+          panelGap: panel.top - rect('.player').bottom,
           aboutGap: about.top - panel.bottom,
           aboutTop: about.top,
           aboutBottom: about.bottom,

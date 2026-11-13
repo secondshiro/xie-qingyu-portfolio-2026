@@ -1,0 +1,62 @@
+/* A separate interaction surface shares the cabinet's camera without nesting controls inside its lid button. */
+.music-camera, .music-world { pointer-events: none; }
+.music {
+  position: absolute;
+  left: calc(355 * var(--retro-unit));
+  top: calc(400 * var(--retro-unit));
+  width: calc(200 * var(--retro-unit));
+  height: calc(166 * var(--retro-unit));
+  transform-origin: 0 0;
+  transform: translateZ(calc(185 * var(--retro-unit))) rotateX(-90deg);
+  display: flex;
+  align-items: center;
+  gap: calc(10 * var(--retro-unit));
+  color: #65706b;
+  pointer-events: auto;
+}
+.music__mute {
+  display: grid; place-items: center; flex: 0 0 calc(40 * var(--retro-unit));
+  height: calc(72 * var(--retro-unit)); padding: 0;
+  border: 0; border-radius: calc(5 * var(--retro-unit));
+  color: inherit; background: transparent; cursor: pointer;
+}
+.music__mute svg { width: calc(25 * var(--retro-unit)); height: calc(25 * var(--retro-unit)); filter: drop-shadow(0 1px 0 rgb(255 255 255 / 60%)); }
+.music__mute:hover { color: #323b36; }
+.music [data-music-off], .music[data-silent='true'] [data-music-on] { display: none; }
+.music[data-silent='true'] [data-music-off] { display: block; }
+.music__volume { display: flex; align-items: center; width: calc(144 * var(--retro-unit)); height: calc(72 * var(--retro-unit)); }
+.music input {
+  appearance: none; -webkit-appearance: none;
+  width: 100%; height: calc(72 * var(--retro-unit)); margin: 0;
+  border: 0; background: transparent; cursor: ew-resize;
+}
+.music input::-webkit-slider-runnable-track {
+  height: calc(4 * var(--retro-unit)); border: 0; border-radius: calc(2 * var(--retro-unit));
+  background: linear-gradient(to right, var(--color-accent) 0 var(--music-volume, 25%), #a8b0aa var(--music-volume, 25%) 100%);
+  box-shadow: 0 1px 0 rgb(255 255 255 / 45%);
+}
+.music input::-webkit-slider-thumb {
+  appearance: none; -webkit-appearance: none;
+  width: calc(14 * var(--retro-unit)); height: calc(20 * var(--retro-unit));
+  margin-top: calc(-8 * var(--retro-unit));
+  border: 1px solid #a9b1ab; border-radius: calc(3 * var(--retro-unit));
+  background: linear-gradient(#fafbf9, #d6ddd6);
+  box-shadow: 0 calc(1 * var(--retro-unit)) calc(2 * var(--retro-unit)) rgb(40 52 43 / 20%);
+}
+.music input::-moz-range-track {
+  height: calc(4 * var(--retro-unit)); border: 0; border-radius: calc(2 * var(--retro-unit));
+  background: linear-gradient(to right, var(--color-accent) 0 var(--music-volume, 25%), #a8b0aa var(--music-volume, 25%) 100%);
+}
+.music input::-moz-range-thumb {
+  width: calc(14 * var(--retro-unit)); height: calc(20 * var(--retro-unit));
+  border: 1px solid #a9b1ab; border-radius: calc(3 * var(--retro-unit));
+  background: linear-gradient(#fafbf9, #d6ddd6);
+  box-shadow: 0 1px 2px rgb(40 52 43 / 20%);
+}
+.music input:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 4px; }
+@media (forced-colors: active) {
+  .music input::-webkit-slider-runnable-track { background: CanvasText; }
+  .music input::-moz-range-track { background: CanvasText; }
+  .music input::-webkit-slider-thumb { background: ButtonText; }
+  .music input::-moz-range-thumb { background: ButtonText; }
+}

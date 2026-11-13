@@ -1,9 +1,11 @@
-.retro-deck {
+.player {
   --retro-unit: calc(100cqw / 640 * 0.72);
   --retro-pitch: 62deg;
   --retro-yaw: -12deg;
   --retro-lid-duration: 700ms;
   --retro-ease: cubic-bezier(.25,.75,.2,1);
+}
+.retro-deck {
   display: block;
   padding: 0;
   appearance: none;
@@ -24,7 +26,7 @@
   perspective-origin: 50% 12%;
   transform: translate(-50%,-50%);
 }
-.retro-world { display: block; position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transform: rotateX(var(--retro-pitch)) rotateZ(calc(var(--retro-yaw) + var(--retro-hover-yaw, 0deg))); transition: transform 320ms var(--retro-ease); }
+.retro-world, .music-world { display: block; position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transform: rotateX(var(--retro-pitch)) rotateZ(calc(var(--retro-yaw) + var(--retro-hover-yaw, 0deg))); transition: transform 320ms var(--retro-ease); }
 .retro-world * { position: absolute; display: block; transform-style: preserve-3d; }
 .retro-mechanism { inset: 0; transform: translateZ(calc(48 * var(--retro-unit))); }
 .retro-box { width: var(--w); height: var(--d); }
@@ -90,5 +92,5 @@
 .retro-lid__side { top: 0; width: calc(44 * var(--retro-unit)); height: calc(400 * var(--retro-unit)); transform-origin: 0 0; transform: translateZ(calc(44 * var(--retro-unit))) rotateY(90deg); background: rgb(202 212 214 / 7%); border: 1px solid rgb(221 233 224 / 45%); }
 .retro-lid__side--right { left: calc(620 * var(--retro-unit)); }
 @media (max-width: 74.999rem) { .retro-camera { top: 78%; } }
-@media (prefers-reduced-motion: reduce) { .retro-world,.retro-lid,.retro-tonearm,.retro-tuner::after { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .retro-world,.music-world,.retro-lid,.retro-tonearm,.retro-tuner::after { transition: none; } }
 @media (forced-colors: active) { .retro-deck { border: 1px solid ButtonText; } }

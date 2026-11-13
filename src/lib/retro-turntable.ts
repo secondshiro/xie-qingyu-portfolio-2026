@@ -24,8 +24,8 @@ function prism(x: number, y: number, z: number, points: readonly Point[], height
 
 export function renderRetroTurntable() {
   const feet = [[28,24], [562,24], [28,340], [562,340]].map(([x,y]) => cylinder(x,y,1,30,13,'#939b96','#838c86')).join('');
-  const grille = [[34,128], [179,128], [440,144]].map(([left,width]) => `<i class="retro-grille" style="left:${unit(left)};width:${unit(width)}"></i>`).join('');
-  const cabinet = box(0,0,18,620,400,166,'retro-cabinet').replace('<i class="retro-face retro-face--front"></i>', `<i class="retro-face retro-face--front">${grille}<span class="retro-signature">SELECTED<br>WORKS</span></i>`);
+  const grille = [[34,128], [179,128]].map(([left,width]) => `<i class="retro-grille" style="left:${unit(left)};width:${unit(width)}"></i>`).join('');
+  const cabinet = box(0,0,18,620,400,166,'retro-cabinet').replace('<i class="retro-face retro-face--front"></i>', `<i class="retro-face retro-face--front">${grille}</i>`);
   const arm = prism(-36,-16,0,[[27,0],[47,0],[47,151],[30,175],[18,207],[0,202],[11,164],[27,144]],10)
     + box(-8,-18,-1,19,28,9,'retro-matte')
     + prism(-32,174,-6,[[1,0],[14,2],[12,14],[0,12]],6,'retro-cartridge')
