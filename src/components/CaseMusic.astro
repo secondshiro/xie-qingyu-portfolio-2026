@@ -1,0 +1,29 @@
+---
+import { musicTracks } from '../lib/music-tracks.js';
+import '../styles/case-music.css';
+
+const index = musicTracks.findIndex(track => Astro.url.pathname === `/work/${track.slug}/`);
+const track = musicTracks[index];
+---
+{track && <aside class="case-music" data-music data-case-music data-track-index={index} data-state="paused" data-silent="false" style={`--music-disc: ${track.color}`} aria-label={`${track.name}配乐`} hidden>
+  <span class="case-music__disc" aria-hidden="true">
+    {[44, 52, 60, 68, 76, 84].map(size => <i style={`--ring: ${size}%`} />)}
+    <b></b>
+  </span>
+  <button class="case-music__button case-music__play" type="button" data-music-play aria-label="播放配乐" aria-pressed="false" title="播放配乐">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path class="case-music__play-icon" d="m9 5 10 7-10 7Z" /><path class="case-music__pause-icon" d="M9 6v12M15 6v12" /></svg>
+  </button>
+  <div class="case-music__volume">
+    <button class="case-music__button case-music__mute" type="button" data-music-mute aria-label="静音" aria-pressed="false" title="静音">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4Z" /><g class="case-music__sound-on"><path d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14" /></g><path class="case-music__sound-off" d="m16 9 6 6m0-6-6 6" /></svg>
+    </button>
+    <label><input type="range" data-music-volume aria-label="配乐音量" min="0" max="100" value="25" /></label>
+  </div>
+  <span class="case-music__status" data-music-status role="status" aria-live="polite">播放配乐</span>
+  <audio data-music-audio preload="none" loop></audio>
+</aside>}
+<script>
+  import { createMusicSession } from '../scripts/music-session.js';
+  const root = document.querySelector<HTMLElement>('[data-case-music]');
+  if (root) createMusicSession(root).select(Number(root.dataset.trackIndex));
+</script>

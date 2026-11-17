@@ -1,0 +1,117 @@
+.case-music {
+  position: fixed;
+  z-index: 25;
+  right: max(2rem, env(safe-area-inset-right));
+  bottom: calc(1.75rem + env(safe-area-inset-bottom));
+  display: grid;
+  grid-template-columns: 2.25rem 2.75rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.375rem;
+  width: 17.25rem;
+  min-height: 3.5rem;
+  padding: 0.25rem 1.125rem;
+  border: 1px solid rgb(38 37 30 / 8%);
+  border-radius: 999px;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  box-shadow: 0 2px 4px rgb(38 37 30 / 4%), 0 10px 28px rgb(38 37 30 / 8%);
+}
+.case-music[hidden] { display: none; }
+.case-music__disc {
+  position: relative;
+  display: block;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, transparent 24%, rgb(255 255 255 / 28%) 40%, rgb(255 255 255 / 12%) 52%, transparent 66%), var(--music-disc);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 28%), inset 0 -2px 3px rgb(38 37 30 / 13%), 0 2px 3px rgb(38 37 30 / 10%);
+  animation: case-disc-spin 12s linear infinite paused;
+}
+.case-music__disc i {
+  position: absolute;
+  width: var(--ring);
+  height: var(--ring);
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border: 0.5px solid rgb(38 37 30 / 16%);
+  border-radius: 50%;
+}
+.case-music__disc b { position: absolute; inset: 36%; border: 0.5px solid rgb(38 37 30 / 9%); border-radius: 50%; background: #e9e4d4; box-shadow: 0 0.5px 1px rgb(38 37 30 / 12%); }
+.case-music__disc b::after { content: ''; position: absolute; inset: 40%; border-radius: 50%; background: var(--color-ink); }
+.case-music__button {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: color 140ms ease, background 140ms ease, transform 140ms ease;
+}
+.case-music__button:hover { background: var(--color-panel); color: var(--color-ink); }
+.case-music__button:active { transform: scale(0.94); }
+.case-music__button:focus-visible, .case-music input:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 3px; }
+.case-music__button svg { width: 1.125rem; height: 1.125rem; fill: none; stroke: currentColor; stroke-width: 1.55; stroke-linecap: round; stroke-linejoin: round; }
+.case-music__play { color: var(--color-paper); isolation: isolate; }
+.case-music__play::before { content: ''; position: absolute; z-index: -1; width: 2.25rem; height: 2.25rem; border-radius: 50%; background: var(--color-ink); box-shadow: 0 1px 2px rgb(38 37 30 / 12%); transition: background 140ms ease; }
+.case-music__play:hover { color: var(--color-paper); background: transparent; }
+.case-music__play:hover::before { background: #44433b; }
+.case-music__play svg { width: 1rem; height: 1rem; stroke-width: 2; }
+.case-music__play-icon { fill: currentColor; stroke-width: 1; }
+.case-music__pause-icon, .case-music__sound-off { display: none; }
+.case-music__play[aria-pressed='true'] .case-music__play-icon { display: none; }
+.case-music__play[aria-pressed='true'] .case-music__pause-icon { display: block; }
+.case-music[data-silent='true'] .case-music__sound-on { display: none; }
+.case-music[data-silent='true'] .case-music__sound-off { display: block; }
+.case-music[data-state='playing'] .case-music__disc { animation-play-state: running; }
+.case-music[data-state='waiting'] .case-music__disc { opacity: 0.55; }
+.case-music__volume { display: grid; grid-template-columns: 2.75rem minmax(0, 1fr); align-items: center; min-width: 0; }
+.case-music__volume label { display: flex; align-items: center; min-width: 0; }
+.case-music input { appearance: none; width: 100%; min-width: 0; height: 2.75rem; margin: 0; background: transparent; cursor: ew-resize; }
+.case-music input::-webkit-slider-runnable-track { height: 3px; border-radius: 2px; background: linear-gradient(to right, var(--color-accent) 0 var(--music-volume), rgb(38 37 30 / 18%) var(--music-volume) 100%); }
+.case-music input::-webkit-slider-thumb { appearance: none; width: 12px; height: 12px; margin-top: -4.5px; border: 1px solid var(--color-ink); border-radius: 50%; background: var(--color-paper); }
+.case-music input::-moz-range-track { height: 3px; border-radius: 2px; background: linear-gradient(to right, var(--color-accent) 0 var(--music-volume), rgb(38 37 30 / 18%) var(--music-volume) 100%); }
+.case-music input::-moz-range-thumb { width: 10px; height: 10px; border: 1px solid var(--color-ink); border-radius: 50%; background: var(--color-paper); }
+.case-music__status { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.case-music[data-state='error'] .case-music__status, .case-music[data-state='blocked'] .case-music__status {
+  position: static;
+  grid-column: 1 / -1;
+  width: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  clip-path: none;
+  text-align: center;
+  color: var(--color-muted);
+  font-size: 0.6875rem;
+  line-height: 1.5;
+}
+html:has(:fullscreen) .case-music { visibility: hidden; }
+@keyframes case-disc-spin { to { transform: rotate(360deg); } }
+@media (max-width: 45rem) {
+  .case-music {
+    right: max(1rem, env(safe-area-inset-right));
+    bottom: calc(1.125rem + env(safe-area-inset-bottom));
+    grid-template-columns: 2rem 2.75rem minmax(0, 1fr);
+    width: 16.25rem;
+    min-height: 3.25rem;
+    padding: 0.1875rem 1rem;
+  }
+  .case-music__disc { width: 2rem; height: 2rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .case-music__disc { animation: none; }
+  .case-music__button, .case-music__play::before { transition: none; }
+}
+@media (forced-colors: active) {
+  .case-music { border-color: CanvasText; }
+  .case-music input::-webkit-slider-runnable-track { background: CanvasText; }
+  .case-music input::-webkit-slider-thumb { background: ButtonText; }
+  .case-music input::-moz-range-track { background: CanvasText; }
+  .case-music input::-moz-range-thumb { background: ButtonText; }
+}
