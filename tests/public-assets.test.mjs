@@ -3,6 +3,20 @@ import { access, readFile } from 'node:fs/promises';
 import test from 'node:test';
 
 const required = [
+  'public/projects/low-altitude-operations/media/overview-live-redacted.webp',
+  'public/projects/low-altitude-operations/media/app-flight-plans-design-redacted.webp',
+  'public/projects/low-altitude-operations/media/app-issue-report-design-redacted.webp',
+  'public/projects/low-altitude-operations/media/overview-design-redacted.webp',
+  'public/projects/low-altitude-operations/media/cockpit-projection-design-redacted.webp',
+  'public/projects/low-altitude-operations/media/work-order-design-redacted.webp',
+  'public/projects/low-altitude-operations/media/gallery-panorama-redacted.webp',
+  'public/projects/low-altitude-operations/media/gallery-outputs-redacted.webp',
+  'public/projects/low-altitude-operations/media/gallery-dispatch-redacted.webp',
+  'public/projects/low-altitude-operations/media/gallery-grid-redacted.webp',
+  'public/projects/low-altitude-operations/media/gallery-planning-redacted.webp',
+  'public/projects/low-altitude-operations/media/gallery-change-redacted.webp',
+  'public/projects/low-altitude-operations/media/gallery-patrol-redacted.webp',
+  'public/projects/low-altitude-operations/media/gallery-login-redacted.webp',
   'public/projects/real-estate-gis/media/final/map-current-overview.png',
   'public/projects/real-estate-gis/media/final/building-current-overview.png',
   'public/projects/real-estate-gis/media/final/13-task-relations-focus.png',

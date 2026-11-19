@@ -4,6 +4,7 @@ import test from 'node:test';
 
 const pages = [
   'src/pages/index.astro',
+  'src/pages/work/low-altitude-operations.astro',
   'src/pages/work/real-estate-gis.astro',
   'src/pages/work/brand-system.astro',
   'src/pages/work/edgecase-planner.astro',

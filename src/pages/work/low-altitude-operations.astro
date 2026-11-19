@@ -1,0 +1,208 @@
+---
+import CaseHero from '../../components/CaseHero.astro';
+import CaseSection from '../../components/CaseSection.astro';
+import CaseToc from '../../components/CaseToc.astro';
+import InterfaceGallery from '../../components/InterfaceGallery.astro';
+import MediaStage from '../../components/MediaStage.astro';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import '../../styles/case-study.css';
+
+const title = '新禾低空智航运营服务平台';
+const media = '/projects/low-altitude-operations/media';
+const facts = [
+  { label: '角色', value: '三端界面与交互设计' },
+  { label: '分工', value: '产品经理定义业务流程，我主导各端信息层级、视觉与交互落地' },
+  { label: '范围', value: '综合大屏、移动端 App、运营后台' },
+  { label: '阶段', value: '三端于 2025 年上线' },
+];
+
+const tocSections = [
+  { id: 'workflow', label: '01 / 三端分工' },
+  { id: 'work-order', label: '02 / 巡查工单' },
+  { id: 'cockpit', label: '03 / 现场判读' },
+  { id: 'overview', label: '04 / 区域总览' },
+  { id: 'delivery', label: '05 / 设计交付' },
+  { id: 'gallery', label: '06 / 界面集锦' },
+];
+
+const galleryViews = [
+  { title: '全景查看', src: `${media}/gallery-panorama-redacted.webp`, alt: '全景查看界面，航拍全景铺满主视野，底部是缩略图，右下显示位置小地图', caption: '在全景、缩略图和位置小图之间对照。', width: 1152, height: 572 },
+  { title: '集群调度', src: `${media}/gallery-dispatch-redacted.webp`, alt: '集群调度界面，上下两排并列显示无人机画面、设备状态与操作，底部有批量任务区。', caption: '同屏查看各路画面，在底部选择设备并安排批量任务。', width: 1152, height: 572 },
+  { title: '网格巡查', src: `${media}/gallery-grid-redacted.webp`, alt: '网格巡查界面，左侧是网格索引，右侧是现场影像与标注工具', caption: '左侧找网格，右侧看对应影像与标注。', width: 1152, height: 572 },
+  { title: '飞行任务配置', src: `${media}/gallery-planning-redacted.webp`, alt: '飞行任务界面，左侧为地图，右侧是飞行任务设置面板', caption: '在地图旁安排任务，设置执行条件。', width: 1152, height: 572 },
+  { title: '变化检测', src: `${media}/gallery-change-redacted.webp`, alt: '变化检测的完整双视窗，影像并列并框出可复核区域', caption: '双视窗对照巡查影像，标记可复核区域。', width: 1440, height: 714 },
+  { title: '巡查成果', src: `${media}/gallery-outputs-redacted.webp`, alt: '巡查成果卡片界面，左侧是巡查任务，右侧以网格排列照片、视频、全景和工程文件。', caption: '按巡查任务查看照片、视频、全景和工程文件。', width: 1152, height: 572 },
+  { title: '公园安全巡查', src: `${media}/gallery-patrol-redacted.webp`, alt: '城市公园安全巡查专题，区域地图上显示多个公园点位，任务和告警列在两侧', caption: '在一张专题地图上看公园点位和巡查安排。', width: 1152, height: 572 },
+  { title: '平台登录', src: `${media}/gallery-login-redacted.webp`, alt: '低空智航运营平台完整登录界面，左侧为航拍风景，右侧为表单', caption: '从同一入口选择应用场景或运营中心。', width: 1440, height: 714 },
+];
+---
+
+<SiteLayout
+  title={`${title}｜谢擎宇`}
+  description="低空智航三端于 2025 年上线。案例沿巡查工单、驾驶舱判读与综合大屏总览展开，并展示其他设计界面。"
+  current="work"
+>
+  <main class="case-page" id="main" tabindex="-1">
+    <CaseHero
+      eyebrow="已上线项目 · 多端体验设计"
+      title={title}
+      facts={facts}
+    >
+      <Fragment slot="summary"><strong>新禾低空智航</strong>服务多部门的无人机常态化巡查，三端已于 2025 年上线。我主导综合大屏、移动端 App 与运营后台的信息层级和交互设计，重点解决<strong>后台配单易漏项、现场视频与地图割裂、大屏告警与成果混读</strong>三个核心问题。</Fragment>
+    </CaseHero>
+
+    <div class="site-container case-cover">
+      <MediaStage
+        src={`${media}/overview-live-redacted.webp`}
+        alt="综合态势大屏的实装画面，中央是区域地图和场景入口，左侧是任务与资源，右侧是告警与巡查成果。"
+        caption="综合态势大屏的上线实装画面完整延续了设计稿的三栏布局。左侧是任务与资源，中央是地图，右侧是告警与成果。画面已脱敏。"
+        kind="confirmed"
+        label="上线截图"
+        width={3342}
+        height={2004}
+        priority
+      />
+    </div>
+
+    <CaseToc title="低空智航运营服务平台" sections={tocSections} />
+
+    <CaseSection
+      id="workflow"
+      label="01 / 三端分工"
+      title="同一次巡查，三个端各有一个要回答的问题"
+      intro="三端用户的关注重点不同，我按场景角色重新分配了同一类业务信息在各端的主次权重。"
+      tone="stone"
+    >
+      <div class="evidence-key" data-columns="3">
+        <div><b>运营后台 · 这次怎么查</b><p>围绕飞行计划与工单，收拢任务场景、巡查区域、排程策略和成果要求。</p></div>
+        <div><b>移动端 App · 手上是哪项任务</b><p>收起全局统计，让外勤人员按状态查计划，并直接定位、上报现场问题。</p></div>
+        <div><b>综合大屏 · 区域里发生了什么</b><p>以区域地图为基准，同屏对照今日任务进度、飞行资源、实时告警与成果。</p></div>
+      </div>
+      <div class="case-copy">
+        <p><strong>跨端一致的空间锚点：</strong>后台工单将「基本要求、巡查区域、执行策略」三栏并排核对；手机端让飞行状态先于任务细节露出，并将地图定位放在上报表单顶部；大屏则以地图为中心，把进度和告警收在两侧。</p>
+      </div>
+      <section class="case-block" aria-labelledby="app-evidence">
+        <h3 id="app-evidence">移动端查看计划、上报问题</h3>
+        <div class="portrait-grid portrait-grid--pair">
+          <MediaStage
+            src={`${media}/app-flight-plans-design-redacted.webp`}
+            alt="移动端飞行计划设计稿。顶部按计划、正在飞行和完成筛选，下方列出飞行任务及状态。"
+            caption="飞行计划。大屏汇总计划、正在飞行和完成三种状态，手机端用同样的状态筛出可逐项查看的任务。"
+            kind="confirmed"
+            label="App 设计稿"
+            width={375}
+            height={860}
+          />
+          <MediaStage
+            src={`${media}/app-issue-report-design-redacted.webp`}
+            alt="移动端问题上报设计稿。上方是地图定位，下方是问题类型、发生时间、描述和现场影像入口。"
+            caption="问题上报。先在地图上确认位置，再填写问题并附上现场照片或视频。图中的业务字段与影像已脱敏。"
+            kind="confirmed"
+            label="App 设计稿"
+            width={375}
+            height={1028}
+          />
+        </div>
+      </section>
+    </CaseSection>
+
+    <CaseSection
+      id="work-order"
+      label="02 / 巡查工单"
+      title="同屏交代查什么、去哪查、什么时候查"
+      intro="配单常出现漏选成果类型，或排程周期与区域对不上。我将工单拆成三列并排，提交前同屏完成核对。"
+    >
+      <MediaStage
+        src={`${media}/work-order-design-redacted.webp`}
+        alt="新建巡查工单的完整设计稿，依次呈现基本信息、巡查区域和巡查策略三列。"
+        caption="新建巡查工单。图中保留表单、选项和操作，任务样例中的填写值经过遮挡。"
+        kind="confirmed"
+        label="设计稿"
+        width={1920}
+        height={952}
+      />
+      <div class="workspace-notes">
+        <div><b>成果要求前置核对</b><p>把照片、视频、全景与报告类型放进基本信息，派单时即与业务场景绑定，避免飞完才发现漏拍。</p></div>
+        <div><b>选点双入口同清单收敛</b><p>航点支持地图点选或清单手填，最终汇入同一份航点表逐点核验。</p></div>
+        <div><b>策略就地展开不跳窗</b><p>选定「重复定时」后，起止日期、时段与频次在右列直接展开，减少跨弹窗核对。</p></div>
+      </div>
+    </CaseSection>
+
+    <CaseSection
+      id="cockpit"
+      label="03 / 现场判读"
+      title="把镜头看到的变化放回地图再判断"
+      tone="panel"
+    >
+      <Fragment slot="intro">传统巡查需在视频窗口与二维地图间来回切屏脑补位置，容易看错建筑边界。<strong>虚拟驾驶舱将实时视频直接投射到地图对应地面</strong>，让巡查员同框判定违建加盖是否落在管控红线内。</Fragment>
+      <MediaStage
+        src={`${media}/cockpit-projection-design-redacted.webp`}
+        alt="虚拟驾驶舱投射区域。黄色飞机标记连向半透明绿色覆盖范围，视频图像贴在地图中的一块地面区域。"
+        caption="驾驶舱完整投射视图。无人机和投射画面在主视野内，左上提供辅助影像，右侧保留操作入口。"
+        kind="confirmed"
+        label="设计稿"
+        width={1920}
+        height={952}
+      />
+      <div class="case-copy">
+        <ul class="case-points">
+          <li><strong>三层视觉信号互不干扰：</strong>黄色飞机标明机位与朝向，半透明绿区保留底图路网和红线，白色线框锚定实时视频投射范围；辅助影像与控制收在两侧，中央完整留给判读。</li>
+          <li><strong>跨部门可复用的判读框架：</strong>切换为高标准农田等其他专题时，只需替换底图业务图层，视频落图的表达方式直接沿用。</li>
+        </ul>
+      </div>
+    </CaseSection>
+
+    <CaseSection
+      id="overview"
+      label="04 / 区域总览"
+      title="地图留给区域，两侧分别读进度和发现"
+      intro="值守大屏采用稳定的「左进度 · 中地图 · 右告警与成果」三栏架构，减少多专题切换时的视觉定位成本。"
+    >
+      <div class="case-copy">
+        <ul class="case-points">
+          <li><strong>右侧把「急」与「缓」分开：</strong>单列「实时告警」响应当下突发异常，下方单列「巡查成果」（照片、视频、报告）承接事后留档，避免混读漏警。</li>
+          <li><strong>多场景切换不改肌肉记忆：</strong>城市巡查、应急救援等主入口沿地图底缘排列；进入专题（如防溺水、森林防火）仅在地图旁展开细分主题，左右两侧任务进度与资源位置始终固定。</li>
+        </ul>
+      </div>
+      <MediaStage
+        src={`${media}/overview-design-redacted.webp`}
+        alt="综合大屏设计稿，区域地图居中，左侧排列任务、资源和航线，右侧排列告警与数据成果。"
+        caption="综合大屏设计稿。地图下方切换场景，当前场景的巡查主题列在地图旁。"
+        kind="confirmed"
+        label="设计稿"
+        width={1920}
+        height={952}
+      />
+    </CaseSection>
+
+    <CaseSection
+      id="delivery"
+      label="05 / 设计交付"
+      title="从设计稿到三端上线"
+      intro="综合大屏、运营后台和移动端于 2025 年上线。页首实装大屏完整延续了 04 节设计稿的三栏骨架与场景入口布局。"
+      tone="stone"
+    >
+      <div class="case-copy">
+        <ul class="case-points">
+          <li><strong>公开脱敏边界：</strong>页首为线上实装截图，其余工单、App 与驾驶舱以设计稿展示；账号、任务标识、精确位置和商业数值已遮挡。</li>
+        </ul>
+      </div>
+    </CaseSection>
+
+    <CaseSection
+      id="gallery"
+      label="06 / 界面集锦"
+      title="其他界面设计"
+      intro="八张完整界面取自项目设计稿，覆盖全景查看、集群调度、网格巡查、变化检测和成果管理。"
+    >
+      <InterfaceGallery views={galleryViews} />
+    </CaseSection>
+
+    <section class="site-container case-closing" aria-labelledby="closing-title">
+      <h2 id="closing-title">继续看看其他作品</h2>
+      <div class="case-closing__links">
+        <a href="/#selected-work">返回作品索引</a>
+      </div>
+    </section>
+  </main>
+</SiteLayout>

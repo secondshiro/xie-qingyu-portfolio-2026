@@ -32,7 +32,7 @@ export function renderRetroTurntable() {
     + box(-25,184,-13,2,4,9,'retro-cartridge');
   const knobs = [111,154,197].map((y,index) => cylinder(413,y,137,16,12,'#969b9c','#828888',.18)
     + `<span class="retro-knob-label" style="left:${unit(442)};top:${unit(y+6)}">${['TONE','BASS','VOL'][index]}</span>`).join('');
-  const keys = Array.from({length:5}, (_,index) => `<span class="retro-key" data-retro-key="${index}" style="left:${unit(411+index*30)}">${prism(0,0,0,[[1,0],[26,0],[27,3],[27,19],[25,22],[2,22],[0,19],[0,3]],6,'retro-key-material')}</span>`).join('');
+  const keys = Array.from({length:6}, (_,index) => `<span class="retro-key" data-retro-key="${index}" style="left:${unit(411+index*25)}">${prism(0,0,0,[[1,0],[21,0],[22,3],[22,19],[20,22],[2,22],[0,19],[0,3]],6,'retro-key-material')}</span>`).join('');
   // A continuous side wall survives movement and a full turn; parallel disks alone do not.
   const rim = Array.from({length:80}, (_,index) => {
     const angle = index / 80 * Math.PI * 2;

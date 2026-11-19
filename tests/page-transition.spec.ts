@@ -10,14 +10,15 @@ declare global {
 }
 
 const cases = [
-  { path: '/work/real-estate-gis/', name: '房产 GIS', index: 0 },
-  { path: '/work/edgecase-planner/', name: 'AI 评审', index: 1 },
-  { path: '/work/brand-system/', name: '品牌系统', index: 2 },
-  { path: '/work/execution-query/', name: '执行网助手', index: 3 },
-  { path: '/work/yuejian/', name: '粤见', index: 4 },
+  { path: '/work/low-altitude-operations/', name: '低空智航', index: 0 },
+  { path: '/work/real-estate-gis/', name: '房产 GIS', index: 1 },
+  { path: '/work/edgecase-planner/', name: 'AI 评审', index: 2 },
+  { path: '/work/brand-system/', name: '品牌系统', index: 3 },
+  { path: '/work/execution-query/', name: '执行网助手', index: 4 },
+  { path: '/work/yuejian/', name: '粤见', index: 5 },
 ];
-const gis = cases[0].path;
-const openCase = (page: Page, index = 0) => page.locator(`[data-select="${index}"]`);
+const gis = '/work/real-estate-gis/';
+const openCase = (page: Page, index: number) => page.locator(`[data-select="${index}"]`);
 const curtain = (page: Page) => page.locator('html');
 const settled = async (page: Page) => {
   await page.waitForLoadState('load');
@@ -153,7 +154,7 @@ for (const project of cases) {
 test('历史返回保留首页选择与 GIS 阅读位置，目录深链继续展开', async ({ page }) => {
   await page.goto('/');
   await page.locator('[data-side="b"]').click();
-  await openCase(page).click();
+  await page.locator(`.sleeve[href="${gis}"]`).click();
   await expect(page).toHaveURL(gis);
   await settled(page);
   await page.locator('#strategy').scrollIntoViewIfNeeded();

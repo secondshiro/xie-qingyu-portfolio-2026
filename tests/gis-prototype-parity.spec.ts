@@ -1,21 +1,67 @@
 import { expect, test } from '@playwright/test';
 
+const project = '/projects/real-estate-gis';
+const prototypeRoot = `${project}/prototypes`;
+const officialFrames = [
+  { key: 'map', poster: 'map-current-overview.png' },
+  { key: 'building', poster: 'building-current-overview.png' },
+  { key: 'task', poster: '13-task-relations-focus.png' },
+];
+
 test('三个 mockup 与各自的新窗口入口使用同一个站内原型', async ({ page }) => {
   await page.goto('/work/real-estate-gis/');
   const prototypes = page.locator('.prototype-frame');
-  await expect(prototypes).toHaveCount(3);
-  for (const prototype of await prototypes.all()) {
+  await expect(prototypes).toHaveCount(officialFrames.length);
+  for (const [index, { key, poster }] of officialFrames.entries()) {
+    const prototype = prototypes.nth(index);
     const iframe = prototype.locator('iframe');
     const link = prototype.locator('.prototype-frame__link');
     const src = await iframe.getAttribute('src');
-    expect(src).toMatch(/^\/projects\/real-estate-gis\/prototypes\/(map|building|task)\/index\.html\?/);
+    expect(new URL(src!, page.url()).pathname).toBe(`${prototypeRoot}/${key}/index.html`);
     await expect(link).toHaveAttribute('href', src!);
     await expect(link).toHaveAttribute('target', '_blank');
+    await expect(prototype.locator('.prototype-frame__fallback img'))
+      .toHaveAttribute('src', `${project}/media/final/${poster}`);
+
     const popupPromise = page.waitForEvent('popup');
     await link.click();
     const popup = await popupPromise;
-    await expect(popup).toHaveURL(new URL(src!, page.url()).href);
+    const expectedURL = new URL(src!, page.url());
+    const directoryURL = new URL(expectedURL);
+    directoryURL.pathname = `${prototypeRoot}/${key}/`;
+    await expect(popup).toHaveURL(url => url.href === expectedURL.href || url.href === directoryURL.href);
     await expect(popup.locator('header').first()).toContainText('数字住房一体化平台');
+    if (key === 'map') {
+      await expect(page.getByRole('link', { name: '打开 17 幢的总图原型 ↗' }))
+        .toHaveAttribute('href', src!);
+      const embedded = iframe.contentFrame();
+      for (const surface of [embedded, popup]) {
+        await expect(surface.locator('#mapLayerBase image'))
+          .toHaveAttribute('href', 'assets/gis-base-map-shipai.jpg');
+        const footprint = await surface.locator('[data-code="17幢"] .building-footprint').getAttribute('d');
+        await expect(surface.locator('#selectionOutline')).toHaveAttribute('d', footprint!);
+        const map = surface.locator('#mapSvg');
+        const viewBox = await map.getAttribute('viewBox');
+        await expect(map.locator('[role="button"], [tabindex]')).toHaveCount(0);
+        await surface.locator('#map').click();
+        await surface.locator('#map').dblclick();
+        await expect(surface.locator('#objectTitle')).toHaveText('宇济一号 · 17幢');
+        await expect(surface.locator('#selectionFill')).toHaveClass(/\bactive\b/);
+        await expect(map).toHaveAttribute('viewBox', viewBox!);
+        await surface.locator('#closeObject').click();
+        await expect(surface.locator('#rightPanel')).toBeHidden();
+        const search = surface.locator('#search');
+        await search.fill('17幢');
+        await search.press('Enter');
+        await expect(surface.locator('#objectTitle')).toHaveText('宇济一号 · 17幢');
+        await expect(surface.locator('#selectionFill')).toHaveClass(/\bactive\b/);
+        await expect(map).toHaveAttribute('viewBox', '284 165 820 540');
+        await surface.locator('#full').click();
+        await expect(map).toHaveAttribute('viewBox', viewBox!);
+        await expect(surface.locator('#viewFloor')).toBeVisible();
+        await expect(surface.locator('#objectMeasured')).toBeVisible();
+      }
+    }
     await popup.close();
   }
 });

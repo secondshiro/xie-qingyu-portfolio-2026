@@ -27,3 +27,14 @@ portfolio-site-handoff/
 .DS_Store
 .idea/
 .vscode/
+
+# Local authoring and experiments
+/.workbuddy/
+/.pytest_cache/
+/backups/
+/design/
+/docs/JD/
+/prototype/
+/tmp/
+/tools/private/
+/work/

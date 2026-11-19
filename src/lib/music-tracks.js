@@ -4,4 +4,5 @@ export const musicTracks = [
   { slug: 'brand-system', name: '品牌系统', color: '#e6b42e' },
   { slug: 'execution-query', name: '执行网助手', color: '#36a879' },
   { slug: 'yuejian', name: '粤见', color: '#30343a' },
+  { slug: 'low-altitude-operations', name: '低空智航', color: '#8b64ad' },
 ];

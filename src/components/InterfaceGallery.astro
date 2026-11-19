@@ -1,0 +1,204 @@
+---
+import MediaStage from './MediaStage.astro';
+
+interface InterfaceView {
+  title: string;
+  src: string;
+  alt: string;
+  caption: string;
+  width: number;
+  height: number;
+}
+
+interface Props {
+  views: InterfaceView[];
+}
+
+const { views } = Astro.props;
+---
+
+<div class="interface-gallery" data-interface-gallery>
+  <div class="interface-gallery__controls" hidden>
+    <button type="button" data-gallery-play>暂停滚动</button>
+    <button type="button" data-gallery-prev aria-label="上一张界面">←</button>
+    <button type="button" data-gallery-next aria-label="下一张界面">→</button>
+  </div>
+  <div class="interface-gallery__viewport" tabindex="0" role="group" aria-label="界面集锦">
+    <div class="interface-gallery__track">
+      {views.map(view => (
+        <MediaStage
+          src={view.src}
+          alt={view.alt}
+          caption={view.caption}
+          kind="confirmed"
+          label={view.title}
+          width={view.width}
+          height={view.height}
+        />
+      ))}
+    </div>
+  </div>
+</div>
+
+<style>
+  .interface-gallery {
+    display: grid;
+    gap: 0.8rem;
+    min-width: 0;
+  }
+
+  .interface-gallery__controls {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .interface-gallery__controls[hidden] {
+    display: none;
+  }
+
+  .interface-gallery__controls button {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-control);
+    padding-inline: 0.8rem;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font: inherit;
+    font-size: 0.875rem;
+    cursor: pointer;
+  }
+
+  .interface-gallery__viewport {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+
+  .interface-gallery__track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min(86%, 31rem);
+    gap: 1rem;
+    align-items: start;
+    padding-bottom: 0.65rem;
+  }
+</style>
+
+<script>
+  for (const gallery of document.querySelectorAll('[data-interface-gallery]')) {
+    const viewport = gallery.querySelector<HTMLElement>('.interface-gallery__viewport');
+    const track = gallery.querySelector<HTMLElement>('.interface-gallery__track');
+    const controls = gallery.querySelector<HTMLElement>('.interface-gallery__controls');
+    const play = gallery.querySelector<HTMLButtonElement>('[data-gallery-play]');
+    const previous = gallery.querySelector<HTMLButtonElement>('[data-gallery-prev]');
+    const next = gallery.querySelector<HTMLButtonElement>('[data-gallery-next]');
+    if (!viewport || !track || !controls || !play || !previous || !next) continue;
+
+    const cards = [...track.children];
+    if (cards.length < 2) continue;
+    const copies = cards.map(card => {
+      const copy = card.cloneNode(true) as HTMLElement;
+      copy.setAttribute('aria-hidden', 'true');
+      copy.inert = true;
+      return copy;
+    });
+
+    const motion = matchMedia('(prefers-reduced-motion: reduce)');
+    let enabled = !motion.matches;
+    let inView = false;
+    let frame = 0;
+    let started = 0;
+    let position = 0;
+    let cycleWidth = 0;
+
+    const measure = () => {
+      cycleWidth = copies[0].isConnected
+        ? copies[0].getBoundingClientRect().left - cards[0].getBoundingClientRect().left
+        : 0;
+    };
+
+    const animate = (time: number) => {
+      const elapsed = started ? Math.min(time - started, 40) : 0;
+      started = time;
+      position = (position + elapsed * 0.03) % cycleWidth;
+      viewport.scrollLeft = position;
+      frame = requestAnimationFrame(animate);
+    };
+
+    const sync = () => {
+      cancelAnimationFrame(frame);
+      play.textContent = enabled ? '暂停滚动' : '播放滚动';
+      if (!enabled || !inView || !cycleWidth || document.hidden || motion.matches ||
+        viewport.matches(':hover, :focus-within')) return;
+      position = viewport.scrollLeft % cycleWidth;
+      started = 0;
+      frame = requestAnimationFrame(animate);
+    };
+
+    const syncMotion = () => {
+      play.hidden = motion.matches;
+      if (motion.matches) {
+        enabled = false;
+        if (cycleWidth) viewport.scrollLeft %= cycleWidth;
+        copies.forEach(copy => copy.remove());
+      } else {
+        track.append(...copies);
+      }
+      measure();
+      sync();
+    };
+
+    const move = (direction: number) => {
+      enabled = false;
+      sync();
+      const firstLeft = cards[0].getBoundingClientRect().left;
+      const step = cards[1].getBoundingClientRect().left - firstLeft;
+      if (motion.matches) {
+        const edge = viewport.scrollWidth - viewport.clientWidth;
+        const left = viewport.scrollLeft;
+        const target = direction > 0 && left >= edge - 1 ? 0
+          : direction < 0 && left <= 1 ? edge
+            : left + step * direction;
+        viewport.scrollTo({ left: target, behavior: 'instant' });
+        return;
+      }
+      const current = Math.round((viewport.scrollLeft % cycleWidth) / step);
+      const target = (current + direction + cards.length) % cards.length;
+      viewport.scrollTo({ left: target * step, behavior: 'smooth' });
+    };
+
+    play.addEventListener('click', () => {
+      enabled = !enabled;
+      sync();
+    });
+    previous.addEventListener('click', () => move(-1));
+    next.addEventListener('click', () => move(1));
+    viewport.addEventListener('pointerdown', () => {
+      enabled = false;
+      sync();
+    });
+    viewport.addEventListener('keydown', event => {
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      event.preventDefault();
+      move(event.key === 'ArrowRight' ? 1 : -1);
+    });
+    for (const event of ['pointerenter', 'pointerleave', 'focusin', 'focusout']) {
+      viewport.addEventListener(event, () => requestAnimationFrame(sync));
+    }
+    document.addEventListener('visibilitychange', sync);
+    motion.addEventListener('change', syncMotion);
+    new ResizeObserver(() => {
+      measure();
+      sync();
+    }).observe(viewport);
+    new IntersectionObserver(([entry]) => {
+      inView = entry.isIntersecting;
+      sync();
+    }).observe(viewport);
+
+    controls.hidden = false;
+    syncMotion();
+  }
+</script>

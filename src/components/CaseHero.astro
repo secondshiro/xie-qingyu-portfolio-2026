@@ -6,7 +6,7 @@ interface Fact {
 
 interface Props {
   title: string;
-  summary: string;
+  summary?: string;
   facts: Fact[];
   eyebrow?: string;
 }
@@ -18,7 +18,7 @@ const { title, summary, facts, eyebrow = '完整案例 · 复杂系统体验' } 
   <div class="case-hero__copy">
     <p class="case-hero__eyebrow">{eyebrow}</p>
     <h1>{title}</h1>
-    <p class="case-hero__summary">{summary}</p>
+    {(Astro.slots.has('summary') || summary) && <p class="case-hero__summary"><slot name="summary">{summary}</slot></p>}
   </div>
   <dl class="case-hero__facts">
     {facts.map((fact) => (

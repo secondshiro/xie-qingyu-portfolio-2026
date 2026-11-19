@@ -25,14 +25,21 @@ import { createHomeMusic } from './home-music.js';
   let selected = 0;
   let loaded = 0;
   let face = 'a';
-  const casePaths = new Set(sleeves.map(sleeve => new URL(sleeve.href, location.href).pathname));
+  const projectPaths = sleeves.map(sleeve => sleeve.pathname);
+  const casePaths = new Set(projectPaths);
+  // Earlier versions stored the index in this order rather than the case path.
+  const previousProjectPaths = [
+    '/work/real-estate-gis/', '/work/edgecase-planner/', '/work/brand-system/',
+    '/work/execution-query/', '/work/yuejian/', '/work/low-altitude-operations/',
+  ];
   const returnStateKey = 'portfolio:home';
   try {
     const previous = document.referrer && new URL(document.referrer);
     const fromCase = previous && previous.origin === location.origin && casePaths.has(previous.pathname);
     const saved = history.state?.portfolioHome ?? (fromCase ? JSON.parse(sessionStorage.getItem(returnStateKey) || 'null') : null);
-    if (saved && Number.isInteger(saved.selected) && saved.selected >= 0 && saved.selected < sleeves.length) {
-      selected = saved.selected;
+    const savedIndex = projectPaths.indexOf(saved?.path ?? previousProjectPaths[saved?.selected]);
+    if (savedIndex >= 0) {
+      selected = savedIndex;
       face = saved.face === 'b' ? 'b' : 'a';
     }
     if (fromCase) sessionStorage.removeItem(returnStateKey);
@@ -127,7 +134,7 @@ import { createHomeMusic } from './home-music.js';
   }
 
   function paintSelection(index) {
-    music.select(index);
+    music.select(sleeves[index].pathname);
     selected = index;
     sleeves.forEach((sleeve, i) => {
       sleeve.setAttribute('aria-current', String(i === index));
@@ -362,7 +369,7 @@ import { createHomeMusic } from './home-music.js';
     const sleeveIndex = sleeves.indexOf(link);
     if (sleeveIndex >= 0) select(sleeveIndex);
     try {
-      const saved = { selected, face };
+      const saved = { path: projectPaths[selected], face };
       history.replaceState({ ...history.state, portfolioHome: saved }, '');
       sessionStorage.setItem(returnStateKey, JSON.stringify(saved));
     } catch {

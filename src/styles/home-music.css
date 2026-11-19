@@ -22,6 +22,7 @@
 }
 .music__mute svg { width: calc(25 * var(--retro-unit)); height: calc(25 * var(--retro-unit)); filter: drop-shadow(0 1px 0 rgb(255 255 255 / 60%)); }
 .music__mute:hover { color: #323b36; }
+.music__mute:disabled, .music input:disabled { opacity: 0.55; cursor: default; }
 .music [data-music-off], .music[data-silent='true'] [data-music-on] { display: none; }
 .music[data-silent='true'] [data-music-off] { display: block; }
 .music__volume { display: flex; align-items: center; width: calc(144 * var(--retro-unit)); height: calc(72 * var(--retro-unit)); }

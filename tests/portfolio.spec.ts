@@ -28,7 +28,7 @@ test('首页提供键盘可用的 PDF 下载和联系入口', async ({ page, req
 for (const width of [1440, 1280, 1010, 390]) {
   test(`首页和案例在 ${width}px 无横向溢出`, async ({ page }) => {
     await page.setViewportSize({ width, height: width === 390 ? 844 : 900 });
-    for (const path of ['/', '/work/real-estate-gis/', '/work/edgecase-planner/', '/work/brand-system/', '/work/execution-query/']) {
+    for (const path of ['/', '/work/low-altitude-operations/', '/work/real-estate-gis/', '/work/edgecase-planner/', '/work/brand-system/', '/work/execution-query/']) {
       await page.goto(path);
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
       expect(overflow).toBeLessThanOrEqual(1);
@@ -89,8 +89,58 @@ test('首页折页之间不显示橙色标记', async ({ page }) => {
   await expect(page.locator('.project-fold__marker')).toHaveCount(0);
 });
 
+test('低空智航界面集锦独立选图，可暂停并支持减弱动效', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/work/low-altitude-operations/');
+  const gallery = page.locator('#gallery');
+  const viewport = gallery.getByRole('group', { name: '界面集锦' });
+  const figures = viewport.locator('figure:not([aria-hidden])');
+  const cards = figures.locator('img');
+  const gallerySources = await cards.evaluateAll(images => images.map(image => image.getAttribute('src')));
+  const bodySources = await page.locator('main .media-stage img').evaluateAll(images =>
+    images.filter(image => !image.closest('#gallery')).map(image => image.getAttribute('src')),
+  );
+
+  expect(new Set(gallerySources).size).toBe(8);
+  expect(gallerySources.every(src => !bodySources.includes(src))).toBeTruthy();
+  await expect(figures.getByText('巡查成果', { exact: true })).toHaveCount(1);
+  await expect(figures.getByText('多屏直播', { exact: true })).toHaveCount(0);
+
+  const galleryFramesFitImages = await cards.evaluateAll(images => images.every(image => {
+    const frame = image.parentElement?.getBoundingClientRect();
+    const imageRect = image.getBoundingClientRect();
+    return frame && Math.abs(frame.y - imageRect.y) <= 1 &&
+      Math.abs(frame.height - imageRect.height) <= 1;
+  }));
+  expect(galleryFramesFitImages).toBeTruthy();
+
+  await viewport.scrollIntoViewIfNeeded();
+  const left = () => viewport.evaluate(element => element.scrollLeft);
+  await expect.poll(left).toBeGreaterThan(10);
+  await gallery.getByRole('button', { name: '暂停滚动' }).click();
+  await expect(gallery.getByRole('button', { name: '播放滚动' })).toBeVisible();
+  const pausedAt = await left();
+  await viewport.evaluate(() => new Promise<void>(resolve => {
+    requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+  }));
+  expect(await left()).toBe(pausedAt);
+
+  await gallery.getByRole('button', { name: '下一张界面' }).click();
+  await expect.poll(left).toBeGreaterThan(pausedAt + 10);
+
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect(gallery.getByRole('button', { name: /滚动/ })).toHaveCount(0);
+  await expect(viewport.locator('figure')).toHaveCount(8);
+  await viewport.focus();
+  await page.keyboard.press('Home');
+  const beforeArrow = await left();
+  await page.keyboard.press('ArrowRight');
+  await expect.poll(left).not.toBe(beforeArrow);
+});
+
 test('作品媒体不显示右键菜单或允许拖拽，普通区域不受影响', async ({ page }) => {
   const casePaths = [
+    '/work/low-altitude-operations/',
     '/work/real-estate-gis/',
     '/work/edgecase-planner/',
     '/work/brand-system/',
@@ -154,6 +204,29 @@ test('案例章节标题与导语保持一档层级差', async ({ page }) => {
   await expect(section.locator('h2')).toHaveCSS('font-size', '26px');
   await expect(section.locator('h2')).toHaveCSS('font-weight', '400');
   await expect(section.locator('p:not(.case-section__label)')).toHaveCSS('font-size', '20px');
+});
+
+test('GIS 整幢对照等高，两条图注以相同间距跟在标签后', async ({ page }) => {
+  await page.setViewportSize({ width: 1305, height: 593 });
+  await page.goto('/work/real-estate-gis/#workspaces');
+  await page.evaluate(() => document.fonts.ready);
+  const figures = page.locator('#workspaces .workspace:nth-of-type(2) .evidence-grid .media-stage');
+  await expect(figures).toHaveCount(2);
+  const [before, after] = await figures.evaluateAll((stages) => stages.map((stage) => {
+    const frame = stage.querySelector('.media-stage__frame')!.getBoundingClientRect();
+    const [label, caption] = stage.querySelector('.media-stage__caption')!.children;
+    const labelRect = label.getBoundingClientRect();
+    const captionRect = caption.getBoundingClientRect();
+    return {
+      ratio: frame.width / frame.height,
+      top: captionRect.top,
+      gap: captionRect.left - labelRect.right,
+    };
+  }));
+  expect(before.ratio).toBeCloseTo(16 / 9, 2);
+  expect(after.ratio).toBeCloseTo(16 / 9, 2);
+  expect(after.top).toBeCloseTo(before.top, 1);
+  expect(after.gap).toBeCloseTo(before.gap, 1);
 });
 
 

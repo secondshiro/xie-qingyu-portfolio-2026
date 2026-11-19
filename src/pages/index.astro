@@ -10,7 +10,7 @@ import PageTransitionHead from '../components/PageTransitionHead.astro';
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>谢擎宇｜产品体验设计师</title>
   <meta name="theme-color" content="#F7F7F4">
-  <meta name="description" content="谢擎宇的产品体验设计作品集，包含房产 GIS、AI 评审、品牌系统提案、执行网查询助手与粤见非遗小程序五个案例。">
+  <meta name="description" content="谢擎宇的产品体验设计作品集，包含已上线的低空智航运营平台、房产 GIS、AI 评审、品牌系统提案、执行网查询助手与粤见非遗小程序。">
   <PageTransitionHead />
 </head>
 <body>
@@ -26,51 +26,56 @@ import PageTransitionHead from '../components/PageTransitionHead.astro';
       <p class="intro__lead">我关注复杂业务中，人们怎样找到信息并完成操作。设计时先理清业务关系，再沿着实际任务安排界面，让每一步都有所需的信息和反馈。</p>
       <div class="intro__actions"><a class="resume" href="/resume/xie-qingyu-resume.pdf" download="谢擎宇-体验设计师简历.pdf">下载简历 · PDF <span aria-hidden="true">↓</span></a><a href="mailto:second988@qq.com">second988@qq.com <span aria-hidden="true">↗</span></a></div>
     </div>
+    <RetroTurntable />
   </section>
   <div class="workstation">
-  <div class="listening">
   <section class="collection" id="selected-work" aria-label="作品唱片架">
     <p class="collection__hint"><span class="collection__hint-hover">悬停换片 · 点击看案例</span><span class="collection__hint-touch">点击封面，查看案例</span></p>
     <ul class="crate" aria-label="作品索引">
       <li>
-        <a class="sleeve" href="/work/real-estate-gis/" data-select="0" style="--disc: #ed5636" aria-current="true" aria-controls="work-0" aria-label="打开房产 GIS 体验重构">
+        <a class="sleeve" href="/work/low-altitude-operations/" aria-describedby="work-summary-0" data-select="0" style="--disc: #8b64ad" aria-current="true" aria-controls="work-0" aria-label="打开低空智航运营平台案例">
+          <span class="sleeve__record" aria-hidden="true"><span class="record__grooves"></span><span class="record__label"></span></span>
+          <span class="sleeve__cover" data-protected-media><img src="/images/home/covers/low-altitude-paper-pilot.webp" alt="" width="640" height="640" draggable="false"></span>
+          <span class="sleeve__caption"><span class="sleeve__number">01</span><span class="sleeve__title">低空智航运营平台<span class="sleeve__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8" /></svg></span></span><span class="sleeve__summary" id="work-summary-0"><span class="sleeve__type">多端产品 · 已上线</span><span class="sleeve__result">负责巡查平台三端界面与交互。</span></span></span>
+        </a>
+      </li>
+      <li>
+        <a class="sleeve" href="/work/real-estate-gis/" aria-describedby="work-summary-1" data-select="1" style="--disc: #ed5636" aria-current="false" aria-controls="work-1" aria-label="打开房产 GIS 体验重构">
           <span class="sleeve__record" aria-hidden="true"><span class="record__grooves"></span><span class="record__label"></span></span>
           <span class="sleeve__cover" data-protected-media><img src="/images/home/covers/gis-v5.webp" alt="" width="640" height="640" draggable="false"></span>
-          <span class="sleeve__caption"><span class="sleeve__number">01</span><span class="sleeve__title">房产 GIS 体验重构<span class="sleeve__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8" /></svg></span></span></span>
+          <span class="sleeve__caption"><span class="sleeve__number">02</span><span class="sleeve__title">房产 GIS 体验重构<span class="sleeve__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8" /></svg></span></span><span class="sleeve__summary" id="work-summary-1"><span class="sleeve__type">B 端 · 回溯重构</span><span class="sleeve__result">设计地图、整幢与测绘核对原型。</span></span></span>
         </a>
       </li>
       <li>
-        <a class="sleeve" href="/work/edgecase-planner/" data-select="1" style="--disc: #328bd2" aria-current="false" aria-controls="work-1" aria-label="打开 AI 评审工作流案例">
+        <a class="sleeve" href="/work/edgecase-planner/" aria-describedby="work-summary-2" data-select="2" style="--disc: #328bd2" aria-current="false" aria-controls="work-2" aria-label="打开 AI 评审工作流案例">
           <span class="sleeve__record" aria-hidden="true"><span class="record__grooves"></span><span class="record__label"></span></span>
           <span class="sleeve__cover" data-protected-media><img src="/images/home/covers/review-v5.webp" alt="" width="640" height="640" draggable="false"></span>
-          <span class="sleeve__caption"><span class="sleeve__number">02</span><span class="sleeve__title">AI 评审工作流<span class="sleeve__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8" /></svg></span></span></span>
+          <span class="sleeve__caption"><span class="sleeve__number">03</span><span class="sleeve__title">AI 评审工作流<span class="sleeve__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8" /></svg></span></span><span class="sleeve__summary" id="work-summary-2"><span class="sleeve__type">AI 规则 · 工具实践</span><span class="sleeve__result">把评审经验写成 Plan / Review 规则。</span></span></span>
         </a>
       </li>
       <li>
-        <a class="sleeve" href="/work/brand-system/" data-select="2" style="--disc: #e6b42e" aria-current="false" aria-controls="work-2" aria-label="打开新禾智飞品牌系统提案">
+        <a class="sleeve" href="/work/brand-system/" aria-describedby="work-summary-3" data-select="3" style="--disc: #e6b42e" aria-current="false" aria-controls="work-3" aria-label="打开新禾智飞品牌系统提案">
           <span class="sleeve__record" aria-hidden="true"><span class="record__grooves"></span><span class="record__label"></span></span>
           <span class="sleeve__cover" data-protected-media><img src="/images/home/covers/brand-v5.webp" alt="" width="640" height="640" draggable="false"></span>
-          <span class="sleeve__caption"><span class="sleeve__number">03</span><span class="sleeve__title">新禾智飞品牌系统<span class="sleeve__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8" /></svg></span></span></span>
+          <span class="sleeve__caption"><span class="sleeve__number">04</span><span class="sleeve__title">新禾智飞品牌系统<span class="sleeve__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8" /></svg></span></span><span class="sleeve__summary" id="work-summary-3"><span class="sleeve__type">品牌视觉 · 提案</span><span class="sleeve__result">设计品牌规范与六个子系统提案。</span></span></span>
         </a>
       </li>
       <li>
-        <a class="sleeve" href="/work/execution-query/" data-select="3" style="--disc: #36a879" aria-current="false" aria-controls="work-3" aria-label="打开执行网查询助手">
+        <a class="sleeve" href="/work/execution-query/" aria-describedby="work-summary-4" data-select="4" style="--disc: #36a879" aria-current="false" aria-controls="work-4" aria-label="打开执行网查询助手">
           <span class="sleeve__record" aria-hidden="true"><span class="record__grooves"></span><span class="record__label"></span></span>
           <span class="sleeve__cover" data-protected-media><img src="/images/home/covers/query-v5.webp" alt="" width="640" height="640" draggable="false"></span>
-          <span class="sleeve__caption"><span class="sleeve__number">04</span><span class="sleeve__title">执行网查询助手<span class="sleeve__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8" /></svg></span></span></span>
+          <span class="sleeve__caption"><span class="sleeve__number">05</span><span class="sleeve__title">执行网查询助手<span class="sleeve__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8" /></svg></span></span><span class="sleeve__summary" id="work-summary-4"><span class="sleeve__type">查询工具 · 本地实践</span><span class="sleeve__result">独立实现批量查询与三表导出。</span></span></span>
         </a>
       </li>
       <li>
-        <a class="sleeve" href="/work/yuejian/" data-select="4" style="--disc: #30343A" aria-current="false" aria-controls="work-4" aria-label="打开粤见非遗小程序">
+        <a class="sleeve" href="/work/yuejian/" aria-describedby="work-summary-5" data-select="5" style="--disc: #30343A" aria-current="false" aria-controls="work-5" aria-label="打开粤见非遗小程序">
           <span class="sleeve__record" aria-hidden="true"><span class="record__grooves"></span><span class="record__label"></span></span>
           <span class="sleeve__cover" data-protected-media><img src="/images/home/covers/yuejian-v2.webp" alt="" width="640" height="640" draggable="false"></span>
-          <span class="sleeve__caption"><span class="sleeve__number">05</span><span class="sleeve__title">粤见非遗小程序<span class="sleeve__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8" /></svg></span></span></span>
+          <span class="sleeve__caption"><span class="sleeve__number">06</span><span class="sleeve__title">粤见非遗小程序<span class="sleeve__arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8" /></svg></span></span><span class="sleeve__summary" id="work-summary-5"><span class="sleeve__type">移动端 · 未上线概念</span><span class="sleeve__result">独立设计十一屏原型与纸张动效。</span></span></span>
         </a>
       </li>
     </ul>
   </section>
-    <RetroTurntable />
-  </div>
   <section class="panel" aria-label="当前作品介绍">
     <div class="panel__head">
       <div class="sides" role="group" aria-label="切换介绍内容">
@@ -81,35 +86,42 @@ import PageTransitionHead from '../components/PageTransitionHead.astro';
     </div>
     <div class="panel__body">
       <article class="work" id="work-0" data-work="0" aria-labelledby="work-title-0">
-        <div class="work__heading"><h2 class="work__title" id="work-title-0">房产 GIS 体验重构</h2></div>
+        <div class="work__heading"><h2 class="work__title" id="work-title-0">新禾低空智航运营服务平台</h2></div>
+        <div class="work__faces">
+          <p class="work__text" data-face="a"><strong>把巡查任务、现场判读和区域总览放到各自的工作面。</strong>驾驶舱把实时视频投到地图上，便于巡查人员边看现场，边对照管控范围。</p>
+          <p class="work__text" data-face="b" hidden><strong>交付：</strong>负责大屏、移动端和后台的界面与交互设计。<strong>阶段：</strong>三端于 2025 年上线。</p>
+        </div>
+      </article>
+      <article class="work" id="work-1" data-work="1" aria-labelledby="work-title-1" hidden>
+        <div class="work__heading"><h2 class="work__title" id="work-title-1">房产 GIS 体验重构</h2></div>
         <div class="work__faces">
           <p class="work__text" data-face="a">房产管理需要对应地图上的楼栋与楼内房屋信息。我围绕地图定位、整幢查看和测绘核对重新安排信息与操作，用三个原型呈现设计取舍。</p>
           <p class="work__text" data-face="b" hidden>完成总图、整幢和实测替换预测三个可操作原型，找楼、查看房屋和核对新旧测绘记录都能点开走一遍。这是个人回溯重构。</p>
         </div>
       </article>
-      <article class="work" id="work-1" data-work="1" aria-labelledby="work-title-1" hidden>
-        <div class="work__heading"><h2 class="work__title" id="work-title-1">把设计经验整理成可复用的 AI 工作流</h2></div>
+      <article class="work" id="work-2" data-work="2" aria-labelledby="work-title-2" hidden>
+        <div class="work__heading"><h2 class="work__title" id="work-title-2">把设计经验整理成可复用的 AI 工作流</h2></div>
         <div class="work__faces">
           <p class="work__text" data-face="a">翻页后选择丢失、取消后无法下载，这些遗漏促使我整理评审经验。我让 AI 按规则观察和追问，再由设计师确认业务要求，用实际操作继续检查规则是否漏了问题。</p>
           <p class="work__text" data-face="b" hidden>形成设计前梳理与设计后检查的评审规则，保留飞行计划和表单的评审记录。输入与纠错规则在回查中补上，规则继续随使用反馈修订。</p>
         </div>
       </article>
-      <article class="work" id="work-2" data-work="2" aria-labelledby="work-title-2" hidden>
-        <div class="work__heading"><h2 class="work__title" id="work-title-2">新禾智飞品牌系统提案</h2></div>
+      <article class="work" id="work-3" data-work="3" aria-labelledby="work-title-3" hidden>
+        <div class="work__heading"><h2 class="work__title" id="work-title-3">新禾智飞品牌系统提案</h2></div>
         <div class="work__faces">
           <p class="work__text" data-face="a">不同供应商分批制作物料时，标识和版式各有做法。我把选标识、排信息和核规格的依据写成规范，再配套模板，供制作人员准备下一批物料时查用。</p>
           <p class="work__text" data-face="b" hidden>交付品牌规范与六个子系统提案，覆盖标识组合、色彩字体和制作模板，设计依据来自已投产的旧物料。</p>
         </div>
       </article>
-      <article class="work" id="work-3" data-work="3" aria-labelledby="work-title-3" hidden>
-        <div class="work__heading"><h2 class="work__title" id="work-title-3">执行网查询助手</h2></div>
+      <article class="work" id="work-4" data-work="4" aria-labelledby="work-title-4" hidden>
+        <div class="work__heading"><h2 class="work__title" id="work-title-4">执行网查询助手</h2></div>
         <div class="work__faces">
           <p class="work__text" data-face="a">律师要反复核查同一批公司。官网升级验证方式后，我把人工验证留在网站，让本地助手保留当前任务和剩余名单，验证完成后接着查询，再整理结果供复核。</p>
           <p class="work__text" data-face="b" hidden>完成本地查询助手、任务历史与三表 Excel 导出，并用 2026 年 9 月 12 日的两项合成任务走通从查询到导出。案例截图使用固定合成数据，后续要跟着官网变化维护。</p>
         </div>
       </article>
-      <article class="work" id="work-4" data-work="4" aria-labelledby="work-title-4" hidden>
-        <div class="work__heading"><h2 class="work__title" id="work-title-4">粤见 · 广府非遗体验小程序</h2></div>
+      <article class="work" id="work-5" data-work="5" aria-labelledby="work-title-5" hidden>
+        <div class="work__heading"><h2 class="work__title" id="work-title-5">粤见 · 广府非遗体验小程序</h2></div>
         <div class="work__faces">
           <p class="work__text" data-face="a">粤见面向想体验广府非遗的消费者，把内容浏览接到课程预约，再以凭证和手作收藏承接体验后的回访。我围绕这条转化路径设计移动端页面，用展卷、翻课单与撕票动效交代页面关系和操作结果。</p>
           <p class="work__text" data-face="b" hidden>完成十一屏高保真原型，配套交互动效与视觉规范。这是尚未上线的概念产品，界面中的器物与人物照片为生成示意图。</p>
@@ -117,7 +129,7 @@ import PageTransitionHead from '../components/PageTransitionHead.astro';
       </article>
     </div>
     <p class="sr-only" data-announcement aria-live="polite" aria-atomic="true"></p>
-    <noscript><p class="no-script">五个案例可以直接阅读 <a href="/work/real-estate-gis/">房产 GIS</a>、<a href="/work/edgecase-planner/">AI 评审</a>、<a href="/work/brand-system/">品牌系统提案</a>、<a href="/work/execution-query/">执行网助手</a>、<a href="/work/yuejian/">粤见非遗小程序</a>。</p></noscript>
+    <noscript><p class="no-script">六个案例可以直接阅读 <a href="/work/low-altitude-operations/">低空智航运营平台</a>、<a href="/work/real-estate-gis/">房产 GIS</a>、<a href="/work/edgecase-planner/">AI 评审</a>、<a href="/work/brand-system/">品牌系统提案</a>、<a href="/work/execution-query/">执行网助手</a>、<a href="/work/yuejian/">粤见非遗小程序</a>。</p></noscript>
   </section>
   </div>
   </div>

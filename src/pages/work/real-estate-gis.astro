@@ -9,6 +9,7 @@ import '../../styles/case-study.css';
 
 const media = '/projects/real-estate-gis/media';
 const prototypes = '/projects/real-estate-gis/prototypes';
+const mapPrototype = `${prototypes}/map/index.html?restore=1&building=宇济一号&code=17幢`;
 const facts = [
   { label: '角色', value: '业务梳理、产品架构、UX 与交互原型' },
   { label: '输入', value: '需求规格、业务流程与旧系统截图' },
@@ -20,7 +21,7 @@ const facts = [
 
 <SiteLayout
   title="房产 GIS 体验重构｜谢擎宇"
-  description="房产系统信创迁移中的体验重构，从地图选中楼栋，查看整幢房屋，核对测绘变更，含三个可操作交互原型。"
+  description="房产系统信创迁移中的体验重构，从总图定位楼幢，查看整幢房屋，核对测绘变更，含三个可操作交互原型。"
   current="work"
 >
   <main class="case-page gis-case" id="main" tabindex="-1">
@@ -35,19 +36,19 @@ const facts = [
     <CaseSection
       id="result"
       label="00 / 先看结果"
-      title="选中 17 幢，继续查看房屋或核对变更"
-      intro="在地图选中宇济一号 17 幢，右侧先显示入库状态和测绘摘要，再给出两个入口。打开分层分户图可以查看楼内户室，打开实测替换预测可以核对系统记录与测绘记录。原型使用演示数据。“幢”指一栋楼，“户室”指楼内按房号管理的房屋。"
+      title="从 17 幢查看房屋或核对变更"
+      intro="总图默认展示宇济一号 17 幢，右侧先显示入库状态和测绘摘要，再给出两个入口。打开分层分户图可以查看楼内户室，打开实测替换预测可以核对系统记录与测绘记录。原型使用演示数据。“幢”指一栋楼，“户室”指楼内按房号管理的房屋。"
       tone="stone"
     >
       <PrototypeFrame
-        src={`${prototypes}/map/index.html?restore=1&building=宇济一号&code=17幢`}
+        src={mapPrototype}
         title="房产 GIS 总图交互原型"
         poster={`${media}/final/map-current-overview.png`}
         posterAlt="总图选中宇济一号 17 幢。左侧展开图层，右侧从上到下显示测绘摘要、两项操作入口和楼幢资料"
         linkLabel="打开完整总图原型"
       />
       <div class="opportunity-path" aria-label="17 幢演示路径">
-        <span>在地图选中 17 幢</span><i aria-hidden="true">→</i>
+        <span>从总图定位 17 幢</span><i aria-hidden="true">→</i>
         <span>查看整幢房屋，或核对测绘变更</span>
       </div>
       <div class="case-copy">
@@ -109,17 +110,17 @@ const facts = [
         <article class="workspace">
           <header class="workspace__header">
             <span>空间 · 选幢</span>
-            <div><h3>选中楼幢后，先确认对象再选任务</h3><p>查看户室和核对测绘记录都需要先确定楼幢。我把楼幢名称、入库状态和测绘类型放在面板上部，两个任务入口紧接在摘要下方。坐落、开发商等资料可以直接查看，历史记录、维护操作和系统标识按需展开。</p><p>旧系统支持先选幢再找功能，也支持先选功能再选楼。我在总图里沿用先选幢的路径。新建或入库可能涉及还没有地图图形的楼幢，这些入口留在地图上方的「业务入口」中。</p></div>
+            <div><h3>定位楼幢后，先确认对象再选任务</h3><p>查看户室和核对测绘记录都需要先确定楼幢。我把楼幢名称、入库状态和测绘类型放在面板上部，两个任务入口紧接在摘要下方。坐落、开发商等资料可以直接查看，历史记录、维护操作和系统标识按需展开。</p><p>旧系统支持先选幢再找功能，也支持先选功能再选楼。我在总图里沿用先选幢的路径。新建或入库可能涉及还没有地图图形的楼幢，这些入口留在地图上方的「业务入口」中。</p></div>
           </header>
-          <div class="experience-diagram" aria-label="从地图选楼到查看楼栋信息的操作路径">
+          <div class="experience-diagram" aria-label="从搜索定位到查看楼幢信息的操作路径">
             <div class="diagram-node diagram-node--map"><span class="diagram-kicker">空间</span><b>地图定位</b><div class="map-sketch" aria-hidden="true"><i></i><i></i><i></i><i></i><b>17</b><span></span><span></span></div></div>
             <span class="diagram-arrow" aria-hidden="true">→</span>
-            <div class="diagram-node diagram-node--building"><span class="diagram-kicker">对象</span><b>选中 17 幢</b><div class="building-shape">17</div></div>
+            <div class="diagram-node diagram-node--building"><span class="diagram-kicker">对象</span><b>定位到 17 幢</b><div class="building-shape">17</div></div>
             <span class="diagram-arrow" aria-hidden="true">→</span>
             <div class="diagram-node diagram-node--panel"><span class="diagram-kicker">继续工作</span><b>楼幢面板</b><div class="panel-sketch" aria-hidden="true"><strong>宇济一号 · 17幢</strong><i></i><i></i><i></i><i></i></div></div>
           </div>
-          <div class="workspace-notes"><div><b>图层与对象</b><p>图层设置集中在左侧。右侧面板跟随地图上选中的楼幢。</p></div><div><b>搜索定位</b><p>在顶栏输入楼盘名或幢号，定位后可以直接在右侧继续操作。</p></div><div><b>展开维护</b><p>「历史与维护」展开后分成两列，一侧查记录，一侧找维护入口。</p></div></div>
-          <a class="workspace__prototype-link" href={`${prototypes}/map/index.html?restore=1&building=宇济一号&code=17幢`} target="_blank" rel="noopener noreferrer">打开 17 幢的总图原型 ↗</a>
+          <div class="workspace-notes"><div><b>图层与对象</b><p>图层设置集中在左侧。右侧面板随搜索定位的楼幢更新。</p></div><div><b>搜索定位</b><p>在顶栏输入楼盘名或幢号，定位后可以直接在右侧继续操作。</p></div><div><b>展开维护</b><p>「历史与维护」展开后分成两列，一侧查记录，一侧找维护入口。</p></div></div>
+          <a class="workspace__prototype-link" href={mapPrototype} target="_blank" rel="noopener noreferrer">打开 17 幢的总图原型 ↗</a>
         </article>
 
         <article class="workspace">
@@ -170,7 +171,7 @@ const facts = [
             <article class="reference-card">
               <span>空间产品参照</span>
               <h3>地图在整个页面里承担什么</h3>
-              <p>DataV Atlas 面向地理空间数据的展示与分析，是空间类产品的参照。我用它检查地图的职责范围，底图只负责找楼和选楼，选中之后的楼栋属性和业务操作交给面板，不在地图上再叠一层信息。</p>
+              <p>DataV Atlas 面向地理空间数据的展示与分析，是空间类产品的参照。我用它检查地图的职责范围，底图显示楼幢位置，定位后的楼幢属性和业务操作交给面板，不在地图上再叠一层信息。</p>
               <a href="https://help.aliyun.com/zh/datav/datav-atlas/product-overview/what-is-datav-atlas/" target="_blank" rel="noopener noreferrer">DataV Atlas 公开资料 ↗</a>
             </article>
             <article class="reference-card">
@@ -181,7 +182,7 @@ const facts = [
             </article>
           </div>
           <div class="opportunity-path" aria-label="从定位楼栋到核对变更的设计思路">
-            <span>在地图找到楼栋</span><i aria-hidden="true">→</i>
+            <span>在总图定位楼幢</span><i aria-hidden="true">→</i>
             <span>保留当前楼栋信息</span><i aria-hidden="true">→</i>
             <span>继续核对业务关系</span>
           </div>
@@ -214,7 +215,7 @@ const facts = [
       tone="panel"
     >
       <div class="value-grid">
-        <article class="value-card"><span>对象对应</span><h3>从楼栋进入对应的房屋信息</h3><p>在地图选中 17 幢，进入整幢页选择 1501 室，再返回总图，看的是不是同一栋楼。这条路径可以完整走一遍，页面之间的对象对应通过操作就能检查。</p></article>
+        <article class="value-card"><span>对象对应</span><h3>从楼栋进入对应的房屋信息</h3><p>从总图定位 17 幢，进入整幢页选择 1501 室，再返回总图，看的是不是同一栋楼。这条路径可以完整走一遍，页面之间的对象对应通过操作就能检查。</p></article>
         <article class="value-card"><span>信息主次</span><h3>改版前后的画面可以直接对照</h3><p>旧界面截图和当前页面对应呈现，可以对照平面参考、属性和矩阵各占多少展示面积，再打开原型检查选房、查看属性的顺序。</p></article>
         <article class="value-card"><span>异常反馈</span><h3>核对关系时区分普通差异和结构变化</h3><p>面积差异、未关联的户室和结构变化分别呈现。结构项在未明确处置前保持待核对，原型里的确认操作也不会把它们直接放行提交。</p></article>
       </div>

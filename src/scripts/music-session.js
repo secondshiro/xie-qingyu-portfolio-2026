@@ -56,13 +56,17 @@ export function createMusicSession(root) {
 
   function paint() {
     const silent = audio.muted || audio.volume === 0;
-    const state = blocked ? 'blocked' : failed ? 'error' : index < 0 ? 'unavailable'
+    const unavailable = index < 0;
+    const state = unavailable ? 'unavailable' : blocked ? 'blocked' : failed ? 'error'
       : !ready || waiting && requested && !userPaused ? 'waiting' : !audio.paused && !silent ? 'playing' : 'paused';
     root.dataset.state = state;
-    root.dataset.silent = String(silent || !isCase && (blocked || userPaused));
+    root.dataset.silent = String(unavailable || silent || !isCase && (blocked || userPaused));
     root.style.setProperty('--music-volume', `${audio.volume * 100}%`);
     const mute = find('mute');
-    const muteLabel = !isCase && (blocked || userPaused) ? '开启声音' : silent ? '取消静音' : '静音';
+    const muteLabel = unavailable ? '此作品暂无配乐'
+      : !isCase && (blocked || userPaused) ? '开启声音' : silent ? '取消静音' : '静音';
+    mute.disabled = unavailable;
+    find('volume').disabled = unavailable;
     mute.setAttribute('aria-label', muteLabel);
     mute.setAttribute('title', muteLabel);
     mute.setAttribute('aria-pressed', String(silent));
@@ -77,7 +81,8 @@ export function createMusicSession(root) {
         : state === 'waiting' && active ? '加载中' : state === 'playing' ? '正在播放'
         : silent ? '已静音' : userPaused ? '已暂停' : '播放配乐';
     } else {
-      status.textContent = blocked ? '点击声音开关即可开启配乐' : failed ? '配乐暂时无法播放' : '';
+      status.textContent = unavailable ? '此作品暂无配乐'
+        : blocked ? '点击声音开关即可开启配乐' : failed ? '配乐暂时无法播放' : '';
     }
   }
 
@@ -215,6 +220,7 @@ export function createMusicSession(root) {
       if (!isCase) ready = false;
       audio.pause();
       index = next;
+      blocked = false;
       failed = false;
       waiting = false;
       restoreTime = firstSelection && initial?.index === next && Number.isFinite(initial?.time) && initial.time >= 0 ? initial.time : 0;
