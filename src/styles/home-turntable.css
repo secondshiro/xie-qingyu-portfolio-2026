@@ -134,7 +134,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid transparent; box-shad
 .deck.is-playing .record__label::before { animation-play-state: running; }
 
 .collection { min-width: 0; }
-.collection__hint { margin-bottom: 2rem; color: var(--color-muted); font-size: 0.75rem; line-height: 1.5; font-weight: 400; }
+.collection__hint { margin-bottom: 2.75rem; color: var(--color-muted); font-size: 0.75rem; line-height: 1.5; font-weight: 400; }
 .collection__hint-touch { display: none; }
 .crate { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: clamp(1rem, 2vw, 2rem); }
 .crate li { min-width: 0; display: grid; }
@@ -220,7 +220,8 @@ a:focus-visible, button:focus-visible { outline: 2px solid transparent; box-shad
 }
 @media (min-width: 75rem) {
   .showcase { gap: 2rem; padding-block: 2rem 0.25rem; }
-  .collection__hint { margin-bottom: 1.5rem; }
+  .workstation { gap: 2.5rem; }
+  .about { padding-block: 0.375rem; }
 }
 @media (min-width: 87.5rem) {
   :root { --player-width: 40rem; }

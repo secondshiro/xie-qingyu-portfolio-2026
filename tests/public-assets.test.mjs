@@ -3,10 +3,11 @@ import { access, readFile } from 'node:fs/promises';
 import test from 'node:test';
 
 const required = [
+  'public/images/home/covers/yuejian-overprint.webp',
   'public/projects/low-altitude-operations/media/overview-live-redacted.webp',
   'public/projects/low-altitude-operations/media/app-flight-plans-design-redacted.webp',
   'public/projects/low-altitude-operations/media/app-issue-report-design-redacted.webp',
-  'public/projects/low-altitude-operations/media/overview-design-redacted.webp',
+  'public/projects/low-altitude-operations/media/grid-overview-design.webp',
   'public/projects/low-altitude-operations/media/cockpit-projection-design-redacted.webp',
   'public/projects/low-altitude-operations/media/work-order-design-redacted.webp',
   'public/projects/low-altitude-operations/media/gallery-panorama-redacted.webp',

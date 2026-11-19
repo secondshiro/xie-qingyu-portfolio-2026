@@ -192,7 +192,7 @@ GIS 的行业判断保留章节标题和导语，三类产品的参照依据放�
 
 ### 首页唱机与封套
 
-首页独立加载 `src/styles/home-turntable.css` 与 `src/scripts/turntable.js`；复古唱机由 `src/components/RetroTurntable.astro`、`src/lib/retro-turntable.ts` 和 `src/styles/retro-turntable.css` 维护。1400px 及以上唱机操作外框为 640×320px，较窄桌面为 560×280px，物件以统一轻透视呈现。1200px 起，唱机位于首页介绍右侧并垂直居中，开盖角度收至 25° 以避开页眉。下方封套架占整行，576px 以上六张横排，封面最大约 151px。576px 及以下保持两列（每列最大 140px），封面宽为列宽的 84%。作品介绍与封套间隔 48px，案例从封套进入。
+首页独立加载 `src/styles/home-turntable.css` 与 `src/scripts/turntable.js`；复古唱机由 `src/components/RetroTurntable.astro`、`src/lib/retro-turntable.ts` 和 `src/styles/retro-turntable.css` 维护。1400px 及以上唱机操作外框为 640×320px，较窄桌面为 560×280px，物件以统一轻透视呈现。1200px 起，唱机位于首页介绍右侧并垂直居中，开盖角度收至 25° 以避开页眉。下方封套架占整行，576px 以上六张横排，封面最大约 151px。576px 及以下保持两列（每列最大 140px），封面宽为列宽的 84%。提示下方留 44px。作品介绍与封套在宽屏间隔 40px，1200px 以下间隔 48px。案例从封套进入。
 
 首页采用双栏首屏，封套与 A/B 面作品说明在下方各占一行。唱机使用中性灰白箱体、浅木侧板与哑光灰色零件；机身、唱盘、唱臂和透明盖共用同一透视镜头，不单独改变木边角度。默认合盖，整机是原生按钮，点击、Enter 或空格可开合。换片期间先自动开盖，落针后恢复用户要求的开合状态；换片中连续点击，以最后的开合要求为准。窄屏为开盖预留完整高度，不遮住定位与联系入口。
 
