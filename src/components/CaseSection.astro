@@ -16,7 +16,7 @@ const { id, label, title, intro, tone = 'paper' } = Astro.props;
       <header class="case-section__header">
         <p class="case-section__label">{label}</p>
         <h2>{title}</h2>
-        {intro && <p>{intro}</p>}
+        {(Astro.slots.has('intro') || intro) && <p><slot name="intro">{intro}</slot></p>}
       </header>
       <slot />
     </div>

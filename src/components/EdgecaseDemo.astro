@@ -12,8 +12,8 @@ const { mode = 'selection', resetOnPage = false } = Astro.props;
         <div class="selection-tools"><label><input type="checkbox" data-select-all /> 全选</label><span data-count aria-live="polite">已选 0 项</span></div>
         <div class="skeleton-table">{[0,1,2].map(i=><label class="skeleton-row"><input type="checkbox" data-row={i} aria-label={`选择第 ${i+1} 项`} /><span class="skeleton-cell" aria-hidden="true"></span><span class="skeleton-cell short" aria-hidden="true"></span></label>)}</div>
         <div class="pagination"><span>共 6 项</span><button type="button" data-page="1" aria-pressed="true">1</button><button type="button" data-page="2" aria-pressed="false">2</button></div>
-        <p class="demo-prompt">{resetOnPage ? "试着全选、翻页，再回来。选择会丢失。" : "试着勾选、翻页，再回来。选择继续保留。"}</p>
-        <p class="demo-question">AI 先问这些选择是否需要跨页保留。</p>
+        <p class="demo-prompt">{resetOnPage ? "点全选，再翻一页，查看已选数量怎样变化。" : "试着勾选、翻页，再回来。选择继续保留。"}</p>
+        <p class="demo-question">第一条检查问题是选择是否需要跨页保留。</p>
       </div>}
       {mode === 'download' && <div class="operation-demo">
         <div class="ghost-rows" aria-hidden="true"><i></i><i></i><i></i></div>

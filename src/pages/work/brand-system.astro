@@ -38,9 +38,10 @@ const tocSections = [
     <CaseHero
       eyebrow="提案案例 · 品牌与视觉系统"
       title="新禾智飞品牌系统提案"
-      summary="一家低空科技企业的海报、展板和印刷物料由不同供应商分批制作，标识、字号和颜色各有做法。我把四种标识组合整理成一张按使用场景查的选用表，给颜色和字体定出层级与使用占比，再为投放、社媒和实体物料准备可以直接套用的模板。"
       facts={facts}
-    />
+    >
+      <Fragment slot="summary">低空科技企业的海报、展板与印刷品由不同供应商分批制作，标识、字号和配色各有做法。我把四种标识组合、场景选用、颜色占比和字体层级<strong>写成可查的规范</strong>，配套六个子系统的模板与物料提案。</Fragment>
+    </CaseHero>
 
     <div class="site-container case-cover">
       <MediaStage
@@ -60,14 +61,14 @@ const tocSections = [
       id="result"
       label="00 / 先看结果"
       title="一张工作证怎样用到四组规则"
-      intro="制作新物料时，制作人员要先决定用哪种标识组合、姓名放在版面什么位置，再核对交给供应商的规格。以工作证提案为例，这四处判断分别对应规范里的场景分类、标识组合、版式模板和制作规格。"
+      intro="以工作证提案为例，制作人员可按四步查用规范，从选场景和标识，到套版式、核印刷规格。"
       tone="stone"
     >
       <div class="evidence-key" aria-label="工作证规范使用说明">
-        <div><b>01　查场景</b><p>在选用表里按场景找到这类物料对应的行。</p></div>
-        <div><b>02　选标识</b><p>按版面方向、中英文信息和可用空间，在首选与次选里挑一组现成组合。</p></div>
-        <div><b>03　套版式</b><p>用工作证模板安排照片、姓名与工作人员身份，标识位置不动。</p></div>
-        <div><b>04　核规格</b><p>核对标识最小尺寸、留白、色值与印刷条件，再交给供应商。</p></div>
+        <div><b>01　查场景</b><p>按“活动现场”场景在选用表定位对应行。</p></div>
+        <div><b>02　选标识</b><p>按版面尺寸和中英文需求，从首选与次选中选定组合。</p></div>
+        <div><b>03　套版式</b><p>套用工作证版式模板填入照片、姓名与身份。</p></div>
+        <div><b>04　核规格</b><p>核对标识最小尺寸、留白和印刷色值，供打样时复核。</p></div>
       </div>
       <MediaStage
         src={`${media}/final/14-material-badge.jpg`}
@@ -83,11 +84,11 @@ const tocSections = [
       id="origin"
       label="01 / 项目源头"
       title="新一批物料，又要重新决定标识和版式"
-      intro="旧展会和印刷物料已经投产，由不同供应商分批制作，标识、颜色和版式各有做法。面对新一批物料，我要判断哪些选择可以共同沿用，哪些本来就该随内容变化。"
+      intro="已投产的展会与印刷物料由不同供应商分批制作，标识、颜色和版式各有做法。"
     >
       <div class="case-copy">
-        <p>海报要介绍业务，展板要呈现产品，内容与比例本来就可以不同。但对照旧物料可以看到，标识怎么出现、正文用什么字体、标题和说明文字差多少，每次都在重新决定。</p>
-        <p>这些依据如果只留在某一版设计稿里，下一个人换一批内容或换一家供应商时还要再判断一遍。我把可以沿用的部分写成规范，让后续制作先查规则再动手。</p>
+        <p>海报与展板的比例可以随内容调整，标识位置、正文字体和标题层级则有共用规则的空间。</p>
+        <p>我把可沿用的判断从单份设计稿提取为规范，让制作人员换内容时可以先查规则再排版。</p>
       </div>
       <div class="evidence-grid">
         <MediaStage
@@ -113,7 +114,7 @@ const tocSections = [
       id="problem"
       label="02 / 问题重定义"
       title="把每次制作要做的选择写成规则"
-      intro="制作人员拿到新内容后，要决定用哪种标识、标题和正文怎样区分、图片和信息各放在哪里。我把这几类反复出现的判断整理成选用表和版式模板，让规范能直接回答制作时的问题。"
+      intro="我把反复出现的选择写进选用表和模板，回答用哪个标识、怎样区分字号、图文各放在哪。"
       tone="panel"
     >
       <div class="evidence-grid">
@@ -135,7 +136,10 @@ const tocSections = [
         />
       </div>
       <div class="case-copy">
-        <p>旧画面里的企业介绍和资质信息仍然要用。问题在于它们挤在同一层级，企业介绍用相近字号排了四段正文，资质带把八个数字并排放成一样大。新规范把标题、正文和说明信息分开，各自指定字体、字重与间距；数字和英文另用一套字体。制作人员换内容时，按版面找到对应层级套进去即可。</p>
+        <ul class="case-points">
+          <li><strong>旧版</strong>四段企业介绍的字号相近，八个资质数字等大并排，重点难以区分。</li>
+          <li><strong>新规范</strong>为标题、正文和说明分别指定字体、字重与间距，数字和英文单独配字体，换内容时沿用对应层级。</li>
+        </ul>
       </div>
     </CaseSection>
 
@@ -143,17 +147,17 @@ const tocSections = [
       id="direction"
       label="03 / 关键判断"
       title="先查使用场景，再选合适的标识组合"
-      intro="一套组合很难适应所有版面，给多了又会增加选择负担。我保留四种标识组合，把选用依据写成一张标识选用表。表的行分两层，场景层是标识出现的场合，即线上线下的平面物料、活动现场、网页与应用界面、面向海外的物料；应用层说明标识落在什么物件上、与谁一起出现，即精品产品、无人机产品本体、与其他品牌联合的物料。横栏是四种组合，交叉位置标出首选和次选。"
     >
+      <Fragment slot="intro">保留四种标识组合，<strong>选用表把行分成两层</strong>。场景层包括平面物料、活动、网页和海外物料。应用层包括精品、无人机本体和联合品牌。横向列出四种组合，交叉格标出首选和次选。</Fragment>
       <div class="evidence-grid">
         <MediaStage src={`${media}/final/04-identity-rationale.jpg`} alt="品牌标识释义页，标出左右对称轴与上下对称轴" caption="标识由字母 X 与 H 组合，释义页标出左右与上下两条对称轴，四种组合都以这个基础形为准。" kind="proposal" width={1600} height={900} />
         <MediaStage src={`${media}/final/06-identity-construction.jpg`} alt="标识选用表，按场景列出首选和次选组合" caption="每一类场景标出首选和次选，制作人员先查场景所在的行，再横向找到对应的组合。" kind="proposal" width={1600} height={900} />
         <MediaStage src={`${media}/final/03-context-scenes.jpg`} alt="常用组合标识运用示意，把标识放进展位画面、横版海报与竖版画面" caption="运用示意图把同一组标识放进几种版面，标识位置随版面方向变化。" kind="proposal" width={1600} height={900} />
       </div>
       <div class="workspace-notes">
-        <div><b>为什么是四种</b><p>中英文、品牌与产品各需要一组，四种能覆盖常见版面，也不会让选择变多。</p></div>
-        <div><b>怎样选用</b><p>先按场景查到首选和次选，再根据版面方向与可用空间定下来。</p></div>
-        <div><b>制作前核对</b><p>按最小尺寸和留白要求检查，避免标识放进版面后过小，或者和文字挤在一起。</p></div>
+        <div><b>为什么是四种</b><p>中英文与品牌、产品两条应用线各有组合，四种即可覆盖常见版面。</p></div>
+        <div><b>怎样选用</b><p>先查对应场景的首选和次选，再根据版面方向与可用空间决定。</p></div>
+        <div><b>制作前核对</b><p>制作前核对最小尺寸与安全留白，避免标识缩得过小或贴近文字。</p></div>
       </div>
     </CaseSection>
 
@@ -161,7 +165,7 @@ const tocSections = [
       id="auxiliary"
       label="04 / 辅助图形"
       title="把标识折角延伸成辅助图形"
-      intro="在原有规范之外，我补了一组“双折面”辅助图形提案。灵感来自标识里的斜向笔画和内折角，这些结构本身带有方向感，与品牌的飞行主题同向。我把两个折面相向排列，用在海报和封面的边缘。"
+      intro="从标识的斜向笔画与内折角提取出“双折面”辅助图形，呼应低空飞行的方向感，用于海报与封面边缘收束版面。"
     >
       <BrandAuxiliary />
     </CaseSection>
@@ -170,7 +174,7 @@ const tocSections = [
       id="language"
       label="05 / 视觉语言"
       title="选好标识，再查颜色和字体"
-      intro="标识和辅助图形定下来之后，颜色与字体同样要有依据。我按用途把颜色分层、把字体分级，并把色值、字号与间距写进规范，制作人员查表取用，不必凭印象调。"
+      intro="颜色和字体按用途分层，色值、占比、字号与间距可以查规范取用。"
       tone="stone"
     >
       <div class="evidence-grid">
@@ -180,9 +184,9 @@ const tocSections = [
         <MediaStage src={`${media}/final/10-type-usage.jpg`} alt="品牌字体运用规范，在版面中标出副标题、正文与说明文字各自的位置和字号" caption="字体运用规范把副标题、正文与说明文字分三级标出，每一级对应规范中指定的字体与字重。" kind="proposal" width={1600} height={900} />
       </div>
       <div class="workspace-notes">
-        <div><b>颜色分层</b><p>识别色只有品牌白、品牌黑与品牌蓝，每支色标给出 RGB、CMYK 与 HEX 三组数值，可以直接取用；辅助色和特殊色按场景点使用，面积不超过主色。</p></div>
-        <div><b>占比与禁用</b><p>品牌白占一半以上、品牌黑三成以上、品牌蓝一成以内；纯色背景不使用透明度，也不使用规范外的颜色。</p></div>
-        <div><b>字体分级</b><p>中文用思源黑体，标题取 Light 或 Medium，正文取 Light 或 Regular，数字与英文另用一套字体。</p></div>
+        <div><b>颜色分层</b><p>品牌白、黑、蓝各有 RGB、CMYK 与 HEX 色值。辅助色和特殊色按场景使用，面积不超过主色。</p></div>
+        <div><b>占比与禁用</b><p>识别色用量为<strong>白色至少 50%、黑色至少 30%、蓝色最多 10%</strong>。纯色背景不使用透明度，也不使用规范外的颜色。</p></div>
+        <div><b>字体分级</b><p>中文统一思源黑体（标题 Light/Medium，正文 Light/Regular），数字与英文另配专用字体。</p></div>
       </div>
     </CaseSection>
 
@@ -190,13 +194,13 @@ const tocSections = [
       id="crossmedia"
       label="06 / 跨媒介扩展"
       title="在不同物料提案里检查规则是否够用"
-      intro="规范页只写规则，具体版面要检查是否放得下。我把同一套规则用到写字楼与电梯框架海报、公众号与视频号封面，再做礼品袋、停机垫这类实体物料的效果图，看比例和信息量变了之后标识与内容怎么排。"
+      intro="把规则套进框架海报、社媒封面和实体物料效果图，检查比例、裁切和底面变化时，标识与信息怎样排。"
     >
       <div class="workspace-stack">
         <article class="workspace">
           <header class="workspace__header">
             <span>01 / 媒介 · 投放框架</span>
-            <div><h3>按投放框架安排图片与信息</h3><p>写字楼框架是 1.5×2.4 米，电梯框架是 534×734 毫米，两者比例不同。提案各留两种排法，要放地址和时间信息时用带信息区的版本，要整幅画面时用全幅版本，制作人员按内容选。</p></div>
+            <div><h3>按投放框架安排图片与信息</h3><p>写字楼框架为 1.5 × 2.4 米，电梯框架为 534 × 734 毫米。两个尺寸都提供带信息区与全幅两种模板，按是否需要地址与时间选用。</p></div>
           </header>
           <MediaStage src={`${media}/final/11-media-framing.jpg`} alt="媒体框架海报提案，分别展示写字楼与电梯框架中的带信息区模板和全幅模板" caption="写字楼框架与电梯框架各给出带信息区和全幅两种排法，尺寸直接标在标题上。" kind="proposal" width={1600} height={900} />
         </article>
@@ -204,7 +208,7 @@ const tocSections = [
         <article class="workspace">
           <header class="workspace__header">
             <span>02 / 社媒 · 模板规则</span>
-            <div><h3>更换封面画面时，核对标识和裁切位置</h3><p>公众号主推封面是 383×900，固定深灰渐变与白色辅助图形，标识用镂空字竖排；次推封面是 900×900，规定不加任何文字。视频号竖版封面为 1080×1920，标出上下裁切区域，把标识、标语和内容主体各自的位置与字号固定下来。</p></div>
+            <div><h3>更换封面画面时，核对标识和裁切位置</h3><p>公众号主推封面（383 × 900）用竖排镂空标识，次推封面（900 × 900）不加文字。视频号封面（1080 × 1920）标出上下裁切区，固定标识、标语与主体位置。</p></div>
           </header>
           <div class="evidence-grid">
             <MediaStage src={`${media}/final/12-social-templates.jpg`} alt="微信公众号主推与次推封面的模板规范" caption="主推封面固定渐变与竖排镂空标识，次推封面只保留基础元素，不添加文字。" kind="proposal" width={1600} height={900} />
@@ -215,7 +219,7 @@ const tocSections = [
         <article class="workspace">
           <header class="workspace__header">
             <span>03 / 物料 · 实体触点</span>
-            <div><h3>用效果图准备后续打样核对</h3><p>工作证检查小尺寸下人员信息怎么排，礼品袋看黑白两种底色上的标识位置，停机垫则检查圆形与方形底面上的中心定位图形。三件都是效果图，材质和尺寸在打样时核对。</p></div>
+            <div><h3>用效果图准备后续打样核对</h3><p>工作证效果图检查小尺寸下如何排人员信息，黑白礼品袋检查标识位置，圆形与方形停机垫检查中心定位图形。实物尺寸和材质留待打样。</p></div>
           </header>
           <div class="evidence-grid">
             <MediaStage src={`${media}/final/15-material-bag.jpg`} alt="黑、白两种底色的礼品袋提案效果图" caption="礼品袋有黑白两个版本，按需求和成本选用，标识与标语的位置在两个版本里保持一致。" kind="proposal" width={1600} height={900} />
@@ -229,12 +233,12 @@ const tocSections = [
       id="ai-collaboration"
       label="07 / AI 协作"
       title="AI 协助探索画面，我负责选定规则"
-      intro="生成工具用来出画面，用不用由我判断。素材生成、动态试验和规范整理分别交给不同工具，我给出规则、筛选结果，再把选定的方案整理成模板。"
+      intro="AI 协助生成素材、试验动效和整理文档。我制定视觉规则、筛选可用画面，再把选定方案做成规范与模板。"
       tone="panel"
     >
       <div class="boundary-grid">
-        <article class="boundary-card"><h3>工具怎样参与</h3><p>生成、动态与整理分别由不同工具承担。</p><ul><li>LibLibAI 与可灵用来尝试概念和场景素材。</li><li>Seedance 把静态品牌素材做成动态画面。</li><li>我用 Figma 排规范页、模板与物料提案。</li></ul></article>
-        <article class="boundary-card"><h3>我负责的判断</h3><p>生成画面能不能进提案，要对照具体使用要求判断。</p><ul><li>确定四种组合的构成和各场景的选用关系。</li><li>把颜色分成识别色、辅助色与特殊色，定出各自的占比与禁用情形。</li><li>选择模板和物料的呈现方式。</li><li>核对生成素材里的标识和颜色是否符合规范，不符合的先按品牌色和规则调整，再决定是否采用。</li></ul></article>
+        <article class="boundary-card"><h3>工具怎样参与</h3><p>不同工具分别承担概念素材、动态试验和规范排版。</p><ul><li>LibLibAI 与可灵用来尝试概念和场景素材。</li><li>Seedance 把静态品牌素材做成动态画面。</li><li>我用 Figma 排规范页、模板与物料提案。</li></ul></article>
+        <article class="boundary-card"><h3>我负责的判断</h3><p>生成画面按印刷和社媒使用要求筛选，再决定是否纳入提案。</p><ul><li>确定四种组合的构成和各场景的选用关系。</li><li>把颜色分成识别色、辅助色与特殊色，定出各自的占比与禁用情形。</li><li>选择模板和物料的呈现方式。</li><li>核对生成素材里的标识和颜色是否符合规范，不符合的先按品牌色和规则调整，再决定是否采用。</li></ul></article>
       </div>
       <MediaStage
         src={`${media}/seedance-clip.mp4`}
@@ -253,12 +257,12 @@ const tocSections = [
       id="boundary"
       label="08 / 交付与边界"
       title="把后续制作需要的规则交代清楚"
-      intro="交付物是一套品牌规范与六个子系统的模板和效果图，覆盖标识、色彩、字体、媒介、社媒与物料。下一步是用新物料打样，核对颜色在不同材质上的还原和实际尺寸。"
+      intro="交付品牌规范、六个子系统的模板与效果图。新物料需要通过打样检查尺寸与颜色在不同材质上的还原。"
     >
       <div class="value-grid">
-        <article class="value-card"><span>已交付</span><h3>品牌规范与 6 个子系统</h3><p>标识、色彩、字体、媒介、社媒与物料六个部分，说明每类组合与色值在什么场景下使用，模板和效果图给出具体排法。</p></article>
-        <article class="value-card"><span>可继续</span><h3>按规则准备下一批物料</h3><p>下一批物料可以从已有模板开始替换内容，再按最小尺寸、留白与色值过一遍，合格后交给供应商。</p></article>
-        <article class="value-card"><span>待确认</span><h3>打样、投放与真实使用</h3><p>先和供应商打样，核对颜色在不同材质上的还原与实际尺寸，再进投放和真实使用。</p></article>
+        <article class="value-card"><span>已交付</span><h3>品牌规范与 6 个子系统</h3><p>标识、色彩和字体规则供查用，媒介、社媒与物料模板给出具体排法。</p></article>
+        <article class="value-card"><span>可继续</span><h3>按规则准备下一批物料</h3><p>下一批物料可以从模板替换内容，再按最小尺寸、留白和色值检查后交给供应商打样。</p></article>
+        <article class="value-card"><span>待确认</span><h3>打样、投放与真实使用</h3><p>新规范与物料仍为提案。尺寸、材质色差和投放表现留待后续核对。</p></article>
       </div>
       <div class="evidence-grid">
         <MediaStage src={`${media}/final/01-brand-cover.jpg`} alt="品牌视觉规范册封面，黑色底上排列标识、中文标题与英文标题" caption="规范册封面。规范分基础部分与应用部分，标识、色彩、字体和辅助图形属于基础部分，投放、社媒与物料属于应用部分。" kind="proposal" width={1600} height={900} />

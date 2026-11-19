@@ -27,59 +27,80 @@ const facts = [
 ---
 <SiteLayout title="把设计经验整理成可复用的 AI 工作流｜谢擎宇" description="把无人机巡查后台一次批量下载里的问题整理成 AI 设计检查规则，用物业投诉需求、飞行设计稿和 Arco 分步表单检验，并说明规则怎样随使用反馈修订。" current="work">
   <main class="case-page edgecase-page" id="main" tabindex="-1">
-    <CaseHero eyebrow="AI 工作流 · 设计检查规则" title="把设计经验整理成可复用的 AI 工作流" summary="我把无人机巡查后台一次批量下载中碰到的三处问题，整理成 Edgecase Planner，一套给 AI 使用的设计检查规则，先问选中的范围、等待时的反馈和失败后能不能重来。设计前，它按用户任务问出还没定的事；设计后，它对照业务要求和操作证据检查已有方案。规则在四个真实任务上跑过，也随使用反馈修订。" facts={facts} />
+    <CaseHero eyebrow="AI 工作流 · 设计检查规则" title="把设计经验整理成可复用的 AI 工作流" facts={facts}>
+      <Fragment slot="summary">一次无人机巡查后台的批量下载暴露了三处遗漏。<strong>翻页后选择丢失、打包没有反馈、取消保存后无法重来</strong>。我把它们整理成 <strong>Edgecase Planner</strong>，一套给 AI 使用的设计检查规则。设计前追问未定条件（Plan），设计后对照操作证据核查（Review），并在四个真实任务中修订。</Fragment>
+    </CaseHero>
     <CaseToc title="Edgecase Planner" sections={sections} />
-    <CaseSection id="origin" label="01 / 经验起点" title="从一次批量下载，整理出第一批检查问题" intro="在无人机巡查成果后台，用户要选中一轮巡查的文件，等系统打包好再保存到本地。我沿着这件事检查，碰到三处问题，选中的范围、等待中的反馈、取消保存之后还能不能重来。">
-      <div class="case-copy"><p>下面三个交互示意还原当时的问题，分页示意简化为 6 项，实际后台每页显示 10 条。</p></div>
+    <CaseSection id="origin" label="01 / 经验起点" title="从一次批量下载，整理出第一批检查问题" intro="在无人机巡查成果后台，用户要选文件、等打包，再保存到本地。我顺着这条流程检查了选择范围、打包反馈和取消后的恢复。">
+      <div class="case-copy"><p>下方还原三处问题。第一张示意可勾选和翻页，两页共 6 项，实际后台每页显示 10 条。</p></div>
       <div class="origin-examples">
-        <article><div class="example-copy"><span class="proof-label">01 / 范围</span><h3>选了“全部”，却只包含当前页</h3><p>用户要的是整轮巡查成果，表头全选却只覆盖当前页的 10 条。翻页以后，之前选中的也丢了。</p></div><EdgecaseDemo mode="selection" resetOnPage /></article>
-        <article><div class="example-copy"><span class="proof-label">02 / 反馈</span><h3>点击下载后，不知道是否已经开始</h3><p>文件要先打包，点击之后没有任何反馈，用户不知道该继续等还是重新点一次。这一处当时补上了数量和百分比提示，让进度看得见。</p></div><EdgecaseDemo mode="download" /></article>
-        <article><div class="example-copy"><span class="proof-label">03 / 恢复</span><h3>取消保存后，无法重新下载</h3><p>反复点击下载又在保存对话框里取消，系统却提示“已下载”。文件没拿到，任务也走不下去。</p></div><EdgecaseDemo mode="recovery" /></article>
+        <article><div class="example-copy"><span class="proof-label">01 / 范围</span><h3>选了“全部”，却只包含当前页</h3><p>用户要选中整轮巡查成果，表头全选只覆盖当前页的 10 条，翻页后已选项还会清空。</p></div><EdgecaseDemo mode="selection" resetOnPage /></article>
+        <article><div class="example-copy"><span class="proof-label">02 / 反馈</span><h3>点击下载后，不知道是否已经开始</h3><p>点击下载后看不到打包进度，用户不知道该等多久、要不要再点一次。方案后来补上了文件数量和百分比。</p></div><EdgecaseDemo mode="download" /></article>
+        <article><div class="example-copy"><span class="proof-label">03 / 恢复</span><h3>取消保存后，无法重新下载</h3><p>用户取消保存，系统却提示“已下载”，也无法再次发起下载。</p></div><EdgecaseDemo mode="recovery" /></article>
       </div>
-      <div class="case-copy"><p>这三处后来成了规则里的第一批检查项，分别问选择的范围、等待时的反馈和失败后的恢复入口。其中“完成”的定义以用户是否拿到结果为准，系统显示任务结束不算。</p></div>
+      <div class="case-copy">
+        <ul class="case-points">
+          <li><strong>选择范围</strong>要明确是否跨页保留。</li>
+          <li><strong>打包反馈</strong>需要让进度可见。</li>
+          <li><strong>取消或失败后的恢复</strong>要能让用户重来。只有用户实际拿到文件，下载才算完成。</li>
+        </ul>
+      </div>
     </CaseSection>
-    <CaseSection id="direction" label="02 / 两种使用模式" title="同一组检查问题，用在设计前后" intro="下载里这三处问题，放在画界面之前可以帮我补上还没定的流程，放在有了方案之后可以核对方案做没做到。同一组问题用在不同时候，我据此把 Skill 分成 Plan 和 Review 两种模式。" tone="stone">
-      <div class="case-copy"><p>方法先写成指导 AI 工作的 Skill，用上手头助手已有的读图和页面操作能力，不必先去开发 Figma 插件。这个取舍让我能直接拿项目里的需求文档和设计稿试规则。</p></div>
+    <CaseSection id="direction" label="02 / 两种使用模式" title="同一组检查问题，用在设计前后" tone="stone">
+      <Fragment slot="intro">同一组检查项在两个时机使用。<strong>Plan 用于设计前</strong>补齐未定条件，<strong>Review 用于设计后</strong>核对方案是否满足业务要求。</Fragment>
+      <div class="case-copy"><p>我把方法<strong>写成指导 AI 工作的 Skill</strong>，复用助手已有的读图和页面操作能力，可以直接拿需求和页面试用。</p></div>
       <div class="boundary-grid">
-        <article class="boundary-card"><h3>Plan · 设计前补齐决定</h3><p>输入是需求文档或流程说明，AI 沿着用户任务列出还没决定的问题。设计师补上业务条件，再把结果写进流程图、组件状态和交互说明。这时输出的是待确认的检查点，也就是下一步要画什么、要确认什么。</p><p>下面的物业投诉案例，用一份需求文档检查附件上传和投诉提交怎样衔接。</p></article>
-        <article class="boundary-card"><h3>Review · 设计后核对方案</h3><p>输入是已有的设计稿、原型或可操作页面，AI 对照业务要求检查这些画面有没有做到。截图看不出行为的地方先追问，拿到答复或操作记录才写成修改建议。设计师据此安排调整和复查。</p><p>后面的航线选择案例，用两张设计稿和一份业务答复定下控件的修改方向。</p></article>
+        <article class="boundary-card"><h3>Plan · 设计前补齐决定</h3><p>输入需求文档或流程说明，AI 按任务列出未定分支。设计师确认业务条件，再把它们写进流程图、组件状态和交互说明。</p><p>物业投诉案例用需求文档检查附件上传与投诉提交的衔接。</p></article>
+        <article class="boundary-card"><h3>Review · 设计后核对方案</h3><p>输入设计稿、原型或可操作页面，AI 按业务要求检查。截图看不出的行为先追问，拿到答复或操作记录后再给建议。</p><p>飞行计划案例用设计稿和业务答复确定航线选择控件的修改方向。</p></article>
       </div>
     </CaseSection>
-    <CaseSection id="method" label="03 / Plan 设计前" title="视频还没上传完，投诉能提交吗？" intro="这次设计前检查用的是一份物业投诉小程序的需求文档。居民填好投诉、加上图片或视频再提交，我要用 Plan 弄清楚附件传到什么程度才能提交。">
+    <CaseSection id="method" label="03 / Plan 设计前" title="视频还没上传完，投诉能提交吗？">
+      <Fragment slot="intro">我用 Plan 检查一份物业投诉小程序的需求。<strong>居民填完投诉文字，但视频还在上传，提交按钮该怎么表现？</strong></Fragment>
       <MediaStage class="complaint-compare" src={`${media}/complaint-form-compare.png`} alt="两台手机并排展示新增投诉页在需求检查前后的两版。左版的附件区是两个空白的添加入口，提交栏只有一个按钮。右版的附件区有已选缩略图、删除入口与数量计数，投诉内容框右下角有字数计数，图片与视频的标签右侧标出用途，手机号下方说明联系用途，提交按钮下方说明本次提交包含的附件。" caption="新增投诉页在需求检查前后的两版。改版给附件区补上缩略图、删除入口与数量计数，给图片和视频补上用途说明，给投诉内容补上字数计数，并在提交栏说明本次提交包含的附件。" kind="observed" label="留存材料与改版提案" width={912} height={1698} />
       <div class="question-compare">
-        <article><span class="proof-label">检查切入点</span><h3>从单个控件，看到整份表单</h3><p>需求已经写明上传失败可以单条重试。可如果文字填完了，视频还在上传，提交按钮这时该怎么响应，需求里没有写。顺着这一问，检查范围就从上传控件扩到了整张表单。</p></article>
-        <article><span class="proof-label">设计判断</span><h3>把业务条件对应到操作分支</h3><p>若必须等附件传完，界面要解释等待原因并提供失败处理入口；若允许移除选填附件后提交，就要说明本次提交包含哪些内容。</p><p>这两种分支都由业务条件决定，直接影响按钮什么时候可用、失败之后从哪里恢复。需求里这两条当时还没有答复。</p></article>
+        <article><span class="proof-label">检查切入点</span><h3>从单个控件，看到整份表单</h3><p>需求已说明上传失败可单条重试，却没交代上传中能否提交。这一问让检查范围从上传控件扩到整张表单。</p></article>
+        <article>
+          <span class="proof-label">设计判断</span>
+          <h3>把业务条件对应到操作分支</h3>
+          <ul class="case-points">
+            <li><strong>必须等附件传完时</strong>，阻止提交并说明等待原因，保留失败处理入口。</li>
+            <li><strong>允许先提交时</strong>，提供移除选填附件的入口，并说明本次包含哪些内容。</li>
+          </ul>
+          <p>两种分支影响提交按钮的可用条件，也决定失败后从哪里恢复。需求当时尚未确定选哪一种。</p>
+        </article>
       </div>
-      <div class="case-copy"><h3>让输出直接指向要做的设计</h3><p>我要求 Plan 的结论里带上下一步要画什么、怎么检查。下面三条是当时得到的设计安排。</p></div>
+      <div class="case-copy"><h3>让输出直接指向要做的设计</h3><p>Plan 的每条结论都要指向下一步要画的内容和检查方式。这次得到了三条设计安排。</p></div>
       <div class="evolution-list">
-        <article><span>组件状态</span><div><h3>让用户认出哪个附件需要处理</h3><p>区分上传中、成功和失败，为失败项提供单条重试入口，保留其他附件。</p></div></article>
-        <article><span>流程分支</span><div><h3>把附件状态与提交操作放在一起设计</h3><p>补上上传未完成和部分失败的分支，依据提交条件确定按钮状态与后续操作。</p></div></article>
-        <article><span>走查情形</span><div><h3>用部分失败的情形检查整张表单</h3><p>设置一个附件失败、其他附件成功的情形，检查错误是否可定位、操作能否继续，以及文字和成功附件是否保留。</p></div></article>
+        <article><span>组件状态</span><div><h3>让用户认出哪个附件需要处理</h3><p>区分上传中、成功与失败。失败的附件可单条重试，其余附件继续保留。</p></div></article>
+        <article><span>流程分支</span><div><h3>把附件状态与提交操作放在一起设计</h3><p>补齐未传完与部分失败的分支，按业务条件决定按钮是否可用以及下一步操作。</p></div></article>
+        <article><span>走查情形</span><div><h3>用部分失败的情形检查整张表单</h3><p>让一个附件失败、其余附件成功，检查错误能否定位，已填文字与成功附件是否保留。</p></div></article>
       </div>
     </CaseSection>
-    <CaseSection id="flight" label="04 / Review 设计后" title="先确认业务规则，再决定改哪处界面" intro="这次 Review 用的是一份已有的飞行计划设计稿。航线弹窗可以勾选多条，确认区域却只显示一条。AI 先追问一个计划允许几条航线，答复回来才知道该改弹窗还是改确认区域。" tone="stone">
+    <CaseSection id="flight" label="04 / Review 设计后" title="先确认业务规则，再决定改哪处界面" tone="stone">
+      <Fragment slot="intro">Review 飞行计划设计稿时，<strong>航线弹窗允许多选，确认区却只展示一条</strong>。AI 先问一个计划允许几条航线，再判断该改哪一侧。</Fragment>
       <div class="flight-evidence">
         <MediaStage src={`${media}/flight-picker.png`} alt="航线选择弹窗使用复选框，同时勾选多条航线及文件夹" caption="评审使用的原设计稿，弹窗使用复选框；评审建议改为互斥单选。" kind="observed" width={784} height={1784} />
         <div class="flight-evidence__detail">
           <MediaStage src={`${media}/flight-summary.png`} alt="选中后执行航线区域只展示一条航线" caption="确认区域只展示一条航线，与弹窗允许多选的表达不同。" kind="observed" width={760} height={540} />
-          <div class="case-copy"><h3>同一处差异，可能对应两种修改方向</h3><p>如果允许多条，要检查确认区域有没有把选中的航线列全；如果只允许一条，要改的是弹窗的选择方式。</p><p>业务答复确认一个计划只允许一条航线。我据此建议改成互斥单选，文件夹只负责展开和收起，让选择方式跟业务规则对上。</p></div>
+          <div class="case-copy"><h3>同一处差异，可能对应两种修改方向</h3><p>允许多条时，需要让确认区显示所有已选航线。只允许一条时，应该改弹窗的选择方式。</p><p>业务答复确认<strong>一个计划只允许一条航线</strong>。我建议改为互斥单选，文件夹只负责展开与收起。</p></div>
         </div>
       </div>
     </CaseSection>
-    <CaseSection id="evolution" label="05 / 迭代与验证" title="先分清操作，才能问准完成条件" intro="另一次 Review 里，AI 把材料上传和内容预审合成一个问题，答复回来分不清说的是哪一步。我据此修订了操作拆分的规则。" tone="panel">
-      <div class="method-example"><EdgecaseDemo mode="upload" /><div class="example-copy"><h3>文件传完以后，还要判断材料是否通过</h3><p>上传看的是文件有没有传成功，预审看的是材料有没有通过检查，两步各自需要反馈和恢复入口。</p></div></div>
+    <CaseSection id="evolution" label="05 / 迭代与验证" title="先分清操作，才能问准完成条件" tone="panel">
+      <Fragment slot="intro">一次复核中，AI 把材料上传和内容预审合成一问，答复无法对应到具体操作。我据此修订了<strong>操作拆分规则</strong>。</Fragment>
+      <div class="method-example"><EdgecaseDemo mode="upload" /><div class="example-copy"><h3>文件传完以后，还要判断材料是否通过</h3><p>上传要确认文件是否传完，预审要确认材料是否通过检查。两个操作各自需要反馈和恢复入口。</p></div></div>
       <div class="question-compare">
-        <article><span class="proof-label">修改前 / 合在一起问</span><h3>“材料提交后，如何完成？”</h3><p>上传与预审共用一组追问，无法分清回答针对哪一步。</p></article>
-        <article><span class="proof-label">修改后 / 按操作分别问</span><h3>“上传成功后，有什么反馈？”<br />“预审还没结束时，用户看到什么？”</h3><p>每个操作单独确认。同一步的成功、失败画面仍放在一起检查。</p></article>
+        <article><span class="proof-label">修改前 / 合在一起问</span><h3>“材料提交后，如何完成？”</h3><p>旧问法把上传和预审合在一起，答复难以对应到具体一步。</p></article>
+        <article><span class="proof-label">修改后 / 按操作分别问</span><h3>“上传成功后，有什么反馈？”<br />“预审还没结束时，用户看到什么？”</h3><p>每个操作单独问清，同一步的成功和失败状态仍放在一起核查。</p></article>
       </div>
-      <div class="case-copy"><h3>用多步任务回查，检查回答是否对应正确</h3><p>拿上传与预审这类多步任务重新跑一遍，看每个问题是不是只落在对应的那一步上。两步之间没有混答，这次修订就算站得住。</p></div>
+      <div class="case-copy"><h3>用多步任务回查，检查回答是否对应正确</h3><p>用上传和预审这样的多步任务回查，确认每条回答是否落在对应的操作上。</p></div>
       <div class="evolution-list">
-        <article><span>结论表达</span><div><h3>材料缺少失败状态时，先补证据</h3><p>材料里只有成功画面时，先问失败时会是什么样。没有出现过的状态不能直接算成设计遗漏。</p></div></article>
-        <article><span>提问终点</span><div><h3>技术事实未知时，限定受影响的结论</h3><p>一个计划会不会被重复创建，要靠后端确认，不改变已经有业务答复支撑的单选建议。我要求 Skill 把待确认的事实和可以交付的结论分开记录。</p></div></article>
+        <article><span>结论表达</span><div><h3>材料缺少失败状态时，先补证据</h3><p>设计稿只出现成功状态时，<strong>先问失败规则</strong>，再根据答复判断是否遗漏。</p></div></article>
+        <article><span>提问终点</span><div><h3>技术事实未知时，限定受影响的结论</h3><p>重复创建需要开发确认，单选建议已有业务答复。Skill 分开记录待确认事实和已有依据的设计结论。</p></div></article>
       </div>
     </CaseSection>
-    <CaseSection id="arco" label="06 / 独立评审" title="打开真实页面操作，检查提示与校验是否一致" intro="Review 不只看设计稿，也能检查可以操作的页面。我用 Arco Design Pro 的分步表单核对输入限制，还走了一遍前进、返回和改错。">
+    <CaseSection id="arco" label="06 / 独立评审" title="打开真实页面操作，检查提示与校验是否一致">
+      <Fragment slot="intro">我用 Review 操作 <strong>Arco Design Pro 分步表单</strong>，核对必填拦截、步骤往返与格式提示。</Fragment>
       <figure class="arco-gallery" data-protected-media>
         <div class="arco-gallery__images">
           <img src={`${media}/arco-workplace.webp`} alt="Arco Design Pro 工作台演示页面" width="640" height="427" loading="lazy" draggable="false" />
@@ -91,22 +112,29 @@ const facts = [
       <figure class="arco-trace">
         <figcaption><span class="proof-label">分步表单 / 实际操作记录</span><a href="https://react-pro.arco.design/form/step" target="_blank" rel="noreferrer">打开官方演示 ↗</a></figcaption>
         <ol>
-          <li><span>01 / 留空后继续</span><strong>必填项拦截</strong><p>名称与推广时间留空，点击下一步，字段下出现对应提示，停留在当前步骤。</p></li>
-          <li><span>02 / 前进再返回</span><strong>输入仍保留</strong><p>补全后进入渠道配置再返回，名称、日期和链接仍保留。再次前进，渠道来源也仍在。</p></li>
-          <li><span>03 / 输入错误格式</span><strong>仍可进入下一步</strong><p>链接填入 not-a-url，页面没有按提示中的协议要求拦截，仍进入渠道配置。</p></li>
+          <li><span>01 / 留空后继续</span><strong>必填项拦截</strong><p>名称与推广时间留空时，字段出现提示，仍停在当前步骤。</p></li>
+          <li><span>02 / 前进再返回</span><strong>输入仍保留</strong><p>进入渠道配置再返回，名称、日期和链接仍保留。再次前进，渠道来源也还在。</p></li>
+          <li><span>03 / 输入错误格式</span><strong>仍可进入下一步</strong><p>链接填入 <code>not-a-url</code> 后，<strong>仍可进入下一步，与页面上的协议提示不一致。</strong></p></li>
         </ol>
       </figure>
       <div class="question-compare">
-        <article><span class="proof-label">观察到的差异</span><h3>“必须以 http:// 或 https:// 开头”，却允许普通文本通过</h3><p>问题出在进入下一步之前的校验环节，提示和校验说的不是同一件事。</p><p>建议在字段旁提示错误，修正后再放行，同时保留其他输入。</p></article>
-        <article><span class="proof-label">规则补充与回查</span><h3>把漏掉的检查补成输入约束规则</h3><p>第一次跑到这里时，规则没有检出格式问题。我补上输入约束这一条，按字段分别检查必填和格式限制。</p><p>拿补过规则的版本回查原页面，这次认出了链接字段的差异，还多查了改错之后能不能继续走、输入有没有保留。改动只在 Skill 这边，没有动 Arco 页面。</p></article>
+        <article><span class="proof-label">观察到的差异</span><h3>“必须以 http:// 或 https:// 开头”，却允许普通文本通过</h3><p>这次操作显示，进入下一步前的检查没有落实字段提示里的协议要求。</p><p>建议在字段旁提示格式错误，修正后再放行，并保留其余输入。</p></article>
+        <article><span class="proof-label">规则补充与回查</span><h3>把漏掉的检查补成输入约束规则</h3><p>首轮漏检了格式差异，我补上输入约束规则，要求按字段分别查必填与格式。</p><p>用新版规则回查同一页面，检出了链接格式问题，也记录了改错后能否继续以及输入是否保留。修订的是检查规则。</p></article>
       </div>
     </CaseSection>
-    <CaseSection id="boundary" label="07 / 使用反馈与改进" title="让工具只回答设计要决定的事" intro="物业投诉那份报告里还写了系统能不能查回结果这类开发问题。使用者指出这些不该由设计回答，我把问法收了回来，让工具先说清设计师要决定什么。">
+    <CaseSection id="boundary" label="07 / 使用反馈与改进" title="让工具只回答设计要决定的事" intro="物业投诉的检查报告曾混入需要开发确认的问题。根据使用反馈，我收紧了工具的提问范围和输出要求。">
       <div class="question-compare">
-        <article><span class="proof-label">修订提问 / 明确职责</span><h3>把系统问题转成必要的协作问题</h3><p>提交后没收到结果，设计侧安排状态提示和恢复入口；系统能否查回结果，由开发补充事实。</p><p>Skill 只追问会影响设计的必要事实，标出它会影响哪个分支，其余部分继续往下走。</p></article>
-        <article><span class="proof-label">修订输出 / 交代下一步</span><h3>让结论保留依据，也指向后续动作</h3><p>我把物业投诉里的做法写进输出要求，每个检查点都要说明它对应哪份设计产物、之后怎么验证。</p><p>已有要求直接沿用，只追问剩余决定；取得答复后继续原检查点。</p></article>
+        <article><span class="proof-label">修订提问 / 明确职责</span><h3>把系统问题转成必要的协作问题</h3><p>提交后没有收到结果时，设计负责安排状态提示和恢复入口，开发负责确认系统能否查回结果。</p><p>只追问会影响界面分支的事实，并标明它会影响哪一步。</p></article>
+        <article><span class="proof-label">修订输出 / 交代下一步</span><h3>让结论保留依据，也指向后续动作</h3><p>每个检查点都要写明对应的设计产物，可以是流程图或交互稿，并交代验证方式。</p><p>沿用已确认的要求，只追问未定项，答复后继续原检查点。</p></article>
       </div>
-      <div class="case-copy"><h3>保留可回查的规则与依据</h3><p>两次调整都写进了 Skill，九条规则和证据要求保留，29 项自动测试通过；这些测试检查规则资产和格式，提问质量靠人工回看。</p><p>规则里的检查范围和判断条件由我确定，AI 负责读需求、读设计稿并按规则跑检查，业务取舍和设计修改由人确认。</p><p>这套工具是个人实践，还没有进入正式产品流程。飞行计划的单选建议、物业投诉上那三条设计安排，都还没有落到设计稿里。</p></div>
+      <div class="case-copy">
+        <h3>保留可回查的规则与依据</h3>
+        <p>九条规则与证据要求写进 Skill。29 项自动测试检查规则资产和格式，提问质量由人复核。</p>
+        <p>我确定检查范围与取舍，AI 负责读需求和设计稿，按规则执行检查。</p>
+        <ul class="case-points">
+          <li><strong>当前为个人实践。</strong>飞行计划的单选建议与物业投诉的三条设计安排尚未进入正式设计稿。</li>
+        </ul>
+      </div>
     </CaseSection>
     <section class="site-container case-closing" aria-labelledby="closing-title"><h2 id="closing-title">继续看看其他作品</h2><div class="case-closing__links"><a href="/#selected-work">返回作品索引</a></div></section>
   </main>

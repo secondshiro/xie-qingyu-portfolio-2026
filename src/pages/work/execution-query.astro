@@ -72,26 +72,27 @@ const tocSections = [
     <CaseHero
       eyebrow="工具实践 · 查询与结果整理"
       title="执行网查询助手"
-      summary="律师要定期核查同一批关联公司有没有新增被执行案件，旧方式一次只能查一个，验证码刷新和报错提示都要等。我把它重做成一个本地控制台，名单和进度分列两侧，等待验证时当前项停在原处，验证完成后接着查剩余公司，结果分成有记录、无记录、未完成三种，导出成三张工作表。官网换成滑块和文字点选后，人工验证留在官网，工具负责排队、取数和整理。"
       facts={facts}
-    />
+    >
+      <Fragment slot="summary">律师需要定期重查同一批关联公司，确认有没有新增被执行案件。官网升级验证方式后，我把人工验证留在官网原页，用<strong>本地控制台</strong>安排名单排队、续查、变化比较和三表导出。</Fragment>
+    </CaseHero>
     <CaseToc title="执行网查询助手" sections={tocSections} />
 
-    <CaseSection id="origin" label="01 / 需求起点" title="一批关联公司要定期重查，工具得能排队并留下结果" intro="律师按批核查关联公司，看的是有没有新增被执行案件。上次查过不等于这次可以不查，名单里每一项都要重新走一遍，再从列表进到详情核对。">
+    <CaseSection id="origin" label="01 / 需求起点" title="一批关联公司要定期重查，工具得能排队并留下结果" intro="定期复查时，同一批名单要逐项重新查询，再进入详情核对案件信息。">
       <div class="case-copy">
-        <p>旧方式的问题出在单次查询上。一次只能在执行网填一个公司或个人，查完一个再填下一个。当时表单用的是字符图片验证码，题目有时要等很久才出现，等它出来时留给输入的时间已经不多。填错了，报错也来得晚，点下提交要过一会儿才知道这一步有没有过。一批名单这样查下来，时间大多花在等待上。</p>
-        <p>我先把“输入一个名称，读到列表和详情”这条链路跑通，也就是下面的 V1。能查一个之后，另外两件事成为主要问题，一份名单要按顺序处理完，结果要留下来和上次比对。V2 到 V4 都在补这两件事。</p>
+        <p>旧版官网一次只查一家公司或个人。验证码加载慢、留给输入的时间短，填错后还要等报错。整批名单的等待时间集中在这些重复步骤上。</p>
+        <p><strong>V1 先跑通一次查询。V2 到 V4</strong> 再解决两件事，让名单按顺序查完，留下结果供下次比较。</p>
       </div>
       <ol class="iteration-line" aria-label="工具四代演进">
-        <li><span>V1</span><div><strong>单次查询跑通</strong><p>一次查一个名称，结果直接显示在输入框下方。</p></div></li>
-        <li><span>V2</span><div><strong>名单排队与历史</strong><p>加入批量名单和本地历史。左侧保留名单，右侧显示进度，便于核对当前查到哪一项。</p></div></li>
-        <li><span>V3</span><div><strong>状态颜色区分</strong><p>用不同颜色标出新增和撤销的记录，前后两次的差异开始单独呈现。</p></div></li>
-        <li><span>V4</span><div><strong>详情与导出</strong><p>补齐详情、截图和 Excel 导出，加入变化比较面板，查完可以核对并留档。</p></div></li>
+        <li><span>V1</span><div><strong>单次查询跑通</strong><p>每次查询一个名称，结果显示在输入框下方。</p></div></li>
+        <li><span>V2</span><div><strong>名单排队与历史</strong><p>左侧保留批量名单，右侧显示进度，同时保存本地历史。</p></div></li>
+        <li><span>V3</span><div><strong>状态颜色区分</strong><p>用颜色高亮新增与撤销记录，直接看前后变化。</p></div></li>
+        <li><span>V4</span><div><strong>详情与导出</strong><p>补上案件详情和截图，加入变化比较面板与 Excel 导出。</p></div></li>
       </ol>
       <div class="case-copy">
-        <p>名单和结果都留在本地之后，工具还要一直从官网页面取数。功能是一层层加在旧工具上的，取数和显示混在一处，官网换了验证方式，两部分都要重新安排。</p>
+        <p>官网改版后，原本混在一起的取数和本地展示需要重新分工。</p>
       </div>
-      <p class="evidence-note">下面五张截图来自工具的真实界面，公司名称、案号和金额为固定合成数据。</p>
+      <p class="evidence-note">以下为工具实际界面，公司名称、案号与金额均为固定合成数据。</p>
       <div class="product-pair" data-protected-media>
         <figure class="product-evidence" data-evidence-kind="real-product-synthetic-data">
           <p class="product-pair__label">V1 · 旧工具</p>
@@ -128,40 +129,44 @@ const tocSections = [
       </div>
     </CaseSection>
 
-    <CaseSection id="breakage" label="02 / 网站变化" title="官网变了，原来的查询方式难以继续" intro="官网把字符图片验证换成随机滑块和文字点选。这一改影响两处，一是提交查询前的验证，二是验证之后读取列表和详情的方式。" tone="panel">
+    <CaseSection id="breakage" label="02 / 网站变化" title="官网变了，原来的查询方式难以继续" tone="panel">
+      <Fragment slot="intro">官网将字符图片验证码改为<strong>滑块与文字点选</strong>后，提交查询前的验证和随后的结果读取都需要重新安排。</Fragment>
       <div class="breakage-sequence">
         <article>
           <span>旧验证方式</span>
           <h3>字符图片验证码</h3>
-          <p>提交名称后识别图片中的字符，验证和查询在同一个请求中完成。</p>
+          <p>识别静态图片字符，验证与查询绑定在单次请求中。</p>
         </article>
         <article>
           <span>新验证方式</span>
           <h3>随机滑块与文字点选</h3>
-          <p>题型包含旋转字形和拼图滑块，还会校验拖动轨迹与操作行为。一次失败或刷新就会换一种题型，没法只针对某一类写死。</p>
+          <p>官网会在不同验证题型间切换，使用者需要按当前页面的提示操作。</p>
         </article>
         <article>
           <span>状态依赖</span>
           <h3>后续操作要留在同一浏览器</h3>
-          <p>验证结果与这次浏览器访问绑定，换一个环境就不算通过。后续的列表、翻页和详情都要接着用这次访问。</p>
+          <p>验证状态随当前浏览器访问保留，翻页和打开详情都沿用同一次访问。</p>
         </article>
       </div>
       <div class="case-copy">
-        <p>验证这一侧，我试过本地图像识别，也把能找到的开源方案评估了一遍。没有哪一套能直接接管从验证到取数的这条链路，剩下的部分只能自己拼适配层，再长期跟着官网维护，投入和风险都不成比例。</p>
-        <p>取数这一侧也绕不开浏览器，验证状态只存在于当前这次访问里。下一版只能在浏览器里接续整批查询，光修识别已经不够。</p>
+        <p>我评估过本地识别与开源方案。它们难以稳定衔接验证和结果读取，继续维护会增加适配工作与风险。</p>
+        <p>因此，重构还要解决验证结束后怎样找回当前项，并继续原来的队列。</p>
       </div>
     </CaseSection>
 
-    <CaseSection id="decision" label="03 / 方案取舍" title="把人工验证留在官网，工具接着做重复工作" intro="保留人工验证，等于让使用者在查询中途接手一次官网页面。我接受这一步，重点放在验证之后，工具要能接着原来的名单往下走，不让人回到起点重填。">
+    <CaseSection id="decision" label="03 / 方案取舍" title="把人工验证留在官网，工具接着做重复工作">
+      <Fragment slot="intro">查询中途<strong>由使用者在官网完成验证</strong>。工具保留当前项和剩余队列，验证结束后继续原任务。</Fragment>
       <div class="case-copy">
-        <p>这项需求里真正重复的是输入名称、翻列表、进详情、抄结果这四步。我停掉了验证码识别，改成让人按官网要求完成验证，工具负责名单排队、取数和整理。第三方打码服务也没有采用，费用、外部依赖和隐私风险都不划算。</p>
-        <p>我让控制台保留当前查询项和剩余名单，浏览器负责接着读取官网结果。人完成验证后，这两部分仍对应同一批任务，已经提交的名单不必再填一次。控制台是唯一入口，浏览器扩展退到后台，只负责打开和接续官网页面。反过来要求使用者先打开官网、再从侧栏发起任务，这个工具就变成一个网页插件了。</p>
+        <ul class="case-points">
+          <li>真正重复的是录入名称、翻页、打开详情和摘录结果，工具负责这四步。<strong>第三方打码会带来费用、外部依赖与案件隐私风险</strong>。</li>
+          <li><strong>控制台是发起任务和查看进度的入口</strong>，浏览器扩展负责自动打开或复用查询页。名单与进度保留在控制台，浏览器负责接着读取官网结果。</li>
+        </ul>
       </div>
       <div class="responsibility-split">
         <section class="responsibility-split__human">
           <span>人</span>
           <strong>完成安全验证</strong>
-          <p>在执行网页面完成随机滑块或文字点选，再让工具接着查询。</p>
+          <p>使用者在执行网完成验证，工具随后接着查询。</p>
         </section>
         <section>
           <span>工具</span>
@@ -171,12 +176,12 @@ const tocSections = [
       </div>
     </CaseSection>
 
-    <CaseSection id="result" label="04 / 查询过程" title="提交名单后，只在需要验证时转到官网" intro="使用者只在控制台操作。提交名单后，工具会自动打开或复用查询页，遇到验证时把官网带到前台。人做完再回到控制台，工具接着处理当前项和剩余名单。" tone="stone">
+    <CaseSection id="result" label="04 / 查询过程" title="提交名单后，只在需要验证时转到官网" intro="在控制台提交名单并查看进度。需要验证时，工具把官网页带到前台，验证后再接着查询。" tone="stone">
       <ol class="handoff-flow" aria-label="查询助手工作流">
-        <li><span>01</span><strong>提交名单</strong><p>每行填写姓名或机构名称，先处理空行和重复项。</p></li>
-        <li class="handoff-flow__human"><span>02</span><strong>完成验证</strong><p>安全验证由人完成，操作留在执行网页面。</p></li>
-        <li><span>03</span><strong>接着查询</strong><p>工具使用当前页面，继续读取列表与案件详情。</p></li>
-        <li><span>04</span><strong>查看整批结果</strong><p>回到控制台，查看哪些已完成、哪些需要重查。</p></li>
+        <li><span>01</span><strong>提交名单</strong><p>批量录入名单，工具去除空行和重复项。</p></li>
+        <li class="handoff-flow__human"><span>02</span><strong>完成验证</strong><p>安全验证由人完成，操作留在官网原页。</p></li>
+        <li><span>03</span><strong>接着查询</strong><p>验证完成后，工具在当前页面继续读取列表与详情。</p></li>
+        <li><span>04</span><strong>查看整批结果</strong><p>回到控制台查看结果分布与待重查项。</p></li>
       </ol>
     <figure
       class="product-evidence"
@@ -198,19 +203,19 @@ const tocSections = [
       </figcaption>
     </figure>
       <div class="case-copy">
-        <p>中途暂停可以从当前任务继续。补查未完成项时，已经取到的结果会保留，不用为了几项重跑整批名单。同一批名单接着用这次验证过的页面，换一批则要重新验证一次。</p>
+        <p>中途暂停可以继续当前任务，补查只处理未完成项，已取到的结果保留。同一批接续当前验证页面，换批需要重新验证。</p>
       </div>
     </CaseSection>
 
-    <CaseSection id="system" label="05 / 结果与交付" title="没查到记录，和没查完，要分开告诉使用者" intro="一批查询结束后，使用者首先要判断哪些结果可以核对。官网明确返回空结果，才能算无记录；验证超时、连接失败或页面变化，都只能说明这次还没查完。">
+    <CaseSection id="system" label="05 / 结果与交付" title="没查到记录，和没查完，要分开告诉使用者" intro="查询结果分三种。官网明确返回空结果才记为无记录，超时、断连或验证失败都记为未完成。">
       <div class="result-ledger" aria-label="查询结果的三种语义">
-        <div><span class="result-ledger__dot result-ledger__dot--done"></span><strong>有记录</strong><p>查看已取得的案件列表和详情。</p></div>
-        <div><span class="result-ledger__dot result-ledger__dot--empty"></span><strong>无记录</strong><p>本次查询完成，官网返回明确空结果。</p></div>
-        <div><span class="result-ledger__dot result-ledger__dot--failed"></span><strong>未完成</strong><p>查看中断原因，之后重新查询。</p></div>
+        <div><span class="result-ledger__dot result-ledger__dot--done"></span><strong>有记录</strong><p>可以查看取得的案件列表与详情。</p></div>
+        <div><span class="result-ledger__dot result-ledger__dot--empty"></span><strong>无记录</strong><p>查询完成，官网明确返回空结果。</p></div>
+        <div><span class="result-ledger__dot result-ledger__dot--failed"></span><strong>未完成</strong><p>超时、断连或未过验证，单独归类待重查。</p></div>
       </div>
       <div class="case-copy">
-        <p>这个区别也用于前后两次的变化比较。如果把失败记成空结果，上次查到的案件就会被当成已经消失。工具只拿成功查询留下的记录比对，分成首次记录、新增、存续和本次未见四种，未完成项不进比对，等重查。反过来，本次未见只说明这次没取到上次的记录，案件有没有变化要重新查一次才能判断。</p>
-        <p>导出把核对分在三张工作表里。查询汇总给出每个对象的结论，案件明细供逐条复核，未完成单独一表，用来安排下一次重查。表头固定之后可以直接筛选，结果怎样用于案件仍由律师判断。</p>
+        <p><strong>变化比较只使用成功查询的记录</strong>，区分首次、新增、存续和本次未见。未完成项留待重查。本次未见只说明这次结果没出现上次的记录，案件有无变化仍要复核。</p>
+        <p>Excel 固定导出<strong>查询汇总、案件明细、未完成</strong>三张表，可通过表头筛选。汇总查看每个对象的结论，明细逐条核对，未完成表用于安排补查。</p>
       </div>
       <figure
         class="product-evidence"
@@ -233,10 +238,10 @@ const tocSections = [
       </figure>
     </CaseSection>
 
-    <CaseSection id="evidence" label="06 / 试用与维护" title="从提交名单到导出，实际走了一遍" intro="2026 年 9 月 12 日，我用两项合成任务在真实浏览器中检查了这条流程。" tone="stone">
+    <CaseSection id="evidence" label="06 / 试用与维护" title="从提交名单到导出，实际走了一遍" intro="2026 年 9 月 12 日，我用两项合成任务在真实浏览器中检查从提交名单到导出的流程。" tone="stone">
       <div class="case-copy" data-field-trial>
-        <p>名单从控制台提交后，工具准备好官网查询页。使用者通过文字点选完成一次人工验证，第一项取得案件列表和 1 / 1 详情，第二项接着使用同一页面，确认无记录。最终 2 / 2 项完成、0 项失败，导出的三张工作表也检查了结构、公式错误和显示情况。</p>
-        <p>这次试用覆盖两项任务，后续批次还要继续观察；官网改动页面或验证流程后，也要重新核对。</p>
+        <p>使用者通过文字点选完成一次人工验证。第一项取回案件列表和 1 / 1 详情，第二项沿用当前页面确认无记录。最终 <strong>2 / 2 项完成、0 项失败，导出的三张表通过结构、公式与显示检查。</strong></p>
+        <p>这次试用覆盖两项任务。官网改动页面或验证流程后，需要复查这条流程。</p>
       </div>
     <figure
       class="product-evidence"
@@ -258,7 +263,7 @@ const tocSections = [
       </figcaption>
     </figure>
       <div class="case-copy">
-        <p>交付包括本地控制台、任务历史、Excel 导出和维护说明。说明里写了浏览器怎样接续任务，以及超时、断连、官网页面变化时分别该查什么，后续出问题可以照着定位，再核对查询有没有恢复。</p>
+        <p>交付本地控制台、任务历史、Excel 导出及维护说明。说明列出超时、断连和官网改版时的检查位置，以及如何复核任务恢复。</p>
       </div>
     </CaseSection>
 

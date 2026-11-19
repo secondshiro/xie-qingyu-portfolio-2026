@@ -69,6 +69,6 @@
 .edgecase-page .arco-trace ol { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 2rem; list-style: none; margin: 0; padding: 0; }
 .edgecase-page .arco-trace li { display: grid; align-content: start; gap: 1rem; border-top: 1px solid var(--color-line); padding-top: 1.5rem; }
 .edgecase-page .arco-trace li span { font-size: 13px; color: var(--color-muted); }
-.edgecase-page .arco-trace strong { font-size: 26px; font-weight: 400; }
+.edgecase-page .arco-trace li > strong { font-size: 26px; font-weight: 400; }
 .edgecase-page .arco-trace p { font-size: 15px; line-height: 1.8; color: var(--color-muted); }
 @media(max-width:55rem) { .edgecase-page .arco-trace { padding: 1.5rem; } .edgecase-page .arco-trace ol { grid-template-columns: 1fr; } }

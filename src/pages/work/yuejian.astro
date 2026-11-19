@@ -38,9 +38,10 @@ const tocSections = [
     <CaseHero
       eyebrow="概念产品 · 移动端 C 端体验"
       title="粤见 · 广府非遗体验小程序"
-      summary="粤见是一个广府非遗体验小程序的概念设计。我把展馆浏览、工坊预约和作品留存连在一起，让观众看过一件器物后，可以认识匠人、了解课程，再把体验中留下的作品收进自己的「手泽」册。设计重点是移动端的信息安排、纸墨视觉与交互动效。"
       facts={facts}
-    />
+    >
+      <Fragment slot="summary"><strong>粤见</strong>是面向消费者的广府非遗体验小程序概念设计。我把<strong>看展品、约工坊和收手作</strong>连成一条体验路径，完成十一屏高保真原型，重点设计移动端信息层级、纸墨视觉与纸张动效。</Fragment>
+    </CaseHero>
 
     <div class="site-container case-cover">
       <MediaStage
@@ -61,13 +62,13 @@ const tocSections = [
       id="result"
       label="00 / 先看结果"
       title="十一屏走完「看、约、收」一条线"
-      intro="先通过器物细节和匠人介绍了解一门手艺，再查看课程的时间、费用与余位，预约后留下入场凭证。体验中收下的作品汇集在「手泽」册里，可以回看与分享。下方原型可完整体验这条路径。"
+      intro="十一屏原型围绕展馆与工坊的一次体验组织，从认识器物和匠人，到决定是否预约，再到留存作品。"
       tone="stone"
     >
       <div class="evidence-key" data-columns="3" aria-label="三步体验导览">
-        <div><b>看</b><p>从展品进入器物详情，再认识做它的人。</p></div>
-        <div><b>约</b><p>先看清课程安排与费用，预约后保留入场凭证。</p></div>
-        <div><b>收</b><p>把扫码小游戏与工坊课程的作品收在一处，回看时保留各自的来源。</p></div>
+        <div><b>看</b><p>查看器物细节，沿着详情认识背后的匠人。</p></div>
+        <div><b>约</b><p>先看清时间、余位和费用，再预约并留下入场凭证。</p></div>
+        <div><b>收</b><p>扫码小游戏和工坊手作都收进「手泽」册，并注明来源。</p></div>
       </div>
     </CaseSection>
 
@@ -75,22 +76,22 @@ const tocSections = [
       id="origin"
       label="01 / 项目源头"
       title="先定载体，再把一条体验线做深"
-      intro="这次概念设计以展馆与工坊相连的场景为前提。范围收在一次体验之内，从看展品到了解课程，再到预约与留存作品，让内容浏览有一个可以继续参与的去向。"
+      intro="概念设计以现场看展和预约工坊为前提，范围收在一次体验里，从内容浏览一直到预约、留存作品。"
     >
       <div class="case-blocks">
         <div class="case-copy">
-          <p>观众在现场扫码后就能开始浏览，因此选择微信小程序作为载体。界面以手机竖屏为主，把图片、课程信息和底部操作放在单手浏览时容易找到的位置。</p>
+          <p>微信小程序让观众现场扫码即可开始。页面采用竖屏，图片、课程信息和底部操作按手机单手浏览安排。</p>
         </div>
 
         <section class="case-block case-block--compare" aria-labelledby="origin-compare">
           <h3 id="origin-compare">同类参照与设计取舍</h3>
-          <p>原型完成后，补充对照广东省非物质文化遗产馆的公开网页，重点看内容入口与活动信息的组织。</p>
+          <p><strong>原型完成后，我补充对照广东省非遗馆官网</strong>，查看场馆服务入口与预约信息怎样组织。</p>
           <div class="evidence-key" data-columns="2">
-            <div><b>广东省非物质文化遗产馆</b><p>官网把展览、活动、非遗名录与数字资源分别组织，覆盖查资料、看展与参加活动等场馆服务。活动列表已提供地点、时间、报名时间和余票，工坊活动也有现场报名与小程序预约。</p></div>
-            <div><b>粤见的体验范围</b><p>聚焦一次工坊体验。从器物进入，接着认识匠人、查看课程，再到预约凭证和作品册。四个主栏目围绕这条路径安排，示例课程按人预约，一次只约一场。</p></div>
+            <div><b>广东省非物质文化遗产馆</b><p>综合场馆要服务查资料、看展和参加活动等不同需求，因此官网把展览、活动、名录与数字资源平行展开。活动列表已提供时间、地点、报名及余票信息。</p></div>
+            <div><b>粤见的体验范围</b><p>粤见围绕一次工坊体验组织四个主栏目，示例课程按人预约，一次约一场。</p></div>
           </div>
           <div class="case-callout">
-            <p>综合场馆需要让不同目的的访客找到入口。粤见把一次体验做深，因此保留器物、人物和课程的连续去向，把预约与作品留存放在同一套页面里。</p>
+            <p>器物详情引向匠人，人物页接到课程，预约凭证和作品留存也沿着这条路径安排。</p>
           </div>
           <p><a href="https://www.gdsfyg.cn/" target="_blank" rel="noopener noreferrer">广东省非物质文化遗产馆官网 ↗</a></p>
         </section>
@@ -110,8 +111,8 @@ const tocSections = [
       id="play"
       label="02 / 先玩一把"
       title="原型从第一针开始"
-      intro="原型模拟观众在展馆扫码后的首次体验。先以粤绣小游戏引入，让观众拖针完成一朵小花，再把这份数字纪念收进「手泽」册。点「收下」进入作品册，点「先随便看看」进入首页，之后都可继续浏览与预约。旁边的录像展示完整过程。"
     >
+      <Fragment slot="intro">原型模拟展馆扫码。先<strong>通过拖针完成粤绣小游戏</strong>，点「收下」进入「手泽」册，或点「先随便看看」进入首页。操作录像记录了收下作品的过程。</Fragment>
       <div class="portrait-grid">
         <div class="proto-embed">
           <div class="proto-embed__viewport">
@@ -146,12 +147,12 @@ const tocSections = [
       id="structure"
       label="03 / 产品结构"
       title="四个主栏目，详情按任务展开"
-      intro="首页负责引入，展厅负责浏览，工坊承接预约，我的汇集凭证与作品。进入详情后收起底部栏目，把空间留给当前内容；返回时回到刚才的浏览位置。"
+      intro="首页引入内容，展厅承接浏览，工坊负责预约，我的汇集凭证和作品。进入详情后收起底部导航，为当前内容留出空间。"
     >
       <div class="case-copy">
-        <p>十一屏沿用八类基础布局。器物详情依次安排图片、材质与出处、工艺介绍和匠人入口；课程详情集中展示场次、费用与工序。我的课复用凭证卡，我的手泽复用作品卡，让同类内容在不同页面保持相同的阅读顺序。</p>
-        <p>首页把器物图片作为主要入口，题名和材质放在画面下方，四枚圆点切换展品。整幅图片都可以点进详情，观众看中哪一件，就从哪一件继续了解。</p>
-        <p>没有作品时，我的页面保留去工坊的入口，让空白处也能接住下一步。预约成功后，场次、地点与席位集中在凭证上，之后可以从我的课再次找到。</p>
+        <p><strong>十一屏沿用八类基础布局</strong>。器物详情按图片、材质出处、工艺和匠人入口展开。课程、凭证和作品各自保留一致的信息顺序，便于跨页查找。</p>
+        <p>首页的整幅器物图可点进详情，题名与材质在画面下方，四枚圆点可切换展品。</p>
+        <p>作品为空时，保留去工坊的入口。预约成功后，场次、地点和席位集中在凭证上，可从「我的课」再次查看。</p>
       </div>
       <div class="portrait-grid">
         <MediaStage src={`${media}/screens/p1.png`} alt="首页，器物图片满幅展示，题名下有四枚展品切换圆点，底部为四个栏目" caption="首页。点图片进入器物详情，题名下的四枚圆点切换展品。" kind="proposal" width={W} height={H} />
@@ -174,16 +175,16 @@ const tocSections = [
       id="language"
       label="04 / 视觉语言"
       title="用纸白、墨黑、朱红与灰绿建立层次"
-      intro="纸白承接图片与文字，墨黑保证正文清楚，朱红用于印章和操作提示，灰绿用于题名与人名。把色彩收在这四组里，让器物与人物照片保留画面的主要分量。"
     >
+      <Fragment slot="intro"><strong>纸白</strong>作底，<strong>墨黑</strong>用于正文，<strong>朱红</strong>用于印章与主要操作，<strong>灰绿</strong>用于题名和人名。四组主色把注意力留给器物和人物照片。</Fragment>
       <div class="portrait-grid">
         <MediaStage src={`${media}/screens/p3.png`} alt="器物详情，图片下方展示题名、材质、尺寸与出处，题名后跟印章" caption="器物详情。材质、尺寸与出处集中成组，正文分段展开，题名末尾保留一枚印章。" kind="proposal" width={W} height={H} />
         <MediaStage src={`${media}/screens/p4.png`} alt="人物档案，梁玉屏的照片、引语、经历与针法，下方连接课程" caption="人物档案。照片与引语引入匠人，经历和针法接在下方，底部承接她的课程。" kind="proposal" width={W} height={H} />
         <MediaStage src={`${media}/screens/p6.png`} alt="课程详情，场次与费用信息、三步工序和底部预约入口" caption="课程详情。先看场次、费用和余位，再看三步工序；预约入口固定在底部。" kind="proposal" width={W} height={H} />
       </div>
       <div class="case-copy">
-        <p>器物与人物页面把图片、题名和正文拉开，让人可以慢慢看；课程页把时间、费用和余位靠拢，便于做决定。题名用明朝体，正文用宋体，导航与信息标签用黑体，以字体和间距区分阅读与操作。</p>
-        <p>印章放在题名之后，作为落款；匠人入口用照片，便于识别人。预约按钮另有一处状态变化，支付前保留描边，确认后填实并显示已支付，让动作完成有一个明确的回应。</p>
+        <p>器物和人物页拉开图文间距，题名用明朝体，正文用宋体。课程页集中排时间、费用和余位，信息标签用黑体，便于快速决定是否预约。</p>
+        <p>原型中，预约按钮在模拟支付前保留描边，确认后填实并显示「已支付」，回应操作已完成。</p>
       </div>
       <MediaStage src={`${media}/spec/ds-tokens.png`} alt="粤见设计规范第一页，色彩、字体层级与动效节奏" caption="视觉规范。统一色彩与字体层级，并记录各类动效的起落节奏。" kind="proposal" label="设计规范" width={2160} height={1730} />
       <MediaStage src={`${media}/spec/ds-pages.png`} alt="粤见设计规范第二页，八类页面布局与导航、印章、操作条示例" caption="页面与组件规范。说明内容顺序、导航位置、印章用法和预约按钮的状态。" kind="proposal" label="设计规范" width={2160} height={1774} />
@@ -193,11 +194,11 @@ const tocSections = [
       id="motion"
       label="05 / 交互动效"
       title="让翻阅有纸感，让切换有来处"
-      intro="动效沿用纸张的展开、翻阅与落定感。器物详情像展开一幅画，课程页像翻开课单，预约凭证像落下一张票。纸张能贯穿不同非遗题材，针线的动作则留在粤绣小游戏里。"
+      intro="器物页像展卷，课单像翻纸，凭证像落票撕边。纸张动作贯穿内容与预约，针线动作留给粤绣小游戏。"
       tone="panel"
     >
       <div class="case-copy">
-        <p>节奏上，图片先落稳，文字稍后跟上，避免所有内容同时涌出来。展开时起手稍慢，停下时收柔一点，让画面带一点纸张的重量。印章留在末尾轻压一下，作为这一页展开完成的收尾。</p>
+        <p>图片先落稳，文字稍后跟上，印章最后轻压收尾。三个动作错开，观众可以先认出画面，再读内容。</p>
       </div>
       <div class="portrait-grid portrait-grid--pair">
         <MediaStage src={`${media}/motion/p3-unroll.mp4`} poster={`${media}/motion/p3-unroll-poster.jpg`} alt="器物详情展开录像，纸边先落，图片与正文随后展开" caption="展开器物。纸边先落下，图片和正文随后展开，视线自然进入内容。" kind="proposal" label="动效录像" video width={390} height={844} />
@@ -211,15 +212,18 @@ const tocSections = [
       id="boundary"
       label="06 / 边界与下一步"
       title="这一版的交付与后续完善"
-      intro="当前完成的是概念产品的高保真原型，尚未上线，无业务数据。"
+      intro="高保真概念原型已完成，尚未上线，无真实业务数据。"
     >
       <div class="value-grid">
-        <article class="value-card"><span>已交付</span><h3>十一屏界面与扫码小游戏</h3><p>从扫码小游戏进入浏览与预约，配有五段演示录像和两页视觉规范。</p></article>
-        <article class="value-card"><span>可继续</span><h3>同类内容保持一致</h3><p>课程、凭证与作品卡沿用各自的内容顺序，后续增加内容时继续使用。</p></article>
-        <article class="value-card"><span>下一步</span><h3>带入真实工坊场景</h3><p>下一步结合工坊的实际排期、预约与入场规则，确认课程信息和凭证是否够用。</p></article>
+        <article class="value-card"><span>已交付</span><h3>十一屏界面与扫码小游戏</h3><p>十一屏可操作原型包含扫码小游戏，配有五段动效录像和两页视觉规范。</p></article>
+        <article class="value-card"><span>可继续</span><h3>同类内容保持一致</h3><p>课程、凭证与作品卡沿用各自的信息顺序，后续增加同类内容时可复用。</p></article>
+        <article class="value-card"><span>下一步</span><h3>带入真实工坊场景</h3><p>结合真实工坊的排期、预约和入场核销规则，检查课程字段和凭证信息是否够用。</p></article>
       </div>
       <div class="case-copy">
-        <p>界面照片为生成示意图，人物经历、引语与课程安排均用于概念演示。正式使用前，需要以真实展品、匠人与工坊资料替换，并完成相应授权。当前原型演示预约流程，未接入真实支付。</p>
+        <ul class="case-points">
+          <li><strong>界面照片为生成示意图</strong>，人物经历、引语和课程信息用于概念演示。正式使用前需替换为经过授权的真实资料。</li>
+          <li><strong>原型演示预约流程</strong>，未接入真实支付。</li>
+        </ul>
       </div>
     </CaseSection>
 
