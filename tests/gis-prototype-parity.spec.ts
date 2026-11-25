@@ -58,6 +58,16 @@ test('三个 mockup 与各自的新窗口入口使用同一个站内原型', asy
         await expect(map).toHaveAttribute('viewBox', '284 165 820 540');
         await surface.locator('#full').click();
         await expect(map).toHaveAttribute('viewBox', viewBox!);
+        await search.fill('18幢');
+        await search.press('Enter');
+        await expect(surface.locator('#objectTitle')).toHaveText('宇济一号 · 18幢');
+        await surface.locator('#closeObject').click();
+        await expect(surface.locator('#rightPanel')).toBeHidden();
+        await map.click({ position: { x: 180, y: 180 } });
+        await expect(surface.locator('#rightPanel')).toBeVisible();
+        await expect(surface.locator('#objectTitle')).toHaveText('宇济一号 · 18幢');
+        const restoredFootprint = await surface.locator('[data-code="18幢"] .building-footprint').getAttribute('d');
+        await expect(surface.locator('#selectionOutline')).toHaveAttribute('d', restoredFootprint!);
         await expect(surface.locator('#viewFloor')).toBeVisible();
         await expect(surface.locator('#objectMeasured')).toBeVisible();
       }

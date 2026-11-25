@@ -1,0 +1,203 @@
+/* ============================================================================
+   GIS Prototypes — Unified Shared UI Layer (Demo)
+   One source of truth for header, search, inputs, dropdowns, buttons & cards
+   across Map, Building, and Task prototypes.
+   ============================================================================ */
+
+.workspace-shell {
+  --ui-page: #f4f6fa;
+  --ui-surface: #ffffff;
+  --ui-faint: #f6f8fb;
+  --ui-subtle: #eff3f8;
+  --ui-title: #111827;
+  --ui-copy: #4b5563;
+  --ui-muted: #6b7280;
+  --ui-primary: #0052d9;
+  --ui-primary-hover: #266fe8;
+  --ui-primary-soft: #eef4ff;
+  --ui-hairline: rgb(15 23 42 / 6%);
+  --ui-ring: rgb(15 23 42 / 4%);
+  --ui-control-border: #d5dce6;
+  --ui-input-border: #cbd5e1;
+  --ui-shadow-card: 0 2px 10px rgb(15 23 42 / 4%), 0 0 0 1px var(--ui-ring);
+  --ui-shadow-float: 0 12px 32px -4px rgb(15 23 42 / 10%), 0 2px 8px rgb(15 23 42 / 4%), 0 0 0 1px var(--ui-ring);
+}
+
+/* 1. Unified Top Navigation Bar (Map / Building / Task) */
+.workspace-shell .wk-header,
+.workspace-shell .top-nav.wk-header {
+  height: 64px;
+  padding: 0 18px;
+  gap: 16px;
+  background: var(--ui-surface);
+  border-bottom: 1px solid var(--ui-hairline);
+  box-shadow: none;
+}
+
+.workspace-shell .wk-brand__mark,
+.workspace-shell .nav-logo .mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  border-radius: 8px;
+  background: transparent;
+  color: #ffffff;
+  box-shadow: none;
+  overflow: hidden;
+}
+
+/* Unified Global Search Box (matches content-area input style: active white + subtle inset) */
+.workspace-shell .wk-global-search,
+.workspace-shell .top-nav .search-box {
+  height: 36px;
+  padding: 0 12px;
+  gap: 8px;
+  border: 1px solid var(--ui-input-border);
+  border-radius: 8px;
+  background: var(--ui-surface);
+  color: var(--ui-muted);
+  box-shadow: inset 0 1px 2px rgb(15 23 42 / 5%);
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.workspace-shell .wk-global-search:hover,
+.workspace-shell .top-nav .search-box:hover {
+  border-color: #94a3b8;
+}
+
+.workspace-shell .wk-global-search:focus-within,
+.workspace-shell .top-nav .search-box:focus-within {
+  background: var(--ui-surface);
+  border-color: var(--ui-primary);
+  box-shadow: 0 0 0 2px rgb(0 82 217 / 14%);
+  outline: none;
+}
+
+.workspace-shell .wk-global-search input,
+.workspace-shell .top-nav .search-input {
+  color: var(--ui-title);
+  background: transparent;
+  border: 0;
+  outline: 0;
+  font-size: 13px;
+}
+
+.workspace-shell .wk-header__actions .header-link,
+.workspace-shell .task-nav-link,
+.workspace-shell .wk-header__actions .wk-btn--ghost {
+  height: 32px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--ui-copy);
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: none;
+}
+
+.workspace-shell .wk-header__actions .header-link:hover,
+.workspace-shell .task-nav-link:hover,
+.workspace-shell .wk-header__actions .wk-btn--ghost:hover {
+  background: var(--ui-faint);
+  color: var(--ui-title);
+}
+
+.workspace-shell .wk-header__actions .avatar,
+.workspace-shell .nav-right .avatar,
+.workspace-shell .wk-header__actions .wk-brand__mark {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  border-radius: 50%;
+  background: var(--ui-primary-soft);
+  color: var(--ui-primary);
+  border: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* 2. Unified Interactive Controls (clear boundaries only on controls, not layout boxes) */
+.workspace-shell .wk-btn,
+.workspace-shell[data-wk-legacy="true"] .btn {
+  border: 1px solid var(--ui-control-border);
+  border-radius: 7px;
+  background: var(--ui-surface);
+  color: var(--ui-copy);
+  font-weight: 500;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 4%);
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease, box-shadow 120ms ease;
+}
+
+.workspace-shell .wk-btn:hover:not(:disabled),
+.workspace-shell[data-wk-legacy="true"] .btn:hover:not(:disabled) {
+  background: var(--ui-primary-soft);
+  border-color: #93c5fd;
+  color: var(--ui-primary);
+}
+
+.workspace-shell .wk-btn--primary,
+.workspace-shell[data-wk-legacy="true"] .btn--primary {
+  background: var(--ui-primary);
+  border-color: var(--ui-primary);
+  color: #ffffff;
+  box-shadow: 0 1px 3px rgb(0 82 217 / 22%);
+}
+
+.workspace-shell .wk-btn--primary:hover:not(:disabled),
+.workspace-shell[data-wk-legacy="true"] .btn--primary:hover:not(:disabled) {
+  background: var(--ui-primary-hover);
+  border-color: var(--ui-primary-hover);
+  color: #ffffff;
+}
+
+.workspace-shell .wk-btn:disabled,
+.workspace-shell[data-wk-legacy="true"] .btn:disabled {
+  background: var(--ui-faint);
+  border-color: var(--ui-hairline);
+  color: #9ca3af;
+  box-shadow: none;
+}
+
+/* Unified Dropdown Trigger */
+.workspace-shell .wk-dropdown__trigger,
+.workspace-shell .ui-select__trigger {
+  background: var(--ui-surface);
+  color: var(--ui-title);
+  border: 1px solid var(--ui-control-border);
+  border-radius: 7px;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 5%);
+}
+
+.workspace-shell .wk-dropdown__trigger:hover,
+.workspace-shell .ui-select__trigger:hover {
+  border-color: #93c5fd;
+  color: var(--ui-primary);
+}
+
+/* Unified Text Input */
+.workspace-shell .wk-input,
+.workspace-shell .floor-range-input__col input {
+  border: 1px solid var(--ui-input-border);
+  border-radius: 7px;
+  background: var(--ui-surface);
+  color: var(--ui-title);
+  box-shadow: inset 0 1px 2px rgb(15 23 42 / 5%);
+}
+
+.workspace-shell .wk-input:hover:not(:focus-visible),
+.workspace-shell .floor-range-input__col input:hover:not(:focus-visible) {
+  border-color: #94a3b8;
+}
+
+.workspace-shell .wk-input:focus-visible,
+.workspace-shell .floor-range-input__col input:focus-visible {
+  border-color: var(--ui-primary);
+  box-shadow: 0 0 0 2px rgb(0 82 217 / 14%);
+  outline: none;
+}

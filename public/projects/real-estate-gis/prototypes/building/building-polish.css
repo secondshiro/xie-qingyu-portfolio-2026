@@ -1,0 +1,403 @@
+/* GIS Building Matrix — Borderless & Tonal UI Polish */
+.workspace-shell.building {
+  --bld-hairline: rgb(15 23 42 / 6%);
+  --bld-faint: #f6f8fb;
+  --bld-subtle: #eff3f8;
+  --bld-title: #111827;
+  --bld-copy: #4b5563;
+  --bld-muted: #6b7280;
+  --bld-primary: #0052d9;
+  --bld-primary-soft: #eef4ff;
+  --wk-text: var(--bld-title);
+  --wk-text-secondary: var(--bld-copy);
+  --wk-text-placeholder: var(--bld-muted);
+  --wk-border: var(--bld-hairline);
+  --wk-border-control: transparent;
+  --wk-bg-page: #f4f6fa;
+  --wk-bg-subtle: #f7f9fc;
+  --wk-bg-hover: #eef4ff;
+  --wk-primary-bg: #eef4ff;
+  --wk-matrix-heading: #f4f6fa;
+  --wk-matrix-unit-line: #e2e8f0;
+  --wk-matrix-grid-line: #edf1f7;
+  --wk-matrix-room: #ffffff;
+  --wk-matrix-room-selected: #e8f1ff;
+  --wk-matrix-room-selected-ink: #0f3a7d;
+}
+
+.workspace-shell.building .wk-header {
+  background: #ffffff;
+  border-bottom: 1px solid var(--bld-hairline);
+}
+
+.workspace-shell.building .wk-brand .wk-brand__mark {
+  border-radius: 8px;
+  background: transparent;
+  color: #ffffff;
+  box-shadow: none;
+  overflow: hidden;
+}
+
+.workspace-shell.building .wk-header__actions .wk-brand__mark {
+  border-radius: 50%;
+  background: var(--bld-primary-soft);
+  color: var(--bld-primary);
+}
+
+.workspace-shell.building .wk-header__actions .wk-btn--ghost {
+  border: 0;
+  background: transparent;
+  color: var(--bld-copy);
+  box-shadow: none;
+}
+
+.workspace-shell.building .wk-header__actions .wk-btn--ghost:hover {
+  border: 0;
+  background: var(--bld-faint);
+  color: var(--bld-title);
+  box-shadow: none;
+}
+
+.workspace-shell.building .wk-object-header {
+  background: #ffffff;
+  border-bottom: 1px solid var(--bld-hairline);
+  padding: 0 18px;
+}
+
+.workspace-shell.building .wk-object-header__back {
+  border-radius: 7px;
+  font-weight: 500;
+  color: var(--bld-copy);
+}
+
+.workspace-shell.building .wk-object-header__back:hover {
+  background: var(--bld-primary-soft);
+  color: var(--bld-primary);
+}
+
+.workspace-shell.building .wk-object-header__view {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--bld-faint);
+  color: var(--bld-muted);
+  font-weight: 500;
+}
+
+/* Hide meta-disclaimer context string */
+.workspace-shell.building .wk-object-header__context {
+  display: none;
+}
+
+.workspace-shell.building .wk-toolbar {
+  background: var(--bld-faint);
+  border-bottom: 1px solid var(--bld-hairline);
+  padding: 0 18px;
+  gap: 10px;
+}
+
+.workspace-shell.building .sep {
+  background: var(--bld-hairline);
+}
+
+/* Differentiate Dropdown, Input, and Buttons in toolbar with clear boundaries */
+.workspace-shell.building .wk-toolbar .wk-btn {
+  border: 1px solid #d5dce6;
+  border-radius: 7px;
+  background: #ffffff;
+  color: var(--bld-copy);
+  box-shadow: 0 1px 2px rgb(15 23 42 / 4%);
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease, box-shadow 120ms ease;
+}
+
+.workspace-shell.building .wk-toolbar .wk-btn:hover:not(:disabled) {
+  background: var(--bld-primary-soft);
+  border-color: #93c5fd;
+  color: var(--bld-primary);
+  box-shadow: 0 1px 3px rgb(0 82 217 / 8%);
+}
+
+/* 1. Dropdown: elevated white selector with crisp border & chevron */
+.workspace-shell.building #quickDrop .wk-dropdown__trigger {
+  background: #ffffff;
+  color: var(--bld-title);
+  border: 1px solid #d5dce6;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 5%);
+}
+
+.workspace-shell.building #quickDrop .wk-dropdown__trigger:hover {
+  background: #ffffff;
+  border-color: #93c5fd;
+  color: var(--bld-primary);
+}
+
+/* 2. Search Input: active pure-white surface + crisp border + subtle inset top shadow + search icon */
+.workspace-shell.building .wk-input.bar-search {
+  width: 204px;
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+  padding-left: 30px;
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 16 16' fill='none' stroke='%2364748b' stroke-width='1.6' stroke-linecap='round'%3E%3Ccircle cx='7' cy='7' r='4.5'/%3E%3Cpath d='m10.5 10.5 3.5 3.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 10px center;
+  color: var(--bld-title);
+  box-shadow: inset 0 1px 2px rgb(15 23 42 / 5%);
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.workspace-shell.building .wk-input.bar-search:hover:not(:focus-visible) {
+  border-color: #94a3b8;
+}
+
+.workspace-shell.building .wk-input.bar-search:focus-visible {
+  border-color: #0052d9;
+  box-shadow: 0 0 0 2px rgb(0 82 217 / 14%);
+  outline: none;
+}
+
+/* 3. Action Buttons: clear boundary on every button */
+.workspace-shell.building #focusMatches {
+  background: #e8f1ff;
+  border: 1px solid #b3ccf9;
+  color: #0047bd;
+  font-weight: 500;
+  box-shadow: 0 1px 2px rgb(0 82 217 / 6%);
+}
+
+.workspace-shell.building #focusMatches:hover:not(:disabled) {
+  background: #dce8ff;
+  border-color: #7eaaf7;
+  color: #003cab;
+}
+
+.workspace-shell.building #clearFilters {
+  background: #ffffff;
+  border: 1px solid #d5dce6;
+  color: var(--bld-copy);
+  padding-inline: 12px;
+}
+
+.workspace-shell.building #clearFilters:hover:not(:disabled) {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: var(--bld-title);
+}
+
+/* Left Inspector: clean, borderless inner rows */
+.workspace-shell.building .wk-object-inspector {
+  background: #ffffff;
+  border-right: 1px solid var(--bld-hairline);
+}
+
+.workspace-shell.building .inspector-pad {
+  padding: 16px;
+}
+
+.workspace-shell.building .collapse {
+  top: 12px;
+  right: 12px;
+  border-radius: 6px;
+  box-shadow: none;
+  background: transparent;
+}
+
+.workspace-shell.building .plan-head {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--bld-muted);
+}
+
+.workspace-shell.building .plan {
+  height: 112px;
+  border-radius: 12px;
+  border: 0;
+  background-color: var(--bld-faint);
+  background-image: radial-gradient(rgb(15 23 42 / 10%) 0.8px, transparent 0.8px);
+  background-size: 12px 12px;
+  padding: 8px;
+}
+
+.workspace-shell.building .wk-tabs {
+  margin-top: 14px;
+  gap: 20px;
+  border-bottom: 1px solid var(--bld-hairline);
+}
+
+.workspace-shell.building .wk-tab {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--bld-muted);
+}
+
+.workspace-shell.building .wk-tab.is-active {
+  color: var(--bld-primary);
+  font-weight: 600;
+}
+
+.workspace-shell.building .props {
+  gap: 0;
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+.workspace-shell.building .props :is(dt, dd) {
+  padding: 6px 0;
+  border-bottom: 0;
+}
+
+.workspace-shell.building .props dt {
+  color: var(--bld-muted);
+}
+
+.workspace-shell.building .props dd {
+  color: var(--bld-title);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Hide "数据说明: 作品集演示数据" row (last dt/dd in #buildingProps & #businessProps) */
+.workspace-shell.building #buildingProps > :nth-last-child(-n+2),
+.workspace-shell.building #businessProps > :nth-last-child(-n+2) {
+  display: none;
+}
+
+/* Matrix: ultra-light grid hairlines so status color bars & room numbers breathe */
+.workspace-shell.building .matrix {
+  background: #f4f6fa;
+}
+
+.workspace-shell.building .head {
+  height: 36px;
+  border-bottom: 1px solid var(--bld-hairline);
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.workspace-shell.building .head > * {
+  background: #f4f6fa;
+  color: var(--bld-muted);
+}
+
+.workspace-shell.building .head b {
+  border-left: 2px solid #dfe6f0;
+  font-weight: 600;
+}
+
+.workspace-shell.building .row {
+  height: 36px;
+  margin-top: 1px;
+}
+
+.workspace-shell.building .floor {
+  background: #ffffff;
+  color: var(--bld-muted);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  box-shadow: inset -1px 0 var(--bld-hairline);
+}
+
+.workspace-shell.building .nominal {
+  box-shadow: inset -1px 0 var(--bld-hairline), 3px 0 8px rgb(15 23 42 / 3%);
+}
+
+.workspace-shell.building .unit-band {
+  gap: 1px;
+  padding-left: 2px;
+  border-left: 2px solid #dfe6f0;
+  background: #edf1f7;
+}
+
+.workspace-shell.building .room {
+  background: #ffffff;
+  color: var(--bld-title);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 0 6px 6px;
+  transition: background 100ms ease, color 100ms ease;
+}
+
+.workspace-shell.building .row:nth-child(even) .room {
+  background: #fafbfd;
+}
+
+.workspace-shell.building .row .room:not(.dim, .selected):hover {
+  background: var(--bld-primary-soft);
+  color: var(--bld-primary);
+}
+
+.workspace-shell.building .row .room.selected {
+  background: #e8f1ff;
+  color: #0f3a7d;
+  outline: 2px solid #0052d9;
+  outline-offset: -2px;
+  box-shadow: none;
+  z-index: 2;
+}
+
+.workspace-shell.building .state-band {
+  inset: auto 10px 4px;
+  height: 5px;
+  gap: 2px;
+}
+
+.workspace-shell.building .state-band i {
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 1px rgb(15 23 42 / 10%);
+}
+
+.workspace-shell.building .matrix-foot {
+  height: 34px;
+  padding: 0 18px;
+  gap: 22px;
+  background: #ffffff;
+  border-top: 1px solid var(--bld-hairline);
+  color: var(--bld-muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.workspace-shell.building .matrix-foot b {
+  color: var(--bld-title);
+  font-weight: 600;
+  margin-left: 2px;
+}
+
+/* Legend Drawer */
+.workspace-shell.building .legend {
+  top: 164px;
+  width: 272px;
+  border-left: 0;
+  box-shadow: -10px 0 32px rgb(15 23 42 / 10%), 0 0 0 1px var(--bld-hairline);
+}
+
+.workspace-shell.building .legend-head {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--bld-hairline);
+  font-size: 14px;
+}
+
+.workspace-shell.building .legend-hint {
+  display: none;
+}
+
+.workspace-shell.building .legend-group {
+  border-bottom: 0;
+}
+
+.workspace-shell.building .legend-item {
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+.workspace-shell.building .legend-item:hover {
+  background: var(--bld-faint);
+}
+
+.workspace-shell.building .swatch {
+  width: 13px;
+  height: 13px;
+  border-radius: 4px;
+  border: 0;
+  box-shadow: inset 0 0 0 1px rgb(15 23 42 / 12%);
+}

@@ -1,0 +1,492 @@
+/* GIS Task Workspace — Borderless & Tonal UI Polish */
+.workspace-shell[data-wk-legacy="true"] {
+  --tsk-hairline: rgb(15 23 42 / 6%);
+  --tsk-ring: rgb(15 23 42 / 4%);
+  --tsk-faint: #f6f8fb;
+  --tsk-subtle: #eff3f8;
+  --tsk-title: #111827;
+  --tsk-copy: #4b5563;
+  --tsk-muted: #6b7280;
+  --tsk-primary: #0052d9;
+  --tsk-primary-soft: #eef4ff;
+}
+
+.workspace-shell .top-nav.wk-header {
+  background: #ffffff;
+  border-bottom: 1px solid var(--tsk-hairline);
+  box-shadow: none;
+}
+
+.workspace-shell .nav-logo .mark {
+  border-radius: 8px;
+  background: #0052d9;
+  box-shadow: none;
+}
+
+.workspace-shell .top-nav .search-box {
+  background: var(--tsk-faint);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  height: 36px;
+}
+
+.workspace-shell .top-nav .search-box:focus-within {
+  background: #ffffff;
+  border-color: rgb(0 82 217 / 35%);
+  box-shadow: 0 0 0 3px rgb(0 82 217 / 10%);
+}
+
+/* Hide prototype-note disclaimer pill in header for cleaner portfolio visual */
+.workspace-shell .prototype-note {
+  display: none;
+}
+
+.workspace-shell .task-header {
+  background: #ffffff;
+  border-bottom: 1px solid var(--tsk-hairline);
+  padding: 10px 24px;
+}
+
+.workspace-shell .task-object-identity {
+  border-left-color: var(--tsk-hairline);
+}
+
+.workspace-shell .task-object-back,
+.workspace-shell .stepper__back {
+  border-radius: 7px;
+  font-weight: 500;
+}
+
+.workspace-shell .task-object-back:hover,
+.workspace-shell .stepper__back:hover {
+  background: var(--tsk-primary-soft);
+  color: var(--tsk-primary);
+}
+
+.workspace-shell .task-object-title {
+  color: var(--tsk-title);
+  font-size: 17px;
+}
+
+.workspace-shell .task-object-building {
+  color: var(--tsk-muted);
+}
+
+.workspace-shell .stepper__item {
+  font-size: 13px;
+  color: var(--tsk-muted);
+}
+
+.workspace-shell .stepper__item.is-active {
+  color: var(--tsk-primary);
+}
+
+.workspace-shell .stepper__dot {
+  width: 22px;
+  height: 22px;
+  flex-basis: 22px;
+  border: 0;
+  background: var(--tsk-subtle);
+}
+
+.workspace-shell .stepper__line {
+  width: 24px;
+  background: var(--tsk-hairline);
+}
+
+.workspace-shell .scroll-body {
+  background: #f4f6fa;
+}
+
+.workspace-shell .task-demo-meta {
+  display: none;
+}
+
+.workspace-shell .step-panel > .card {
+  border: 0;
+  border-radius: 14px;
+  box-shadow: 0 2px 10px rgb(15 23 42 / 4%), 0 0 0 1px var(--tsk-ring);
+  padding: 24px !important;
+}
+
+.workspace-shell .card__title {
+  color: var(--tsk-title);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.workspace-shell .upload-zone {
+  border: 0;
+  border-radius: 12px;
+  background: var(--tsk-faint);
+  padding: 24px;
+  line-height: 1.7;
+}
+
+/* Validation table (Step 2) */
+.workspace-shell .check-table-wrap {
+  border: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 0 0 1px var(--tsk-ring);
+}
+
+.workspace-shell .check-table th {
+  background: var(--tsk-faint);
+  color: var(--tsk-muted);
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.workspace-shell .check-table td,
+.workspace-shell .check-table th {
+  border-top-color: var(--tsk-hairline);
+}
+
+.workspace-shell .check-item--warning {
+  background: #fffbeb;
+}
+
+.workspace-shell .validation-notice {
+  border: 0;
+  border-radius: 10px;
+  background: #fffbeb;
+  color: #92400e;
+  font-size: 13px;
+}
+
+.workspace-shell .block-bar {
+  border: 0;
+  border-radius: 12px;
+  background: #fff7ed;
+  box-shadow: 0 1px 4px rgb(234 88 12 / 8%);
+}
+
+/* Floor range slider (Step 3 left): borderless soft card + symmetrical range inputs */
+.workspace-shell .floor-slider {
+  border: 0;
+  border-radius: 14px;
+  box-shadow: 0 2px 10px rgb(15 23 42 / 4%), 0 0 0 1px var(--tsk-ring);
+  padding: 16px 16px 16px;
+}
+
+.workspace-shell .floor-slider__title {
+  color: var(--tsk-title);
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.workspace-shell .floor-slider__track {
+  background: var(--tsk-subtle);
+  border: 0;
+}
+
+.workspace-shell .floor-slider__fill {
+  background: #dbeafe;
+}
+
+.workspace-shell .floor-slider__thumb {
+  box-shadow: 0 0 0 2.5px var(--tsk-primary), 0 2px 6px rgb(15 23 42 / 18%);
+}
+
+.workspace-shell .floor-range-input {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: end;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.workspace-shell .floor-range-input__col {
+  gap: 4px;
+  min-width: 0;
+}
+
+.workspace-shell .floor-range-input__cap {
+  font-size: 11px;
+  color: var(--tsk-muted);
+}
+
+.workspace-shell .floor-range-input__col input {
+  width: 100%;
+  height: 32px;
+  padding: 0 6px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+  box-shadow: inset 0 1px 2px rgb(15 23 42 / 5%);
+}
+
+.workspace-shell .floor-range-input__to {
+  display: grid;
+  place-items: center;
+  height: 32px;
+  padding: 0;
+  color: var(--tsk-muted);
+  font-size: 12px;
+}
+
+.workspace-shell .floor-range-input__unit {
+  display: none;
+}
+
+.workspace-shell .floor-slider__only {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--tsk-hairline);
+  gap: 8px;
+  font-size: 13px;
+  color: var(--tsk-copy);
+}
+
+.workspace-shell .floor-slider__only input {
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  accent-color: var(--tsk-primary);
+}
+
+/* Board tools & filters: soft pill selection instead of bottom border */
+.workspace-shell .board-tools {
+  border: 0;
+  border-radius: 12px;
+  padding: 6px 14px;
+  gap: 8px 14px;
+  box-shadow: 0 1px 4px rgb(15 23 42 / 4%), 0 0 0 1px var(--tsk-ring);
+}
+
+.workspace-shell .board-tools__title {
+  color: var(--tsk-title);
+  font-size: 15px;
+}
+
+.workspace-shell .relation-filters {
+  gap: 4px;
+}
+
+.workspace-shell .relation-filters__divider {
+  background: var(--tsk-hairline);
+  margin: 0 4px;
+}
+
+.workspace-shell .seg {
+  min-height: 32px;
+  padding: 0 10px;
+  border: 0;
+  border-bottom: 0;
+  border-radius: 8px;
+  color: var(--tsk-copy);
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.workspace-shell .seg:hover {
+  background: var(--tsk-faint);
+  color: var(--tsk-title);
+}
+
+.workspace-shell .seg.is-on {
+  background: var(--tsk-primary-soft);
+  color: var(--tsk-primary);
+  font-weight: 600;
+  border-bottom: 0;
+}
+
+.workspace-shell .seg.is-on .seg__v {
+  background: #ffffff;
+  color: var(--tsk-primary);
+}
+
+.workspace-shell .ds-toggle {
+  background: var(--tsk-faint);
+  border: 0;
+  border-radius: 8px;
+  padding: 3px;
+  margin: 0 0 0 auto;
+}
+
+.workspace-shell .ds-toggle__btn {
+  border: 0;
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--tsk-copy);
+}
+
+.workspace-shell .ds-toggle__btn.is-on {
+  background: #ffffff;
+  color: var(--tsk-title);
+  border: 0;
+  box-shadow: 0 1px 3px rgb(15 23 42 / 8%);
+}
+
+/* Relation cards: seamless white surface, no internal borders or divider lines */
+.workspace-shell .cards {
+  gap: 10px;
+}
+
+.workspace-shell .rg {
+  border: 0;
+  border-radius: 14px;
+  box-shadow: 0 1px 4px rgb(15 23 42 / 4%), 0 0 0 1px var(--tsk-ring);
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+.workspace-shell .rg:hover {
+  box-shadow: 0 8px 22px -4px rgb(15 23 42 / 9%), 0 0 0 1px rgb(0 82 217 / 22%);
+  transform: translateY(-1px);
+}
+
+.workspace-shell .rg__head {
+  background: transparent;
+  border-bottom: 0;
+  padding: 14px 18px 4px;
+}
+
+.workspace-shell .rg__code {
+  color: var(--tsk-title);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.workspace-shell .rg__yt,
+.workspace-shell .rg__floor {
+  background: transparent;
+  border: 0;
+  padding: 0 4px;
+  color: var(--tsk-muted);
+  font-size: 12px;
+}
+
+.workspace-shell .rg__main {
+  padding: 10px 18px 16px;
+}
+
+.workspace-shell .rg__metric .lbl {
+  color: var(--tsk-muted);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.workspace-shell .rg__metric .object {
+  color: var(--tsk-title);
+  font-weight: 600;
+}
+
+.workspace-shell .rg__metric .num {
+  color: var(--tsk-title);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.workspace-shell .rg__metric:last-child {
+  border-left: 0;
+  padding-left: 12px;
+}
+
+.workspace-shell .rg__delta {
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+}
+
+.workspace-shell .rg__delta.is-ok {
+  background: var(--tsk-faint);
+  color: var(--tsk-copy);
+}
+
+.workspace-shell .rg__delta.is-warn {
+  background: #ea580c;
+  color: #ffffff;
+}
+
+.workspace-shell .rg__delta.is-over {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.workspace-shell .rg__subs-panel {
+  background: var(--tsk-faint);
+  border: 0;
+  border-radius: 10px;
+}
+
+.workspace-shell .rg__sub + .rg__sub {
+  border-top-color: var(--tsk-hairline);
+}
+
+.workspace-shell .rg__detail {
+  background: var(--tsk-faint);
+  border-top-color: transparent !important;
+}
+
+.workspace-shell .rg__hint {
+  padding: 0 18px 14px;
+}
+
+/* Compact Table */
+.workspace-shell .rg-table {
+  border: 0;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgb(15 23 42 / 4%), 0 0 0 1px var(--tsk-ring);
+}
+
+.workspace-shell .rg-table th {
+  background: var(--tsk-faint);
+  color: var(--tsk-muted);
+  border-bottom: 1px solid var(--tsk-hairline);
+}
+
+.workspace-shell .rg-table td {
+  border-bottom: 1px solid var(--tsk-hairline);
+}
+
+.workspace-shell .rg-table tbody tr:hover {
+  background: var(--tsk-primary-soft);
+}
+
+/* Drawer & Modals */
+.workspace-shell .drawer {
+  border-left: 0;
+  box-shadow: -14px 0 40px rgb(15 23 42 / 14%);
+}
+
+.workspace-shell .drawer__head {
+  border-bottom: 1px solid var(--tsk-hairline);
+}
+
+.workspace-shell .drawer__foot {
+  border-top: 1px solid var(--tsk-hairline);
+}
+
+.workspace-shell .drawer__title {
+  color: var(--tsk-title);
+}
+
+.workspace-shell .cmp {
+  border: 0;
+  border-radius: 12px;
+  background: var(--tsk-faint);
+}
+
+.workspace-shell .cmp__row {
+  border-bottom: 1px solid var(--tsk-hairline);
+}
+
+.workspace-shell .cmp__row.is-diff {
+  background: #fff7ed;
+}
+
+.workspace-shell .cmp__k {
+  background: transparent;
+  color: var(--tsk-muted);
+}
+
+.workspace-shell .cmp__sep {
+  background: var(--tsk-hairline);
+}
+
+.workspace-shell .modal {
+  border-radius: 16px;
+  border: 0;
+  box-shadow: 0 24px 60px rgb(15 23 42 / 20%);
+}

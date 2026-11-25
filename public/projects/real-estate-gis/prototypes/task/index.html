@@ -9,6 +9,8 @@
   <link rel="stylesheet" href="system.css">
   <link rel="stylesheet" href="tdesign-tokens.css">
   <link rel="stylesheet" href="workspace-tdesign.css">
+  <link rel="stylesheet" href="../shared-ui.css">
+  <link rel="stylesheet" href="task-polish.css">
   <!-- S4-06 V8 · 实测替换预测（功能6 / 屏06）
        原始记录包含选择实测幢、校验与设置入库模式；本页只演示这些步骤，不执行真实业务校验或提交。
        设计推演：面积差异、建议关联以及结构关系的提示，用于压力测试复杂关系模型，具体规则仍需业务确认。
@@ -540,7 +542,7 @@
 <body>
   <div class="layout workspace-shell" data-wk-legacy="true">
     <header class="top-nav wk-header">
-      <div class="nav-logo"><span class="mark">住</span><span>数字住房一体化平台 <span class="nav-logo-sub">空间工作台</span></span></div>
+      <div class="nav-logo"><span class="mark"><svg width="30" height="30" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="gisLogoC" x1="10" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#0052D9"/><stop offset="100%" stop-color="#073282"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#gisLogoC)"/><path d="M23.5 16L14 29.5H20.5V48H26V29.5L23.5 16Z" fill="#FFFFFF"/><circle cx="38.5" cy="18.5" r="3.2" fill="#7DD3FC"/><rect x="30" y="25" width="18" height="4.4" rx="2.2" fill="#FFFFFF"/><rect x="31.5" y="33.8" width="15" height="4.4" rx="2.2" fill="#CFE2FF"/><rect x="29" y="43.6" width="20" height="4.4" rx="2.2" fill="#FFFFFF"/><rect x="36.8" y="26" width="4.4" height="21" rx="2" fill="#FFFFFF"/></svg></span><span>数字住房一体化平台 <span class="nav-logo-sub">空间工作台</span></span></div>
       <div class="search-box"><svg class="search-icon" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.5"/><path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><input class="search-input" type="text" aria-label="全局搜索" placeholder="搜索楼盘 / 地址 / 幢 / 户室，回车定位"></div>
       <div class="nav-right">
         <button class="task-nav-link">消息</button><details class="prototype-note"><summary>示例数据 · 原型说明</summary><div class="prototype-note__body"><p>此交互原型使用示例数据，不连接业务系统。查询、校验和确认用于体验流程，不会修改真实房屋记录。转办记录仅保留在当前页面，刷新后清除。</p></div></details>
@@ -967,19 +969,18 @@
     if (state.st === 'over' || state.st === 'pending') return 'review';
     return 'linked';
   }
-  function cardPassesFilter(card){
+  function cardInFloorRange(card){
     const anchor = card.anchorType === 'pred' ? P(card.anchorId) : M(card.anchorId);
     const dy = anchor ? anchor.dy : null;
     if (dy == null) return true;
-    if (floorOnlyAnomaly){
-      const state = card.anchorType === 'pred' ? predictState(card.anchorId) : measureState(card.anchorId);
-      if (reviewState(card, state) !== 'review') return false;
-    }
-    else if (dy < floorLo || dy > floorHi) return false;
-    if (statusFilter === 'all') return true;
+    return dy >= floorLo && dy <= floorHi;
+  }
+  function cardPassesFilter(card){
+    if (!cardInFloorRange(card)) return false;
     const state = card.anchorType === 'pred' ? predictState(card.anchorId) : measureState(card.anchorId);
+    if (floorOnlyAnomaly && reviewState(card, state) !== 'review') return false;
+    if (statusFilter === 'all') return true;
     return reviewState(card, state) === statusFilter;
-    return true;
   }
 
   function renderCards(animate){
@@ -1174,7 +1175,7 @@
 
   /* ============ 关系状态筛选与楼层范围 ============ */
   function renderRelationFilters(){
-    const cards = buildCards();
+    const cards = buildCards().filter(cardInFloorRange);
     const counts = { linked:0, review:0, unlinked:0 };
     cards.forEach(card => {
       const state = card.anchorType === 'pred' ? predictState(card.anchorId) : measureState(card.anchorId);
@@ -1250,7 +1251,7 @@
       const move = ev => {
         const f = floorsFromY(ev.clientY);
         if (which === 'min') floorLo = Math.min(f, floorHi); else floorHi = Math.max(f, floorLo);
-        renderFloorSlider(); renderCards();
+        renderFloorSlider(); renderRelationFilters(); renderCards();
       };
       const up = () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); };
       window.addEventListener('pointermove', move);
@@ -1264,10 +1265,17 @@
       setTimeout(() => track.classList.remove('is-gliding'), 220);
       const f = floorsFromY(e.clientY);
       if (Math.abs(f - floorLo) <= Math.abs(f - floorHi)) floorLo = Math.min(f, floorHi); else floorHi = Math.max(f, floorLo);
-      renderFloorSlider(); renderCards();
+      renderFloorSlider(); renderRelationFilters(); renderCards();
     });
     const only = $('floorOnlyAnomaly');
-    if (only) only.addEventListener('change', e => { floorOnlyAnomaly = e.target.checked; renderCards(); });
+    if (only) only.addEventListener('change', e => {
+      floorOnlyAnomaly = e.target.checked;
+      if (floorOnlyAnomaly) {
+        statusFilter = 'review';
+        renderRelationFilters();
+      }
+      renderCards(true);
+    });
   }
   function bindFloorInputs(){
     const minI = $('floorInputMin'), maxI = $('floorInputMax');
@@ -1281,7 +1289,7 @@
       hi = Math.max(fMinAll, Math.min(hi, fMaxAll));
       if (lo > hi){ if (which === 'min') hi = lo; else lo = hi; }
       floorLo = lo; floorHi = hi;
-      renderFloorSlider(); renderCards();
+      renderFloorSlider(); renderRelationFilters(); renderCards();
     }
     function liveClamp(input){
       let v = parseInt(input.value, 10);
@@ -1721,7 +1729,13 @@
 
   // 关系状态筛选
   document.querySelectorAll('.seg').forEach(n => n.addEventListener('click', () => {
-    statusFilter = n.dataset.filter; renderRelationFilters(); renderCards(true);
+    statusFilter = n.dataset.filter;
+    if (statusFilter !== 'review' && floorOnlyAnomaly) {
+      floorOnlyAnomaly = false;
+      const only = $('floorOnlyAnomaly');
+      if (only) only.checked = false;
+    }
+    renderRelationFilters(); renderCards(true);
   }));
 
   // 校验场景下拉（.ui-select 组件，与步骤1 的两个下拉同一套规范）

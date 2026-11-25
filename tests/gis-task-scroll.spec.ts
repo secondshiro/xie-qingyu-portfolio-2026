@@ -53,3 +53,35 @@ test('案例内嵌与实际新窗口的列表均独立滚动，切回校验仍�
   }
   await popup.close();
 });
+
+test('楼层范围、状态计数和仅看待核对层同步', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(`${route}&view=cards`);
+
+  const total = page.locator('#fTotal');
+  await expect(total).not.toHaveText('0');
+  const fullCount = Number(await total.innerText());
+  const min = page.locator('#floorInputMin');
+  const max = page.locator('#floorInputMax');
+  await min.fill('25');
+  await min.press('Tab');
+  await max.fill('25');
+  await max.press('Tab');
+  await expect(page.locator('#floorBubbleMin')).toHaveText('25');
+  await expect(page.locator('#floorBubbleMax')).toHaveText('25');
+  const floorCount = Number(await total.innerText());
+  expect(floorCount).toBeGreaterThan(0);
+  expect(floorCount).toBeLessThan(fullCount);
+
+  const onlyReview = page.locator('#floorOnlyAnomaly');
+  await onlyReview.check();
+  await expect(page.locator('[data-filter="review"]')).toHaveAttribute('aria-pressed', 'true');
+  const reviewCount = Number(await page.locator('#fReview').innerText());
+  expect(reviewCount).toBeGreaterThan(0);
+  await expect(page.locator('#cards [data-card]')).toHaveCount(reviewCount);
+  await expect(total).toHaveText(String(floorCount));
+
+  await page.locator('[data-filter="all"]').click();
+  await expect(onlyReview).not.toBeChecked();
+  await expect(page.locator('#cards [data-card]')).toHaveCount(floorCount);
+});
