@@ -20,7 +20,7 @@ for (const exit of ['collect', 'skip'] as const) {
     if (exit === 'collect') {
       // Sewing itself is covered by the full-flow tests below.
       await frame.evaluate('toSeal()');
-      await frame.waitForFunction("getComputedStyle(document.querySelector('#veilcue')).opacity === '1'");
+      await expect(frame.locator('#veil .actions')).toHaveCSS('opacity', '1');
       await frame.locator('#veilcue').click();
     } else {
       await frame.locator('#skip').click();
@@ -99,6 +99,7 @@ for (const surface of ['embedded', 'popup'] as const) {
       await expect(target.locator('#veil')).toHaveClass('on', { timeout: 15_000 });
       expect(await target.locator('#dones .st-done').count()).toBe(12);
       expect(await target.evaluate('window.needleEscapes')).toEqual([]);
+      await expect(target.locator('#veil .actions')).toHaveCSS('opacity', '1');
       await target.locator('#veilcue').click();
       await expect.poll(() => target.url()).toBe(new URL('/projects/yuejian/prototype/v5.html?shell=off#p10', page.url()).href);
       await expect(target.locator('#p10')).toBeVisible();
