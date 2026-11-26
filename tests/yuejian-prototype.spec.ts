@@ -97,7 +97,7 @@ for (const surface of ['embedded', 'popup'] as const) {
         }
       }
       await expect(target.locator('#veil')).toHaveClass('on', { timeout: 15_000 });
-      expect(await target.locator('#dones line').count()).toBe(12);
+      expect(await target.locator('#dones .st-done').count()).toBe(12);
       expect(await target.evaluate('window.needleEscapes')).toEqual([]);
       await target.locator('#veilcue').click();
       await expect.poll(() => target.url()).toBe(new URL('/projects/yuejian/prototype/v5.html?shell=off#p10', page.url()).href);
