@@ -26,7 +26,7 @@ const tocSections = [
   { id: 'map', label: '01 / 入口怎么分' },
   { id: 'reconcile', label: '02 / 异常怎么拦' },
   { id: 'strategy', label: '03 / 行业参照' },
-  { id: 'boundary', label: '04 / 边界与待确认' },
+  { id: 'boundary', label: '04 / 验证与边界' },
 ];
 ---
 
@@ -75,8 +75,16 @@ const tocSections = [
         />
       </div>
 
+      <div class="tradeoff-note">
+        <div class="tradeoff-note__meta">
+          <span class="tradeoff-note__tag">设计取舍</span>
+          <h3>平面参考与户室矩阵同屏</h3>
+        </div>
+        <p>逐户核对时，楼盘表用于比较整层房号，平面图用于定位某一户。我把平面图和属性移到左栏，让两类信息保持联动。我同时保留<strong>原图例的 20 项业务状态</strong>和房屋性质符号，便于核对同一户的多项记录。</p>
+      </div>
+
       <div class="case-copy">
-        <p>我保留原图例的 <strong>20 项业务状态</strong>和房屋性质符号。状态色在房号下方以 5px 高的短条并排显示，浅蓝底和蓝色描边标记当前选中的户室。点选 1 单元 1501 室时，左侧属性和平面参考同步更新，矩阵保留当前筛选。</p>
+        <p>状态色在房号下方以 5px 高的短条并排显示，浅蓝底和蓝色描边标记当前选中的户室。点选 1 单元 1501 室时，左侧属性和平面参考同步更新，矩阵保留当前筛选。</p>
       </div>
 
       <div class="gis-detail">
@@ -108,9 +116,16 @@ const tocSections = [
     >
       <Fragment slot="intro">旧总图在顶部集中放置工具。定位到一栋楼后，工作人员需要先核对幢号和测绘信息，再决定查看整幢房屋还是核对测绘差异。</Fragment>
 
+      <div class="tradeoff-note">
+        <div class="tradeoff-note__meta">
+          <span class="tradeoff-note__tag">设计取舍</span>
+          <h3>按是否依赖选幢分配入口</h3>
+        </div>
+        <p>查看户室和核对测绘前，经办人需要先确认办理对象。我把这两个入口和楼幢资料放在一起。尚未在地图上标绘的楼幢称为<strong>无图幢</strong>，手工建楼盘和新楼盘入库从地图上方的「业务入口」开始。</p>
+      </div>
+
       <div class="case-copy">
-        <p>我把<strong>分层分户图</strong>和<strong>实测替换预测</strong>放在右侧楼幢面板，紧挨着入库状态和测绘摘要。坐落、幢号等定位字段默认可见，历史记录和维护操作收进「历史与维护」。</p>
-        <p>尚未在地图上标绘的楼幢称为<strong>无图幢</strong>。无图幢的手工建楼盘和新楼盘入库可从地图上方的「业务入口」开始。</p>
+        <p>右侧楼幢面板显示入库状态、测绘摘要和两个操作入口，分别通往<strong>分层分户图</strong>和<strong>实测替换预测</strong>。坐落、幢号等定位字段默认可见，历史记录和维护操作收进「历史与维护」。</p>
       </div>
 
       <div class="experience-diagram" aria-label="从搜索定位到查看楼幢信息的操作路径">
@@ -165,11 +180,19 @@ const tocSections = [
         <div class="diagram-node diagram-node--decision"><span class="diagram-kicker">确认结果</span><b>经办人核对</b><div class="decision-state" aria-hidden="true"><span></span>待核对</div><small>核对两份记录后确认</small></div>
       </div>
 
+      <div class="tradeoff-note">
+        <div class="tradeoff-note__meta">
+          <span class="tradeoff-note__tag">设计取舍</span>
+          <h3>人工核对面积和户室关系</h3>
+        </div>
+        <p>面积差值供经办人对照记录，具体阈值需由业务方确认。拆分、合并会改变户室对应关系，需要单独处置。关系卡用于逐组核对差值，表格用于按列对照多组房号和楼层。</p>
+      </div>
+
       <div class="case-copy">
         <ul class="case-points">
           <li><strong>面积差提示。</strong>以 1 单元 1501 室为例，系统记录 94.20㎡，测绘记录 95.90㎡。卡片标出 <strong>+1.70㎡</strong>，供经办人核对。</li>
           <li><strong>结构变化拦截。</strong>拆分、合并会改变楼盘表的户室对应关系。原型在顶部提示待处置数量，可将相关记录转人工核对或转入楼盘变更。<strong>转办待处理时仍无法提交。</strong></li>
-          <li><strong>关系卡与表格。</strong>关系卡用于看一组对应和面积差，表格用于按列对照多组房号和楼层。切换视图时保留当前状态筛选。</li>
+          <li><strong>关系卡与表格。</strong>切换视图时保留当前状态筛选。</li>
         </ul>
       </div>
 
@@ -231,7 +254,7 @@ const tocSections = [
     <span id="ai-collaboration" class="gis-previous-anchor" aria-hidden="true"></span>
     <CaseSection
       id="boundary"
-      label="04 / 边界与待确认"
+      label="04 / 验证与边界"
       title="原型可验证的操作与待确认的业务规则"
     >
       <Fragment slot="intro">三个原型共用同一楼幢的演示数据。我根据需求规格和旧界面确定矩阵布局、入口和异常反馈，AI 协助整理材料、实现页面和检查一致性。</Fragment>
@@ -240,8 +263,8 @@ const tocSections = [
         <article class="boundary-card">
           <h3>可以在原型中操作</h3>
           <ul>
-            <li>从总图的 17 幢打开分层分户图并选择 1501 室，可核对侧栏是否显示该户。另从总图进入实测替换预测，可查看同一幢楼的核对任务。</li>
-            <li>在实测替换预测第 3 步中转办一项结构变化，可检查关系卡显示的待处理状态和仍被禁用的提交按钮。刷新页面后恢复演示初始状态。</li>
+            <li>从总图的 17 幢打开分层分户图，可对照实际第 18 层和名义 17A 层。点选 1 单元 1501 室，可检查侧栏是否显示该户。</li>
+            <li>从总图进入同一幢楼的实测替换预测。在第 3 步转办一项结构变化，可检查待处理状态和仍被禁用的提交按钮。刷新页面后恢复演示初始状态。</li>
           </ul>
         </article>
         <article class="boundary-card">
@@ -338,6 +361,65 @@ const tocSections = [
 
   .gis-case :global(.diagram-arrow) {
     align-self: center;
+  }
+
+  .tradeoff-note {
+    display: grid;
+    grid-template-columns: minmax(10rem, 13.5rem) minmax(0, 1fr);
+    align-items: start;
+    gap: clamp(1rem, 3vw, 2.5rem);
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    border-radius: var(--radius-media);
+    background: var(--color-ink);
+    color: var(--color-paper);
+    box-shadow: var(--shadow-fold);
+  }
+
+  .tradeoff-note__meta {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .tradeoff-note__tag {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: #ff6b27;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+
+  .tradeoff-note__tag::before {
+    content: '';
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .tradeoff-note__meta h3 {
+    font-size: 1.125rem;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .tradeoff-note p {
+    color: color-mix(in srgb, var(--color-paper) 82%, var(--color-ink));
+    font-size: 1.02rem;
+    line-height: 1.75;
+  }
+
+  .tradeoff-note strong {
+    color: var(--color-paper);
+    font-weight: 500;
+  }
+
+  @media (max-width: 45rem) {
+    .tradeoff-note {
+      grid-template-columns: 1fr;
+      gap: 0.9rem;
+    }
   }
 </style>
 
