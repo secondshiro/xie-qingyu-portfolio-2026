@@ -206,7 +206,7 @@ test('章节锚点、下载、外链与原型保持原有操作', async ({ page 
   expect(await page.evaluate(() => window.transitionProbe.phases)).toEqual([]);
 
   const prototypeOpened = page.waitForEvent('popup');
-  await page.locator('.prototype-frame__link').first().click();
+  await page.locator('#map .prototype-frame__link').click();
   const prototype = await prototypeOpened;
   await expect(prototype).toHaveURL(/projects\/real-estate-gis\/prototypes\/map\//);
   expect(await page.evaluate(() => window.transitionProbe.phases)).toEqual([]);

@@ -38,7 +38,7 @@ for (const width of [1440, 1280, 1024, 1010, 390, 375]) {
     await expect(details).toHaveAttribute('open');
     await page.reload();
     await expect(details).not.toHaveAttribute('open');
-    await expect(page.locator('#tradeoffs .decision-grid')).toBeVisible();
+    await expect(page.locator('#building .gis-detail')).toBeVisible();
   });
 }
 
@@ -51,7 +51,7 @@ test('行业参照深链与重复目录点击会展开内容', async ({ page }) 
   await expect(details).not.toHaveAttribute('open');
   await page.locator('.case-toc a[href="#strategy"]').click();
   await expect(details).toHaveAttribute('open');
-  await page.locator('.case-toc a[href="#tradeoffs"]').click();
+  await page.locator('.case-toc a[href="#reconcile"]').click();
   await details.locator('summary').click();
   await page.locator('.case-toc a[href="#strategy"]').click();
   await expect(details).toHaveAttribute('open');

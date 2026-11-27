@@ -1,10 +1,10 @@
 # 房产 GIS 素材索引
 
-更新于 2026-11-25。
+更新于 2026-11-27。
 
 这份索引区分仓库当前引用与历史留存。历史文件保留在原目录，不能作为当前方案截图引用。
 
-首页封面属于装饰图，不作为 GIS 案例证据。以下是案例页的当前引用。
+首页封面属于装饰图。案例页按整幢矩阵、总图入口、测绘核对、行业参照和边界展开。前三节各有对应的站内原型与独立入口。
 
 ## 当前版本
 
@@ -13,14 +13,24 @@
 | 案例页总图原型海报 | `public/projects/real-estate-gis/media/final/map-current-overview.png` | 2026-11-25 从站内原型重截，展开图层并选中 17 幢，显示楼幢摘要、两项入口和常用资料 |
 | 案例页总图交互入口 | `public/projects/real-estate-gis/prototypes/map/index.html` | 当前可交互原型，页面上的完整入口以此为准 |
 | 总图演示底图 | `public/projects/real-estate-gis/prototypes/map/assets/gis-base-map-shipai.jpg` | 2026-11-11 对象面板改版时保留，沿用已对齐的楼幢选区和定位视角 |
+| 总图旧界面对比图 | `public/projects/real-estate-gis/media/public/legacy-map-observed.webp` | 顶部工具与左侧图层的布局留存 |
+| 整幢旧界面对比图 | `public/projects/real-estate-gis/media/public/legacy-building-overview-observed.webp` | 同屏保留工具、平面区、户室属性与楼盘表 |
 | 案例页整幢对比图与原型海报 | `public/projects/real-estate-gis/media/final/building-current-overview.png` | 2026-11-25 从站内原型重新截取，打开 17 幢并选中 1 单元 1501 室，显示浅蓝底、单层蓝框与格底状态条 |
 | 案例页任务原型海报 | `public/projects/real-estate-gis/media/final/13-task-relations-focus.png` | 2026-11-25 从站内原型重截，显示 17 幢设入库模式的固定楼层范围、待核对筛选和关系卡，用于窄屏降级 |
-| 设计取舍的矩阵局部 | `public/projects/real-estate-gis/media/final/15-decision-matrix.png` | 2026-11-11 从站内原型重新截取顶部矩阵，实际层与名义层并列，房号下方显示多段状态条 |
-| 设计取舍的关系卡局部 | `public/projects/real-estate-gis/media/final/16-decision-relation-card.png` | 2026-11-18 从当前任务原型截取 1 单元 1501 室，显示现有记录 94.20㎡、测绘记录 95.90㎡ 和待核对状态，画幅为 1196×144 |
+| 整幢矩阵局部 | `public/projects/real-estate-gis/media/final/15-decision-matrix.png` | 2026-11-27 交付采用的 1190×380 截图，展示实际第 19 至 27 层、双层号以及房号下方的并列状态色条 |
+| 核对页结构变化局部 | `public/projects/real-estate-gis/media/final/16-decision-relation-card.png` | 2026-11-27 交付采用的 1200×270 截图，展示 2 单元 2502、2503 两户对应一条测绘记录的疑似多合一关系 |
 
 任务原型最新实现位于 `public/projects/real-estate-gis/prototypes/task/index.html`，包含转人工与楼盘变更流程。转办与校验的交接记录见 [原型交接记录](../briefs/gis-prototype-2026-10-16/REVIEW.md)。操作以当前站内原型为准。
 
 三个原型共用 `prototypes/demo-data.js` 的 27 层、322 户基础记录。图例含义与截图色值沿用原始材料，户室状态分配为合成演示数据。实测侧另含差异与复杂关系样例，未连接真实校验或提交。
+
+## 2026-11-27 案例复核
+
+- **现实题材检查。** 对照[事实与贡献对照](../briefs/gis-evidence-revision/EVIDENCE.md)和当前原型，核对个人回溯的范围、沿用的图例与楼层语义，以及作者负责的布局、入口与异常反馈。总图通过搜索切换楼幢，点图只恢复上次关闭的楼幢面板。转办仍待处理时不能提交。
+- **修订复核。** 按[改写验收指标](../../PRODUCT.md#改写验收指标)连读首屏及三节。首屏说明任务、设计改动和阶段。矩阵一节用前后图说明空间与状态取舍。总图一节按操作是否依赖当前楼幢解释入口分配。核对一节用面积差示意和多合一截图分别说明判断依据与处置，保留卡片和表格各自的用途。行业资料对应三个设计问题，收尾交代原型验证步骤、待定业务规则和 AI 协作分工。
+- **配套文本扫描。** 核对目录、图注、图片尺寸与替代文本、三个海报和独立入口。1501 室用于面积差说明，2502、2503 室用于多合一说明。原型继续使用 11 月 25 日核实的站内文件。
+
+发布副本基础测试 7 项通过，静态构建生成 7 页。全站浏览器回归 166 项通过，最后一轮公开用语核对后复跑 GIS 和投递页共 35 项通过。检查了桌面与窄屏、七个旧章节锚点、内嵌与新窗口、转办、校验和静态资源。
 
 ## 2026-11-25 界面与操作核对
 
@@ -52,9 +62,7 @@ PORTFOLIO_BASE_URL=https://xie-qingyu-portfolio-2026.pages.dev npm run test:e2e 
 | `public/projects/real-estate-gis/media/final/02-map-object-context.png` | 旧版总图对象上下文截图 | 保留作历史证据，不再作为当前总图原型海报或首页主视觉 |
 | `public/projects/real-estate-gis/media/final/03-map-layer-object.png` | 使用旧矢量底图的总图截图 | 保留作历史证据，当前海报改用 `map-current-overview.png` |
 | `public/projects/real-estate-gis/media/final/12-building-current-overview.png` | 使用旧平面简图的整幢截图 | 保留作历史证据，当前对比图与海报改用 `building-current-overview.png` |
-| `public/projects/real-estate-gis/media/public/legacy-map-observed.webp` | 旧系统留存材料 | 用于“问题重定义”的旧系统对照 |
-| `public/projects/real-estate-gis/media/public/legacy-building-observed.webp` | 旧系统留存材料 | 用于“问题重定义”的旧系统对照 |
-| `public/projects/real-estate-gis/media/public/legacy-building-overview-observed.webp` | 旧系统留存材料 | 用于“核心方案”的整幢前后对照 |
+| `public/projects/real-estate-gis/media/public/legacy-building-observed.webp` | 旧系统留存材料 | 保留作历史证据，整幢对照使用当前索引中的全览图 |
 
 ## 命名约定
 

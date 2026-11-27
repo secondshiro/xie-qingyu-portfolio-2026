@@ -199,8 +199,8 @@ test('案例主标题使用文章型固定字阶', async ({ page }) => {
 
 test('案例章节标题与导语保持一档层级差', async ({ page }) => {
   await page.setViewportSize({ width: 837, height: 735 });
-  await page.goto('/work/real-estate-gis/#result');
-  const section = page.locator('#result .case-section__header');
+  await page.goto('/work/real-estate-gis/#building');
+  const section = page.locator('#building .case-section__header');
   await expect(section.locator('h2')).toHaveCSS('font-size', '26px');
   await expect(section.locator('h2')).toHaveCSS('font-weight', '400');
   await expect(section.locator('p:not(.case-section__label)')).toHaveCSS('font-size', '20px');
@@ -208,9 +208,9 @@ test('案例章节标题与导语保持一档层级差', async ({ page }) => {
 
 test('GIS 整幢对照等高，两条图注以相同间距跟在标签后', async ({ page }) => {
   await page.setViewportSize({ width: 1305, height: 593 });
-  await page.goto('/work/real-estate-gis/#workspaces');
+  await page.goto('/work/real-estate-gis/#building');
   await page.evaluate(() => document.fonts.ready);
-  const figures = page.locator('#workspaces .workspace:nth-of-type(2) .evidence-grid .media-stage');
+  const figures = page.locator('#building .evidence-grid .media-stage');
   await expect(figures).toHaveCount(2);
   const [before, after] = await figures.evaluateAll((stages) => stages.map((stage) => {
     const frame = stage.querySelector('.media-stage__frame')!.getBoundingClientRect();

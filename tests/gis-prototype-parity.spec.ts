@@ -12,8 +12,9 @@ test('三个 mockup 与各自的新窗口入口使用同一个站内原型', asy
   await page.goto('/work/real-estate-gis/');
   const prototypes = page.locator('.prototype-frame');
   await expect(prototypes).toHaveCount(officialFrames.length);
-  for (const [index, { key, poster }] of officialFrames.entries()) {
-    const prototype = prototypes.nth(index);
+  for (const { key, poster } of officialFrames) {
+    const prototype = prototypes.filter({ has: page.locator(`iframe[src^="${prototypeRoot}/${key}/index.html?"]`) });
+    await expect(prototype).toHaveCount(1);
     const iframe = prototype.locator('iframe');
     const link = prototype.locator('.prototype-frame__link');
     const src = await iframe.getAttribute('src');
@@ -32,8 +33,6 @@ test('三个 mockup 与各自的新窗口入口使用同一个站内原型', asy
     await expect(popup).toHaveURL(url => url.href === expectedURL.href || url.href === directoryURL.href);
     await expect(popup.locator('header').first()).toContainText('数字住房一体化平台');
     if (key === 'map') {
-      await expect(page.getByRole('link', { name: '打开 17 幢的总图原型 ↗' }))
-        .toHaveAttribute('href', src!);
       const embedded = iframe.contentFrame();
       for (const surface of [embedded, popup]) {
         await expect(surface.locator('#mapLayerBase image'))
