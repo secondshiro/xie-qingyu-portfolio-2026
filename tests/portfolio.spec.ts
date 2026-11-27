@@ -206,29 +206,38 @@ test('案例章节标题与导语保持一档层级差', async ({ page }) => {
   await expect(section.locator('p:not(.case-section__label)')).toHaveCSS('font-size', '20px');
 });
 
-test('GIS 整幢对照等高，两条图注以相同间距跟在标签后', async ({ page }) => {
-  await page.setViewportSize({ width: 1305, height: 593 });
-  await page.goto('/work/real-estate-gis/#building');
-  await page.evaluate(() => document.fonts.ready);
-  const figures = page.locator('#building .evidence-grid .media-stage');
-  await expect(figures).toHaveCount(2);
-  const [before, after] = await figures.evaluateAll((stages) => stages.map((stage) => {
-    const frame = stage.querySelector('.media-stage__frame')!.getBoundingClientRect();
-    const [label, caption] = stage.querySelector('.media-stage__caption')!.children;
-    const labelRect = label.getBoundingClientRect();
-    const captionRect = caption.getBoundingClientRect();
-    return {
-      ratio: frame.width / frame.height,
-      top: captionRect.top,
-      gap: captionRect.left - labelRect.right,
-    };
-  }));
-  expect(before.ratio).toBeCloseTo(16 / 9, 2);
-  expect(after.ratio).toBeCloseTo(16 / 9, 2);
-  expect(after.top).toBeCloseTo(before.top, 1);
-  expect(after.gap).toBeCloseTo(before.gap, 1);
-});
-
+for (const section of ['building', 'map']) {
+  test(`GIS ${section} 对照图无白底、同排等高且图注对齐`, async ({ page }) => {
+    await page.setViewportSize({ width: 1305, height: 593 });
+    await page.goto(`/work/real-estate-gis/#${section}`);
+    await page.evaluate(() => document.fonts.ready);
+    const figures = page.locator(`#${section} .evidence-grid .media-stage`);
+    await expect(figures).toHaveCount(2);
+    for (const figure of await figures.all()) {
+      await expect(figure.locator('.media-stage__frame')).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+      await expect(figure.locator('img')).toHaveCSS('object-fit', 'cover');
+    }
+    const [before, after] = await figures.evaluateAll((stages) => stages.map((stage) => {
+      const frame = stage.querySelector('.media-stage__frame')!.getBoundingClientRect();
+      const [label, caption] = stage.querySelector('.media-stage__caption')!.children;
+      const labelRect = label.getBoundingClientRect();
+      const captionRect = caption.getBoundingClientRect();
+      return {
+        ratio: frame.width / frame.height,
+        imageTop: frame.top,
+        imageHeight: frame.height,
+        captionTop: captionRect.top,
+        gap: captionRect.left - labelRect.right,
+      };
+    }));
+    expect(before.ratio).toBeCloseTo(16 / 10, 2);
+    expect(after.ratio).toBeCloseTo(16 / 10, 2);
+    expect(after.imageTop).toBeCloseTo(before.imageTop, 1);
+    expect(after.imageHeight).toBeCloseTo(before.imageHeight, 1);
+    expect(after.captionTop).toBeCloseTo(before.captionTop, 1);
+    expect(after.gap).toBeCloseTo(before.gap, 1);
+  });
+}
 
 test('Arco 独立评审展示操作结果并链接原页面', async ({ page }) => {
   await page.goto('/work/edgecase-planner/#arco');
